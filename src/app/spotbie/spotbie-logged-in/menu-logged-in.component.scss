@@ -1,0 +1,31 @@
+.spotbie-app-name{
+  position: relative;
+  margin: 0 auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  font-size: 14px;
+  max-height: 15px;
+  white-space: nowrap;
+}
+.spotbie-overlay-window{
+  z-index: 97;
+}
+.sb-userName{
+  text-transform: uppercase;
+}
+.main-ion-content{
+  --background: transparent;
+}
+
+@media(max-width:768px){
+  .sb-desktopNavBar{
+    display: none;
+  }
+  .sb-businessMenu{
+    margin-left: 14px;
+  }
+}

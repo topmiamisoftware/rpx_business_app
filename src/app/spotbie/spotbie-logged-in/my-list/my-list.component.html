@@ -1,0 +1,28 @@
+<ion-header class="my-list-header">
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ currentTitle$ | async }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="pt-2" color="tertiary">
+    <ion-tab-button tab="balance-list">
+      <ion-icon name="cash"></ion-icon>
+      BALANCE LIST
+    </ion-tab-button>
+    <ion-tab-button tab="rewards">
+      <ion-icon name="basket"></ion-icon>
+      MY REWARDS
+    </ion-tab-button>
+    <ion-tab-button tab="redeemed">
+      <ion-icon name="library"></ion-icon>
+      REDEEMED
+    </ion-tab-button>
+    <ion-tab-button tab="ledger">
+      <ion-icon name="list"></ion-icon>
+      LEDGER
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

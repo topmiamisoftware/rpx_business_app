@@ -1,0 +1,138 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<div class="spotbie-overlay-window d-flex container" [ngClass]="getCurrentWindowBg()">
+
+  <div class="sb-closeButton" (click)="closeWindow()">
+    <i class="fa fa-times"></i>
+  </div>
+
+  <div class='sb-scroll'>
+    <div class='spotbie-loginWrapper'>
+
+      <p class='sb-signUpGeneralInstructions text-uppercase text-center mt-4' id="sign_up_general_instructions" #spotbieSignUpIssues>
+        <span class='spotbie-text-gradient' *ngIf="!business">Login to earn rewards</span>
+        <span class='spotbie-text-gradient' *ngIf="business">Login to find customers</span>
+      </p>
+
+      <form [formGroup]="logInForm">
+        <div *ngIf="submitted && f.spotbieUsername.errors" class="spotbie-invalid-feedback text-uppercase spotbie-text-gradient spotbie-error">
+          <div *ngIf="f.spotbieUsername.errors.required || f.spotbieUsername.errors.emptyUsername">
+            USERNAME OR E-MAIL REQUIRED.
+          </div>
+
+          <div *ngIf="f.spotbieUsername.errors.wrongLength">
+            USERNAME MUST BE BETWEEN 5 AND 15 CHARACTERS.
+          </div>
+
+          <div *ngIf="f.spotbieUsername.errors.illegalChars">
+            USERNAME MUST ONLY CONTAIN LETTERS, NUMBERS, AND UNDERSCORES.
+          </div>
+        </div>
+
+        <div *ngIf="f.spotbieUsername.errors">
+          <div class="spotbie-invalid-feedback
+                    text-center text-uppercase mb-2" *ngIf="f.spotbieUsername.errors.wrong_account_type" >
+            <span class='spotbie-text-gradient spotbie-error cursor-pointer text-decoration-underline' *ngIf="!business" [routerLink]="['/business']">login with business account</span>
+            <span class='spotbie-text-gradient spotbie-error cursor-pointer text-decoration-underline' *ngIf="business" [routerLink]="['/home']">login with personal account</span>
+          </div>
+        </div>
+
+        <table class="sb-inputWithIconWrapper">
+          <td class="sb-iconInInputWrapper">
+            <i class="fa fa-envelope"></i>
+          </td>
+
+          <td>
+            <input class="sb-input" id="spotbieLoginUsername" formControlName="spotbieUsername" type="text" placeholder="USERNAME/EMAIL" autocomplete="username"/>
+          </td>
+        </table>
+
+        <div *ngIf="submitted && f.spotbiePassword.errors" class="spotbie-invalid-feedback spotbie-text-gradient spotbie-error">
+          <div *ngIf="f.spotbiePassword.errors.required">
+            PASSWORD IS REQUIRED.
+          </div>
+        </div>
+
+        <table class="sb-inputWithIconWrapper">
+          <td class="sb-iconInInputWrapper">
+            <i class="fa fa-lock"></i>
+          </td>
+
+          <td>
+            <input class='sb-input'
+                    [type]="!passwordShow ? 'password' : 'text'"
+                    formControlName="spotbiePassword"
+                    id='spotbieLoginPassword'
+                    autocomplete="password"
+                    placeholder='PASSWORD'/>
+
+            <fa-icon class='fa-eye' [icon]="faEye" (click)="togglePassword()" *ngIf="!passwordShow"></fa-icon>
+            <fa-icon class='fa-eye' [icon]="faEyeSlash" (click)="togglePassword()" *ngIf="passwordShow"></fa-icon>
+          </td>
+        </table>
+
+        <div class="spotbie-rel-div
+                    spotbie-forgot-your-pass
+                    spotbie-text-link"
+                    (click)="openWindow(forgotPasswordWindow)">
+          FORGOT YOUR PASSWORD?
+        </div>
+
+        <input id="spotbieRememberMe" type="hidden" [value]="rememberMeState" />
+
+        <button class="btn spotbie-button spotbie-padding mt-3" (click)="initLogIn()">
+          LOGIN
+        </button>
+      </form>
+    </div>
+
+    <div class="spotbie-rel-div
+                spotbie-padding
+                spotbie-text-link"
+                (click)="signUp()">
+          NOT A MEMBER? SIGN UP NOW.
+    </div>
+    <div></div>
+    <p class='spotbie-rel-div
+              spotbie-padding
+              spotbie-login-terms
+              spotbie-text-link
+              text-uppercase'>
+      By Logging in, you are agreeing to <a [routerLink]="['/terms']">OUR TERMS & PRIVACY POLICY.</a>
+    </p>
+
+    <div class="sb-logo mt-3 mb-3"></div>
+
+    <div class="spotbie-rel-div
+                spotbie-padding"
+                *ngIf="business"
+                (click)="usersHome()">
+          <i class="fas fa-user" style="font-size:.5rem;"></i><span class='spotbie-text-link'> CLICK HERE FOR NON-BUSINESS USERS</span>
+    </div>
+
+    <div class="spotbie-rel-div
+                spotbie-padding"
+                *ngIf="!business"
+                (click)="businessHome()">
+          <i class="fas fa-business-time" style="font-size:.5rem;"></i><span class='spotbie-text-link'> LOOKING FOR THE BUSINESS PORTAL?</span>
+    </div>
+
+    <div>
+      <i class="fab fa-instagram" (click)="openIg()"></i>
+      <i class="fab fa-twitter" (click)="openTwitter()"></i>
+      <i class="fab fa-youtube" (click)="openYoutube()"></i>
+    </div>
+
+    <div class="mt-4 text-uppercase spotbie-text-link cursor-pointer">
+      <span (click)="openBlog()">BLOG</span>
+    </div>
+
+    <div class="mt-4"></div>
+
+    <div class='sb-closeButton' (click)="closeWindow()">
+      <i class="fa fa-times"></i>
+    </div>
+  </div>
+</div>
+
+<app-forgot-password *ngIf="forgotPasswordWindow.open" (closeWindow)="forgotPasswordWindow.open = false"></app-forgot-password>

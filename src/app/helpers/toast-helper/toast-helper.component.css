@@ -1,0 +1,9 @@
+.spotbie-confirm-table{
+    position: relative;
+    margin: 0 auto;
+}
+.spotbie-button-mini{
+    max-width: 200px;
+    width: 200px;
+    min-width: unset !important;
+}

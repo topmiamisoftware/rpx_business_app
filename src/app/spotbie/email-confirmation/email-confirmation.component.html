@@ -1,0 +1,135 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<h2 mat-dialog-title>Let's confirm your e-mail.</h2>
+
+<div *ngIf="affirmEmail">
+
+  <mat-dialog-content>
+  
+    <div>
+ 
+      <p>
+        Can we reach you at this e-mail? Click or tap \"Send Verification\". 
+        You will then receive an e-mail with a 6-digit confirmation PIN.
+      </p>
+      
+      <form [formGroup]="confirmEmailForm">
+
+        <div class='parkingpass-formFieldWrapper'>
+          
+          <mat-form-field>
+    
+            <input type='text' 
+                    class="spotbie-input"
+                    id='user_phone'
+                    (keyup)="changeParentEmail()"
+                    formControlName="spotbieEmail" />       
+              
+          </mat-form-field>
+        
+        </div>
+     
+      </form>
+
+    </div>
+  
+  </mat-dialog-content>
+  
+  <div style="text-align: center;">
+
+    <button class="btn btn-primary parkingpass-nav" (click)="sendCode()">Send PIN</button>
+
+  </div>
+
+</div>
+
+<div *ngIf="confirmEmail">
+
+  <mat-dialog-content>
+  
+    <div>
+ 
+      <p>
+        Please enter the 6-digit confirmation PIN you received in your e-mail.
+      </p>
+ 
+      <div class='parkingpass-formFieldWrapper'>
+      
+        <form [formGroup]="pinForm">
+
+          <div *ngIf="f.confirmationCode.touched && f.confirmationCode.errors" class="signUpBoxInstructions">
+            
+            <mat-error *ngIf="f.confirmationCode.errors.required">
+                Please enter your confirmation PIN
+            </mat-error>
+
+            <mat-error *ngIf="f.confirmationCode.errors.invalid">
+                The confirmation PIN you have entered is invalid.
+            </mat-error>
+
+          </div> 
+
+          <mat-form-field>
+  
+            <input matInput 
+                  type="text"
+                  formControlName="confirmationCode"
+                  placeholder="Confirmation PIN" 
+                  mask="000000"/> 
+            
+          </mat-form-field>
+
+        </form>
+     
+      </div>
+ 
+    </div>
+  
+    </mat-dialog-content>
+
+    <div>
+
+        <button class="btn btn-primary parkingpass-nav parkingpass-confirm-button" (click)="checkCode()">
+            CONFIRM
+        </button>
+
+    </div>
+
+    <button class='text-primary parkingpass-help-info' (click)="backToFirst()">
+        Did not receive your PIN? Try again
+    </button>
+
+    <span class='parkingpass-sub-text'>
+        <small>(please wait 2 minutes before trying again.)</small>
+    </span>
+
+</div>
+
+
+<div *ngIf="codeCheckTried">
+
+  <div *ngIf="emailConfirmationPassed">
+    
+    <p>
+      {{ 'EMAIL_CONFIRMATION.EMAIL_CONFIRMED' | translate }}
+    </p>
+    
+    <div style="text-align: center;">
+      <button class="btn btn-primary parkingpass-nav" (click)="close()">{{ 'EMAIL_CONFIRMATION.DONE' | translate }}</button>
+    </div>
+
+  </div>
+
+  <div *ngIf="!emailConfirmationPassed">
+    
+    <p>
+      {{ 'EMAIL_CONFIRMATION.CODE_INVALID' | translate }}
+    </p>
+
+    <button class='text-primary parkingpass-help-info' (click)="backToFirst()">
+      {{ 'EMAIL_CONFIRMATION.TRY_AGAIN' | translate }}
+    </button>
+
+  </div>
+
+</div>

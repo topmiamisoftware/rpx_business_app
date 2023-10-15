@@ -1,0 +1,44 @@
+<ion-content class="ion-padding-top has-header" *ngIf="(ledger$ | async)" color="primary">
+  <div class="redeemWindowNavMargin"></div>
+
+  <div *ngIf="ledger$ | async">
+    <div class="card spotbie-redeemedItem" *ngFor="let legerRecord of (lpLedgerList$ | async)">
+      <div class='card-header'>
+        <span class='sb-text-light-green-gradient'>{{ legerRecord.business.name }}</span>
+
+        <img *ngIf="legerRecord.business.spotbie_user.user_type == 1" [src]="'assets/images/home_imgs/find-places-to-eat.svg'" />
+        <img *ngIf="legerRecord.business.spotbie_user.user_type === 2" [src]="'assets/images/home_imgs/find-places-for-shopping.svg'" />
+        <img *ngIf="legerRecord.business.spotbie_user.user_type === 3" [src]="'assets/images/home_imgs/find-events.svg'" />
+      </div>
+
+      <div class='card-body text-uppercase'>
+        <div class='mb-2'>
+          {{ legerRecord.created_at | date:'mediumDate' }}
+        </div>
+
+        <div class='mb-2'>
+              <span [ngClass]="getLpStyle(legerRecord.loyalty_amount)">
+                  {{ legerRecord.loyalty_amount | number:'1.0':'en-US' }}
+              </span> Loyalty Points
+        </div>
+      </div>
+
+      <div class='card-footer text-uppercase text-center'>
+        ID: {{ legerRecord.uuid }}
+      </div>
+    </div>
+  </div>
+
+  <ion-button class="mt-4 mb-4" color="secondary" size="small" *ngIf="showLoadMore()" (click)="loadMoreItems()">
+    LOAD MORE
+  </ion-button>
+
+  <div class='spotbie-no-notis-box' *ngIf="((lpLedgerList$ | async).length === 0 && ledger$ | async) && ((loading$ | async) === false)">
+    <i class="fas fa-exclamation-triangle"></i>
+    <br/><br/>
+    <p class="spotbie-text-gradient">
+      <span>You have no transaction history.</span>
+    </p>
+    <br/><br/>
+  </div>
+</ion-content>

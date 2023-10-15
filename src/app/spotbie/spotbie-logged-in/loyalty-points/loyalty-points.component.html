@@ -1,0 +1,258 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<div [ngClass]="getWindowClass()">
+    <div>
+        <h5 id="sp-lpTitle" class="spotbie-text-gradient text-center text-uppercase mt-4 mb-5">SPOTBIE LOYALTY POINTS</h5>
+
+        <div class="spotbie-lpResetInfo spotbie-text-gradient text-uppercase mt-3 mb-3"
+              *ngIf="userType !== eAllowedAccountTypes.Personal &&
+                     loyaltyPointBalanceBusiness.end_of_month !== null &&
+                     loyaltyPointBalanceBusiness.balance !== null">
+            POINTS RESET ON
+        </div>
+
+        <div class="spotbie-lpResetInfo spotbie-text-gradient text-uppercase"
+              *ngIf="userType !== eAllowedAccountTypes.Personal && loyaltyPointBalanceBusiness.end_of_month !== null">
+            {{ (loyaltyPointBalanceBusiness.end_of_month | date : 'mediumDate') || loyaltyPointBalanceBusiness.end_of_month }}
+        </div>
+
+        <p class="mt-4 mb-4" (click)="initBusinessLoyaltyPoints()">
+            <span [ngClass]="loyaltyPointsClass()" *ngIf="userType === eAllowedAccountTypes.Personal">
+                {{ loyaltyPointBalance | number:'1.0':'en-US' }}
+            </span>
+
+            <span [ngClass]="loyaltyPointsClass()" *ngIf="userType !== eAllowedAccountTypes.Personal">
+                {{ loyaltyPointBalanceBusiness.balance | number:'1.0':'en-US' }}
+            </span>
+
+            <span class="sb-added-loyalty-points sb-text-light-green-gradient animated fadeOutUp"
+                    *ngIf="newUserLoyaltyPoints"
+                    #newBalanceLoyaltyPoints>+{{ newUserLoyaltyPoints | number:'1.1-2':'en-US' }}</span>
+        </p>
+
+<!--        <div class='sb-text-light-green-gradient mt-2 mb-4'
+                *ngIf="userType !== eAllowedAccountTypes.Personal">
+                {{ loyaltyPointBalanceBusiness.reset_balance | number:'1.0':'en-US' }}
+        </div>-->
+
+<!--
+      <div style="cursor: pointer; display: inline-block;"
+           *ngIf="userType !== eAllowedAccountTypes.Personal"
+           (click)="manageLoyaltyTiers()">
+        <span class='spotbie-text-gradient'>MANAGE TIERS</span> <i class='fa fa-coins'></i>
+      </div>
+-->
+
+      <div class='spotbie-text-gradient text-uppercase cursor-pointer' (click)="closeThis()" *ngIf="fullScreenWindow">
+          CLOSE
+      </div>
+    </div>
+</div>
+
+<!--
+<div class="spotbie-overlay-window pt-5 d-flex align-items-center justify-content-center" *ngIf="openTiers">
+  <div style="overflow-y: scroll; min-width: 100%;">
+    <div #businessLoyaltyTierInfo class="spotbie-loyaltyPointsInfo spotbie-text-gradient text-center text-uppercase">
+      <h4 class="spotbie-text-gradient text-center text-uppercase" *ngIf="!creatingTier && !updatingTier">MANAGE TIERS</h4>
+      <h4 class="spotbie-text-gradient text-center text-uppercase" *ngIf="creatingTier">CREATING TIER</h4>
+      <h4 class="spotbie-text-gradient text-center text-uppercase" *ngIf="updatingTier">UPDATING TIER</h4>
+    </div>
+
+    <ng-container *ngIf="existingTiers.length === 0 && !tierCreatorFormUp">
+      <i class="fas fa-exclamation-triangle"></i>
+      <br/><br/>
+      <p class="spotbie-text-gradient">
+        <span>You have no tier lists yet.</span>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="existingTiers.length > 0 && !creatingTier && !updatingTier">
+      <div class='sb-menuItem'
+           *ngFor="let tier of existingTiers"
+           [ngStyle]="bgStyle()"
+           (click)="editTier(tier)">
+        <h6>
+          <span class='sb-text-light-green-gradient'>
+              {{ tier.name }}
+          </span>
+          <br/>
+        </h6>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="existingTiers.length < 3 && !tierCreatorFormUp">
+      <div class='spotbie-button text-uppercase mt-3' (click)="newTier()">
+        NEW TIER
+      </div>
+    </ng-container>
+
+    <form [formGroup]="businessLoyaltyTierForm" *ngIf="tierCreatorFormUp">
+      <div *ngIf="businessLoyaltyTierSubmitted && g.tierName.errors else tierNameNormal"
+           class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
+        <div *ngIf="g.tierName.errors.required">
+          Enter tier name.
+        </div>
+        <div *ngIf="g.tierName.errors.minlength">
+          Tier name must be at least 1 character.
+        </div>
+        <div *ngIf="g.tierName.errors.maxlength">
+          Tier name can't be more than 50 characters.
+        </div>
+      </div>
+
+      <ng-template #tierNameNormal>
+        <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+          Tier Name
+        </label>
+      </ng-template>
+
+      <input class="sb-input"
+             formControlName="tierName"
+             type="text"
+             placeholder="Tier Name"
+             minlength="1"
+             maxlength="50" />
+
+      <div *ngIf="businessLoyaltyTierSubmitted && g.tierDescription.errors else loyaltyTierDescriptionNormal"
+           class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
+        <div *ngIf="g.tierDescription.errors.required">
+          Tier description required.
+        </div>
+        <div *ngIf="g.tierDescription.errors.minlength">
+          Tier description must be at least 15 characters.
+        </div>
+        <div *ngIf="g.tierDescription.errors.maxlength">
+          Tier description can't be more than 360 characters.
+        </div>
+      </div>
+
+      <ng-template #loyaltyTierDescriptionNormal>
+        <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+          Describe your Loyalty Tier.
+        </label>
+      </ng-template>
+
+      <textarea class='spotbie-textarea mb-2'
+                formControlName="tierDescription"
+                maxlength="360"
+                minlength="15"
+                placeholder="Tier Description"
+                style="margin: 0 auto;"></textarea>
+
+      <div *ngIf="businessLoyaltyTierSubmitted && g.tierEntranceValue.errors else loyaltyTierEntranceValueNormal"
+           class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
+        <div *ngIf="g.tierEntranceValue.errors.required">
+          Tier entrance value required.
+        </div>
+      </div>
+
+      <ng-template #loyaltyTierEntranceValueNormal>
+        <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+          How many points to enter the tier?
+        </label>
+      </ng-template>
+
+      <input class="sb-input"
+             (keyup)="calculateTierDollarValue()"
+             formControlName="tierEntranceValue"
+             type="text"
+             placeholder="3500"
+             maxlength="6"
+             thousandSeparator=","
+             mask="separator.0" />
+
+      <div class="mt-4 mb-2">
+        <span class="spotbie-input-info spotbie-text-gradient">Tier Entrance Dollar Value: ${{tierPointToDollarRatio}}</span>
+      </div>
+    </form>
+
+    <div class='spotbie-button text-uppercase mt-3' (click)="createLoyaltyPointsTier()" *ngIf="creatingTier">
+      CREATE TIER
+    </div>
+
+    <div class='spotbie-button text-uppercase mt-3' (click)="updateLoyaltyPointsTier()" *ngIf="updatingTier">
+      UPDATE TIER
+    </div>
+
+    <div class='mt-5 mb-5 sb-deleteMe' *ngIf="updatingTier" (click)="deleteTier()">
+      <span class="spotbie-text-gradient">DELETE TIER </span><i class='fa fa-trash'></i>
+    </div>
+
+    <div class='spotbie-text-gradient text-center text-uppercase mt-4'
+         style="cursor: pointer;" (click)="closeTiers()">
+      <span class='spotbie-text-gradient text-center text-uppercase'>CLOSE</span>
+    </div>
+  </div>
+</div>
+-->
+
+<div class="spotbie-overlay-window pt-5 d-flex align-items-center justify-content-center" *ngIf="businessLoyaltyPointsOpen">
+    <div style="overflow-y: scroll; min-width: 100%;">
+        <div #businessLoyaltyPointsInfo class="spotbie-loyaltyPointsInfo spotbie-text-gradient text-center text-uppercase">
+            <h4 class="spotbie-text-gradient text-center text-uppercase">MONTHLY BUDGET</h4>
+        </div>
+
+        <form [formGroup]="businessLoyaltyPointsForm" *ngIf="businessLoyaltyPointsFormUp">
+            <label class="spotbie-input-info spotbie-text-gradient mb-2">
+                REWARD RATE %
+            </label>
+
+            <input class="sb-input"
+                    [dropSpecialCharacters]="false"
+                    formControlName="businessCoinPercentage"
+                    type="text"
+                    placeholder="1.5%"
+                    separatorLimit="1000"
+                    suffix="%"
+                    maxlength="6"
+                    readonly
+                    mask="percent" />
+
+            <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+                Loyalty Points per Month
+            </label>
+
+            <input class="sb-input"
+                    formControlName="businessLoyaltyPoints"
+                    type="text"
+                    placeholder="0"
+                    maxlength="7"
+                    readonly
+                    thousandSeparator=","
+                    mask="separator.0" />
+        </form>
+
+        <p class="text-uppercase mt-4" style="font-size: .8rem !important;" *ngIf="monthlyDollarValueCalculated">
+            <span class='spotbie-text-gradient'>dollar value </span>
+            <span class='sb-text-light-green-gradient'>${{ userPointToDollarRatio | number:'1.1-2':'en-US' }}</span>
+        </p>
+
+        <div class='spotbie-howDoesItWork spotbie-text-gradient text-center text-uppercase mt-4' (click)="toggleHelp()" style="cursor: pointer;">
+            <i class='fa fa-question-circle'></i>how does it work?
+        </div>
+
+        <div class='sb-helpBlock mt-4' *ngIf="helpEnabled" style="text-align: center;">
+            <p class='spotbie-text-gradient mb-3'>
+                SpotBie calculates the value of your LP points based on the competition around your store.
+            </p>
+
+            <p class='spotbie-text-gradient mb-3'>
+                When your customers <b>scan your QR code</b>, they will get an amount of loyalty points proportional to their bill.
+            </p>
+
+            <p class='spotbie-text-gradient mb-3'>
+                Let's say your customer spent <b>$200</b> on their bill. If your <b>loyalty points are worth 2.5% of a dollar</b>, then the customer will gain
+                <br/><b>a $5.00 Reward in Loyalty Points</b>!
+            </p>
+
+            <p class='spotbie-text-gradient mb-3'>
+                At the end of each month, SpotBie will reimburse you for rewards claimed at your business and unused Loyalty Points.
+            </p>
+        </div>
+
+        <div class='spotbie-text-gradient text-center text-uppercase mt-4'
+                style="cursor: pointer;" (click)="closeBusinessLoyaltyPoints()">
+            <span class='spotbie-text-gradient text-center text-uppercase'>CLOSE</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,167 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<div class="spotbie-overlay-window">
+
+    <div #spbTopAnchor></div>
+
+    <div class='sb-eventCreatorWrapper'>
+        
+        <h5 class="spotbie-text-gradient text-center text-uppercase pt-3 mb-4">EVENT CREATOR</h5>
+
+        <form [formGroup]="eventCreatorForm" *ngIf="eventCreatorFormUp">
+
+            <div class='spotbie-text-gradient text-uppercase text-center' #spbInputInfo></div>
+
+            <div *ngIf="eventFormSubmitted && f.eventName.errors else eventNameNormalTemplate" 
+                    class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
+    
+                <div *ngIf="f.eventName.errors.required">
+                    Enter event name.
+                </div>
+
+                <div *ngIf="f.eventName.errors.maxlength">
+                    Maximum length - event name - 50
+                </div>
+
+            </div> 
+            
+            <ng-template #eventNameNormalTemplate>
+
+                <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+                    Event Name
+                </label>     
+
+            </ng-template>
+
+            <input class="sb-input" 
+                    (click)="$event.target.select()"
+                    formControlName="eventName" 
+                    type="text"
+                    placeholder="My Event"
+                    maxlength="50" /> 
+
+            <div *ngIf="eventFormSubmitted && f.eventDescription.errors else eventDescriptionNormalTemplate" 
+                    class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
+
+                <div *ngIf="f.eventDescription.errors.required">
+                    Enter event description.
+                </div>
+
+                <div *ngIf="f.eventDescription.errors.minlength">
+                    Min. length - description - 50
+                </div>
+
+                <div *ngIf="f.eventDescription.errors.maxlength">
+                    Max length - description - 250
+                </div>
+                
+            </div> 
+            
+            <ng-template #eventDescriptionNormalTemplate>
+
+                <label class="spotbie-input-info spotbie-text-gradient mt-4 mb-2">
+                    Briefly describe your event.
+                </label>     
+
+            </ng-template>
+
+            <textarea class='spotbie-textarea spotbie-text-gradient mb-2' 
+                        (click)="$event.target.select()" 
+                        formControlName="eventDescription" 
+                        maxlength="150"
+                        placeholder="Event Description"
+                        style="margin: 0 auto;"></textarea>
+
+            <span class='spotbie-text-gradient'>{{ eventDescription.length }}/150</span>
+
+            <input type="hidden" formControlName="eventImage" />
+
+        </form>
+
+        <form *ngIf="eventType == 0">                    
+
+            <div *ngIf="eventFormSubmitted && f.eventImage.errors else eventMediaUploadInfoTemplate" 
+                    class="spotbie-input-info spotbie-text-gradient text-center spotbie-error mt-4 mb-2">
+
+                <div *ngIf="f.eventImage.errors.required">
+                    Upload Event Image
+                </div>
+                
+            </div> 
+            
+            <ng-template #eventMediaUploadInfoTemplate>
+
+                <div class="spotbie-input-info spotbie-text-gradient text-center mt-4 mb-2" #eventMediaUploadInfo>
+                    {{ eventMediaMessage }}
+                </div>     
+
+            </ng-template>
+
+            <input type="file" 
+                    class='spotbie-background-upload-input' 
+                    #eventMediaInput 
+                    (change)="uploadMedia(eventMediaInput.files)" 
+                    accept="image/jpeg, image/gif, image/png"
+                    multiple=false />
+
+            <div class='spotbie-upload-new-background-holder' 
+                    [ngStyle]="{ 'background' : 'url(' + eventUploadImage + ')' }"
+                    (click)="startEventMediaUploader()"
+                    #spotbieeventUploader>
+
+                <div class='spotbie-click-or-drag-upload'>
+                    <span class="spotbie-text-gradient text-uppercase">tap or drag to upload</span>
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class='spotbie-button text-uppercase mt-5' (click)="saveEvent()">
+            <span class='spotbie-text-gradient'>SAVE</span>
+            <i class='fa fa-check'></i>
+        </div>
+
+        <div class='mt-5 mb-5 sb-deleteMe' *ngIf="event !== null && event !== undefined" (click)="deleteMe()">
+            <span class="spotbie-text-gradient">DELETE ME </span><i class='fa fa-trash'></i>
+        </div>
+
+        <div class='mt-5 mb-5 cursor-pointer' (click)="closeThis()">
+            <span class="spotbie-text-gradient">CANCEL</span>
+        </div>
+
+    </div>
+
+</div>
+
+<div class='spotbie-overlay-window' *ngIf="eventCreated">
+
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;">
+        
+        <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">YOUR EVENT UPLOAD WAS SUCCESSFUL</h4>
+
+        <div class="sb-verificationCheck mt-4 mb-4">
+            <i class="fa fa-check sb-text-light-green-gradient"></i>
+        </div>
+
+        <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">YOU ARE READY TO START</h4>
+
+    </div>
+
+</div>
+
+<div class='spotbie-overlay-window' *ngIf="eventDeleted">
+
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;">
+        
+        <h4 class="spotbie-text-gradient text-uppercase">YOUR event WAS DELETED</h4>
+
+        <div class="sb-verificationCheck mt-4 mb-4">
+            <i class="fa fa-check sb-text-light-green-gradient"></i>
+        </div>
+
+        <h4 class="spotbie-text-gradient text-uppercase">CLICK TO CONTINUE</h4>
+
+    </div>
+
+</div>

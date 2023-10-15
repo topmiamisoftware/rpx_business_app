@@ -1,0 +1,136 @@
+<div [ngClass]="getWindowClass()" *ngIf="isBusiness">
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;" *ngIf="!rewardPrompted">
+        <h5 class="spotbie-text-gradient text-center text-uppercase mb-3">
+            AWARD LOYALTY POINTS
+        </h5>
+
+        <form [formGroup]="businessLoyaltyPointsForm" *ngIf="businessLoyaltyPointsFormUp">
+            <div *ngIf="businessLoyaltyPointsSubmitted && f.totalSpent.errors else total_spent_normal"
+                  class="spotbie-input-info spotbie-text-gradient spotbie-error mb-2">
+                <div *ngIf="f.totalSpent.errors.required">
+                    You must enter a value!
+                </div>
+            </div>
+
+            <ng-template #total_spent_normal>
+                <label class="spotbie-input-info spotbie-text-gradient mb-2">
+                    Enter the bill total.
+                </label>
+            </ng-template>
+
+            <input class="sb-input text-center"
+                    (click)="$event.target.select()"
+                    (keydown)="checkForSetLoyaltyPointSettings()"
+                    formControlName="totalSpent"
+                    type="text"
+                    prefix="$"
+                    placeholder="$250"
+                    maxlength="7"
+                    thousandSeparator=","
+                    mask="separator.2" />
+
+        </form>
+
+        <div class='spotbie-button text-uppercase mt-4' (click)="startAwardProcess()">
+            AWARD
+        </div>
+    </div>
+
+    <div class='sb-v-wrapper' style="display: block; align-content: center;" *ngIf="rewardPrompted">
+        <h5 class="spotbie-text-gradient text-center">Let user scan for reward.</h5>
+
+        <ngx-qrcode [elementType]="qrType"
+                    [value]="redeemable.uuid"
+                    [width]="qrWidth"
+                    cssClass="spotbie-full-qrCode mt-4 mb-4"
+                    colorDark="#000"
+                    colorLight="#64e56f"
+                    errorCorrectionLevel="H"></ngx-qrcode>
+
+        <p class="spotbie-text-gradient text-center text-uppercase mt-3">scan once per table</p>
+
+        <p class="spotbie-text-gradient text-center mt-5 text-uppercase">
+            Total Points<br/><span class='sb-text-light-green-gradient'>{{ loyaltyPointReward | number:'1.0':'en-US' }}</span>
+        </p>
+
+        <p class="spotbie-text-gradient text-center mt-5 text-uppercase">
+            Dollar Value<br/><span class='sb-text-light-green-gradient'>{{ loyaltyPointRewardDollarValue | currency : 'USD' }}</span>
+        </p>
+
+        <div class='spotbie-button text-uppercase mt-5 cursor-pointer' (click)="closeQr()">
+            <span class='spotbie-text-gradient'>FINISH</span>
+            <i class='fa fa-check'></i>
+        </div>
+        <div class='pb-5'></div>
+    </div>
+</div>
+
+<div class='spotbie-overlay-window' *ngIf="rewardPrompt">
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;">
+        <p class="spotbie-text-gradient text-center mt-4">
+            Are you sure you want to reward this user for a <span class='sb-text-light-green-gradient'>{{ totalSpent | currency : 'USD' }}</span> bill?
+        </p>
+
+        <p class="spotbie-text-gradient text-center mt-4 text-uppercase">
+            Dollar Value <span class='sb-text-light-green-gradient'>{{ loyaltyPointRewardDollarValue | currency : 'USD' }}</span>
+        </p>
+
+        <span class='spotbie-button text-uppercase mt-5 mb-4' (click)="yes()">
+            YES <i class="fa fa-coins"></i>
+        </span>
+
+        <div class='spotbie-text-gradient cursor-pointer' (click)="no()">
+            <span>CANCEL</span>
+        </div>
+    </div>
+</div>
+
+<div class='spotbie-overlay-window'
+        style="background-color: #0e0e0e; padding-top:0px !important;"
+        *ngIf="!isBusiness">
+    <div class='sb-v-wrapper'>
+
+        <div>
+            <img class="sb-qrTitleImage" src="../../../../assets/images/qr/spotbie-qr.svg" />
+            <h5 class="spotbie-text-gradient sb-scanQrTitle text-center text-uppercase mt-5 pt-5">SCAN AND EARN</h5>
+        </div>
+
+        <div *ngIf="!awarded && !rewarded">
+            <div class="spotbie-full-qrCode scanner mt-4 mb-4">
+                <zxing-scanner (scanSuccess)="scanSuccessHandler($event)"
+                               [formats]="['QR_CODE']"></zxing-scanner>
+            </div>
+
+            <p class="sb-helpInfo spotbie-text-gradient text-center text-uppercase">
+                Ask for<br/>the<br/><span class='sb-text-light-green-gradient'>SpotBie QR CODE</span>
+            </p>
+        </div>
+
+        <div *ngIf="awarded">
+            <h2 class='sb-text-light-green-gradient mt-4'>SUCCESS</h2>
+            <i class='fas fa-check mb-4'></i>
+            <h2 class="spotbie-text-gradient text-center text-uppercase pt-4 mb-4">{{ userLoyaltyPoints | number:'1.0':'en-US' }}</h2>
+        </div>
+
+        <div *ngIf="rewarded">
+            <p class="spotbie-text-gradient mt-4 mb-4">Reward redeemed successfully. Please show your host.</p>
+            <div class='sb-menuItem'
+                [ngStyle]="{ 'background' : 'url('+ reward.images +')'}">
+                <h6>
+                    <span class="spotbie-text-gradient">
+                        {{ reward.name }}
+                    </span>
+                </h6>
+            </div>
+        </div>
+
+        <div class="sb-earnedPoints animated fadeOutUp" #sbEarnedPoints>
+            <span class='sb-text-red-gradient' *ngIf="rewarded">-{{ pointsCharged | number:'1.0':'en-US' }}</span>
+            <span class='sb-text-light-green-gradient' *ngIf="awarded">+{{ userLoyaltyPoints | number:'1.0':'en-US' }}</span>
+        </div>
+
+        <button class='spotbie-button text-uppercase mt-3' (click)="closeQrUser()">close</button>
+
+    </div>
+
+</div>

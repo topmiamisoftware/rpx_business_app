@@ -1,0 +1,25 @@
+.spotbie-loading-screen{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 999;
+    text-align: center;
+}
+.spotbie-loading-wrapper{
+    display: block;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+}
+.spotbie-loading-gif {
+    font-size: 1.3rem;
+    margin-right: 19px;
+    color: #fff;
+}

@@ -1,0 +1,62 @@
+
+
+<div *ngIf="userType !== '4'">
+
+    <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">YOUR EVENTS</h4>
+
+    <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2">
+        These are the events that your business will offer to the SpotBie Community.
+    </p>
+
+    <div class='sb-menuItemWrapper'>
+
+        <div class='sb-addMenuItem'
+                (click)="addEvent()"
+                *ngIf="events !== undefined && events.length < 8">
+            <h6 class="spotbie-text-gradient">+ ADD EVENT</h6>
+        </div>
+
+        <div class='sb-menuItem'
+                *ngFor="let event of events"
+                [ngStyle]="placeToEatTileStyling(event)"
+                (click)="openEvent(event)">
+            <h6> {{ event.name }} </h6>
+        </div>
+
+    </div>
+
+    <div class='spotbie-text-gradient text-uppercase' (click)="closeWindow()" *ngIf="fullScreenWindow">CLOSE</div>
+
+</div>
+
+<div *ngIf="userType === eAllowedAccountTypes.Personal">
+
+    <h4 class="spotbie-text-gradient text-center text-uppercase pt-5 mb-5">{{ business.name }} LOYALTY MENU</h4>
+
+    <p class="spotbie-text-gradient text-uppercase text-center mt-4">
+        pick what's yours
+    </p>
+
+    <div class='sb-menuItemWrapper'>
+
+        <div class='sb-menuItem'
+                *ngFor="let event of events"
+                [ngStyle]="placeToEatTileStyling(event)">
+            <h6 *ngIf="event.type == '0'"> {{ event.name }} </h6>
+            <h6 *ngIf="event.type == '1'">
+                ${{ (event.point_cost * (loyaltyPointsBalance.loyalty_point_dollar_percent_value / 100)) | number:'1.1-2':'en-US' }}
+            </h6>
+        </div>
+
+    </div>
+
+    <div class='spotbie-text-gradient text-uppercase cursor-pointer' (click)="closeWindow()" *ngIf="fullScreenWindow">CLOSE</div>
+
+</div>
+
+<app-event-creator *ngIf="itemCreator"
+                    (closeEventCreatorAndRefetchEventListEvt)="closeEventCreatorAndRefetchEventList()"
+                    (closeWindowEvt)="closeWindow()"
+                    (closeThisEvt)="closeEventCreator()"
+                    #eventCreator
+                    [event]="event"></app-event-creator>

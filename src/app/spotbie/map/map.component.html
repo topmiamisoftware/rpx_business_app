@@ -1,0 +1,417 @@
+<div [ngClass]="getMapWrapperClass()">
+  <div #scrollMapAppAnchor></div>
+
+  <div class="sb-dashboardWrapper sb-v-wrapper"
+       style="display: grid;
+            align-content: center;
+            min-height: 70vh;"
+       *ngIf="displayLocationEnablingInstructions$ | async">
+
+    <i class="fas fa-map-marker-alt"></i>
+
+    <h2 class="spotbie-text-gradient text-uppercase mt-4" style="display: inline-block;">BONKERS!</h2>
+
+    <div class='spotbie-text-gradient mt-2'>LOCATION DISABLED</div>
+
+    <p class="sb-locationList text-center mt-3" (click)="openAppSettings()">
+      <span class="spotbie-text-gradient">OPEN SETTINGS</span>
+    </p>
+
+    <div class="spotbie-button" (click)="spawnCategories(1)">
+      <span class="spotbie-text-gradient text-uppercase mt-5 cursor-pointer p-1">TRY LOCATION</span>
+    </div>
+  </div>
+
+  <div id='map'
+       *ngIf="map$ | async"
+       [ngClass]="getMapClass()"></div>
+
+  <div class='spotbie-categoryPull' *ngIf="map$ | async">
+    <div class='sb-optionGet' (click)="spawnCategories(1)">
+      <img src="assets/images/home_imgs/find-places-to-eat.svg" />
+    </div>
+
+    <div class='sb-optionGet' (click)="spawnCategories(2)">
+      <img src="assets/images/home_imgs/find-places-for-shopping.svg" />
+    </div>
+
+    <div class='sb-optionGet' (click)="spawnCategories(3)">
+      <img src="assets/images/home_imgs/find-events.svg" />
+    </div>
+  </div>
+
+  <app-bottom-ad-banner
+    class='mt-4'
+    *ngIf="(map$ | async) && (locationFound$ | async) && (searchResults$ | async).length < 1"
+    [eventsClassification]="eventsClassification$ | async"
+    [accountType]="searchCategory$ | async"
+    [categories]="bottomBannerCategories$ | async"
+    [lat]="lat$ | async"
+    [lng]="lng$ | async">
+  </app-bottom-ad-banner>
+
+  <div class='spotbie-search-results' *ngIf="(showSearchBox$ | async) && (searchResults$ | async).length > 0">
+    <div #scrollMapAppAnchor></div>
+
+    <app-header-ad-banner #singleAdApp class='spotbie-ad'
+                          [eventsClassification]="eventsClassification$ | async"
+                          [accountType]="searchCategory$ | async"
+                          [categories]="numberCategories$ | async"
+                          [lat]="lat$ | async"
+                          [lng]="lng$ | async"></app-header-ad-banner>
+
+    <div class='spotbie-search-results-title text-uppercase'>
+      Distance {{ maxDistance$ | async  }} mi.
+      <mat-slider [min]="1" [max]="(typeOfInfoObject$ | async) === 'ticketmaster_events' ? 50 : 25" [step]="1">
+        <input matSliderThumb [value]="maxDistance$ | async" (valueChange)="updateDistance($event)">
+      </mat-slider>
+    </div>
+
+    <div class='spotbie-search-results-title'>
+      <table class='spotbie-controls-search-results' *ngIf="(searchCategorySorter$ | async) === 1">
+        <tr>
+          <td (click)="sortBy(0)" title="Sort By Distance">
+            <img src='assets/images/map/distance.svg' />
+          </td>
+
+          <td (click)="sortBy(1)" title="Sort By Rating">
+            <img src='assets/images/map/ratings.svg' />
+          </td>
+
+          <td (click)="sortBy(2)" title="Sort By Reviews">
+            <img src='assets/images/map/reviews.svg' />
+          </td>
+
+          <td (click)="sortBy(3)" title="Sory By Pricing">
+            <img src='assets/images/map/pricing.svg' />
+          </td>
+
+          <td (click)="sortBy(4)" title="Offers Delivery">
+            <img class="sb-deliverySortImg" src='assets/images/map/delivery.svg' />
+          </td>
+
+          <td (click)="sortBy(5)" title="Offers Pick-Up">
+            <img class="sb-pickUpSortImg" src='assets/images/map/pick-up.svg' />
+          </td>
+
+          <td (click)="sortBy(6)" title="Offers Reservations">
+            <img class="sb-reservationsSortImg" src='assets/images/map/reservations.svg' />
+          </td>
+        </tr>
+      </table>
+
+      <table class='spotbie-controls-search-results' *ngIf="(searchCategorySorter$ | async) === 2">
+        <tr>
+          <td (click)="sortBy(0)" title="Sort By Distance">
+            <img src='assets/images/map/distance.svg' />
+          </td>
+
+          <td (click)="sortBy(1)" title="Sort By Rating">
+            <img src='assets/images/map/ratings.svg' />
+          </td>
+
+          <td (click)="sortBy(2)" title="Sort By Reviews">
+            <img src='assets/images/map/reviews.svg' />
+          </td>
+
+          <td (click)="sortBy(3)" [ngStyle]="{ 'border-right' : 'unset' }"  title="Sory By Pricing">
+            <img src='assets/images/map/pricing.svg' />
+          </td>
+        </tr>
+      </table>
+
+      <div class="mt-4 mb-4 text-uppercase">
+        Sorted by {{ sortByTxt }}
+        <span *ngIf="sortAc !== 4 && sortAc !== 5 && sortAc !== 6 && sortAc !== 7 && sortAc !== 8">
+        <i [ngClass]="sortingOrderClass(sortingOrder)"></i>
+      </span>
+      </div>
+
+      <table class='spotbie-controls-search-results'
+             (click)="showOpen()"
+             title="Opened or Closed"
+             [ngStyle]="{ 'border-right' : 'unset' }"
+             *ngIf="(searchCategorySorter$ | async) === 1">
+        <td *ngIf="(showOpened$ | async) ">
+          OPEN
+        </td>
+
+        <td *ngIf="!(showOpened$ | async) ">
+          OPEN/CLOSED
+        </td>
+      </table>
+
+      <table  class='spotbie-controls-search-results'
+              (click)="showOpen()"
+              title="Opened or Closed"
+              [ngStyle]="{ 'border-right' : 'unset' }"
+              *ngIf="(searchCategorySorter$ | async) === 2">
+        <td *ngIf="(showOpened$ | async) ">
+          OPEN
+        </td>
+
+        <td *ngIf="!(showOpened$ | async) ">
+          OPEN/CLOSED
+        </td>
+      </table>
+
+      <table class='spotbie-controls-search-results text-uppercase' *ngIf="(searchCategorySorter$ | async) === 3">
+        <tr>
+          <td (click)="sortBy(0)" title="Sort By Distance"><img src='assets/images/map/distance.svg' /></td>
+          <td (click)="sortBy(3)" title="Sort By Pricing"><img src='assets/images/map/pricing.svg' /></td>
+          <td (click)="sortBy(7)" title="Events Today">Today</td>
+          <td (click)="sortBy(8)" title="Events This Weekend" [ngStyle]="{ 'border-right' : 'unset' }">This Weekend</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class='spotbie-search-results-title spotbie-sorting text-uppercase'>
+      <ng-template *ngIf="(searchCategorySorter$ | async) !== 3">
+        <span class='fa fa-circle spotbie-is-open' [ngStyle]="{ 'margin-left' : '5px' }"></span>
+        <span class='fa fa-circle spotbie-is-closed' *ngIf="!(showOpened$ | async)" [ngStyle]="{ 'margin-left' : '5px' }"></span>
+      </ng-template>
+    </div>
+
+    <div class='spotbie-search-result-wrapper' *ngIf="showSearchResults$ | async">
+      <div class='spotbie-search-results-title text-uppercase' style="margin-top:0px;" *ngIf="(communityMemberList$ | async).length > 0">
+        <img src="assets/images/home_imgs/spotbie-green-icon.svg" class="sb-miniLogoIconM">
+        SPOTBIE COMMUNITY MEMBERS
+      </div>
+
+      <!-- First let's display the spotbie community member list for -->
+      <div class='spotbie-search-result spotbie-communityMember-search-result'
+           *ngFor='let communityMember of (communityMemberList$ | async)'
+           (click)="pullSearchMarker(communityMember)">
+        <table class='spotbie-search-result-table'>
+          <tr>
+            <td>
+              <img class='sb-miniLogoIcon' src="assets/images/home_imgs/spotbie-green-icon.svg" />
+              <div class='spotbie-search-result-image' [ngStyle]="{ 'background' : 'url(' + communityMember.photo + ')' }" ></div>
+            </td>
+            <td>
+              <h6 class='spotbie-search-result-title sb-text-light-green-gradient' style='font-size: .8rem;'>
+                {{ communityMember.name | truncateText:[20, '...'] }}
+              </h6>
+
+              <p style='font-size: .5rem; text-overflow: ellipsis; max-height: 30px' class='spotbie-text-gradient mt-3'>
+                {{ communityMember.description | truncateText:[20, '...'] }}
+              </p>
+
+              <p style='font-size: .5rem;' class="spotbie-text-gradient mt-3">
+                {{ communityMember.cleanCategories | truncateText:[20, '...']}}
+              </p>
+
+              <div class='sb-community-member-brand'>
+                <span class='sb-text-light-green-gradient text-uppercase'>{{ communityMember.rewardRate | currency: 'USD' }} per DOLLAR</span>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class='spotbie-no-results mt-4 mb-4 text-uppercase' *ngIf="(searchResults$ | async).length === 0">No results available.</div>
+
+      <div class='spotbie-search-result' *ngFor='let search_result of (searchResults$ | async)' (click)="pullSearchMarker(search_result)">
+        <table class='spotbie-search-result-table'>
+          <tr>
+            <td *ngIf="search_result.image_url !== '0'">
+              <div class='spotbie-search-result-image'[ngStyle]="{ 'background' : 'url(' + search_result.image_url + ')' }" ></div>
+            </td>
+
+            <td *ngIf="(typeOfInfoObject$ | async) === 'yelp_business'">
+              <div class='spotbie-search-result-title' >
+                {{ search_result.name }}
+              </div>
+
+              <table class='spotbie-yelp-rating-table'>
+                <tr>
+                  <td>
+                    <div class='spotbie-search-result-rating-img' [ngStyle]="{ 'background' : 'url(' + search_result.rating_image + ')' }"></div>
+                  </td>
+
+                  <td>
+                    <div class='spotbie-search-result-yelp-logo' [ngStyle]="{ 'background' : 'url(assets/images/yelp/yelp_logo.png)' }"></div>
+                  </td>
+                </tr>
+              </table>
+
+              <div class='spotbie-review-count'>
+                Based on {{ search_result.review_count }} Reviews
+              </div>
+
+              <div class='spotbie-distance'>
+                {{ search_result.distance }} miles from you.
+              </div>
+
+              <div class='spotbie-search-result-phone' *ngIf="search_result.phone !== ''">
+                {{ search_result.display_phone }}
+              </div>
+            </td>
+            <td *ngIf="(typeOfInfoObject$ | async) === 'ticketmaster_events'">
+              <div class='spotbie-venue-name' *ngIf="search_result._embedded.venues[0]">
+                {{ search_result.name }}, {{ search_result._embedded.venues[0].name }}
+              </div>
+
+              <div class='spotbie-distance'>
+                {{ search_result.distance }} miles from you.
+              </div>
+
+              <div class='spotbie-time-event' *ngIf="search_result.dates.start.localDate">
+                {{ search_result.dates.start.spotbieDate }}
+              </div>
+
+              <div class='spotbie-time-event' *ngIf="search_result.dates.start.spotbieHour">
+                {{ search_result.dates.start.spotbieHour }}
+              </div>
+
+              <div class='spotbie-price-ranges' *ngIf="search_result.priceRanges !== undefined">
+                Price Ranges ${{ search_result.priceRanges[0].min }} to ${{ search_result.priceRanges[0].max }}
+              </div>
+
+              <div class='spotbie-event-code' *ngIf="search_result.dates.status.code">
+                Status: {{ search_result.dates.status.code }}
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class='spotbie-search-result-transactions' *ngIf="search_result.transactions_on === '1'">{{ search_result.friendly_transactions }}</div>
+      </div>
+
+      <!--Page Number Wrapper -->
+      <div class='mt-5 pb-5'>
+        <span class='sb-page-button text-uppercase cursor-pointer' (click)="goToPage('prev-two')" *ngIf="(allPages$ | async) > 1">
+          <i class="fa fa-angle-double-left"></i>
+        </span>
+
+        <span class='sb-page-button text-uppercase cursor-pointer' (click)="goToPage('prev-one')" *ngIf="(allPages$ | async) > 1">
+          <i class="fa fa-angle-left"></i>
+        </span>
+
+        <span class="spotbie-result-page"
+              (click)="goToPage('prev-two')"
+              [ngStyle]="displayPage(((aroundMeSearchPage$ | async) - 2))">{{ (aroundMeSearchPage$ | async) - 2 }}</span>
+
+        <span class="spotbie-result-page"
+              (click)="goToPage('prev-one')"
+              [ngStyle]="displayPage(((aroundMeSearchPage$ | async) - 1))">{{ (aroundMeSearchPage$ | async) - 1 }}</span>
+
+        <span class="spotbie-result-page active">{{ (aroundMeSearchPage$ | async) }}</span>
+
+        <span class="spotbie-result-page"
+              (click)="goToPage('next-one')"
+              [ngStyle]="displayPageNext(((aroundMeSearchPage$ | async) + 1))">{{ (aroundMeSearchPage$ | async) + 1 }}</span>
+
+        <span class="spotbie-result-page"
+              (click)="goToPage('next-two')"
+              [ngStyle]="displayPageNext(((aroundMeSearchPage$ | async) + 2))">{{ (aroundMeSearchPage$ | async) + 2 }}</span>
+
+        <span class='sb-page-button text-uppercase cursor-pointer' (click)="goToPage('next-one')" *ngIf="(allPages$ | async) > 1">
+          <i class="fa fa-angle-right"></i>
+        </span>
+
+        <span class='sb-page-button text-uppercase cursor-pointer' (click)="goToPage('next-two')" *ngIf="(allPages$ | async) > 1">
+          <i class="fa fa-angle-double-right"></i>
+        </span>
+
+        <div></div>
+
+        <span class='spotbie-search-page-number'>{{ (aroundMeSearchPage$ | async) }}/{{ (allPages$ | async) - 1 }}</span>
+      </div>
+
+      <app-bottom-ad-banner class='mt-4'
+                            #bottomAdBanner
+                            [eventsClassification]="eventsClassification$ | async"
+                            [accountType]="searchCategory$ | async"
+                            [categories]="numberCategories$ | async"
+                            [lat]="lat$ | async"
+                            [lng]="lng$ | async"></app-bottom-ad-banner>
+    </div>
+  </div>
+
+  <div class='spotbie-search-results no-results' *ngIf="showNoResultsBox$ | async">
+    <div class='spotbie-no-results' style="text-align: center;" *ngIf="sortEventDate === 'none'">No results available for "{{ searchKeyword$ | async }}" within {{ maxDistance$ | async }} miles.</div>
+    <div class='spotbie-no-results' style="text-align: center;" *ngIf="sortEventDate === 'today'">No results today available for "{{ searchKeyword$ | async }}" within {{ maxDistance$ | async }} miles.</div>
+    <div class='spotbie-no-results' style="text-align: center;" *ngIf="sortEventDate === 'weekend'">No results this weekend available for "{{ searchKeyword$ | async }}" within {{ maxDistance$ | async }} miles.</div>
+
+    <div class='spotbie-search-results-title text-uppercase'>
+      Distance
+      <mat-slider min="0" max="{{ maxDistanceCap }}" step="1">
+        <input matSliderThumb [value]="maxDistance$ | async" (valueChange)="updateDistance($event)">
+      </mat-slider>
+      {{ maxDistance$ | async  }} mi.
+    </div>
+  </div>
+
+  <div class="sb-footer pt-5 pb-5" *ngIf="(showSearchResults$ | async) || ((showSearchResults$ | async) && (isLoggedIn$ | async) !== '1' )">
+    <p (click)="openTerms()">Terms & Privacy Policy</p>
+    <img class="mt-3 mb-3" src="assets/images/logo_spotbie_green.svg" />
+    <p (click)="openTerms()">SpotBie, LLC.&copy; Copyright 2023</p>
+  </div>
+
+  <ng-container *ngIf="(isLoggedIn$ | async) === '1' && !(showSearchResults$ | async) && !(map$ | async)">
+    <div class='map-prompt-mobile align-items-center justify-content-center' #featureWrapper>
+      <app-user-dashboard (spawnCategoriesEvt)="spawnCategories($event)" #homeDashboard
+      ></app-user-dashboard>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Show categories for shopping & food -->
+<div #categoryMenuSlide>
+  <div class='spotbie-categories animated slideInRight' id="spotbieCategories" *ngIf="(catsUp$ | async) && (searchCategory$ | async) !== 3">
+    <div *ngFor="let category of categories; let i = index" [ngClass]="getSingleCatClass(i)" (click)="apiSearch(category)">
+      {{ category }}
+    </div>
+  </div>
+
+  <!-- Show categories for events -->
+  <div class='spotbie-categories animated slideInRight' id="spotbieCategories" *ngIf="(catsUp$ | async) && (searchCategory$ | async) === 3">
+    <div [ngClass]="getSingleCatClass(i)" *ngFor="let category of categories; let i = index" (click)="showEventSub(category)">
+      {{ category.name }}
+
+      <!--<div class='spotbie-sub-cat-wrapper' *ngIf="category.show_sub && category.type !== undefined">
+        <div class='spotbie-sub-cat' *ngFor="let sub_cat_type of category.type._embedded.subtypes" (click)="apiSearch(sub_cat_type.name)" [SpotBieStopClickPropagation]>
+          {{ sub_cat_type.name }}
+        </div>
+      </div>-->
+
+      <div class='spotbie-sub-cat-wrapper' *ngIf="category.show_sub && category.segment">
+        <!--<div class='spotbie-sub-cat' *ngFor="let sub_cat_type of category.segment._embedded.genres" (click)="apiSearch(sub_cat_type.name, true)" [SpotBieStopClickPropagation]>-->
+        <div class='spotbie-sub-cat' *ngFor="let sub_cat_type of category.segment._embedded.genres" (click)="apiSearch(sub_cat_type.name, true)">
+          {{ sub_cat_type.name }}
+          <!--<div *ngIf="sub_cat_type.show_sub_sub">
+            <div class='spotbie-subgenre' *ngFor="let subgenre of sub_cat_type._embedded.subgenres" (click)="apiSearch(subgenre.name)" [SpotBieStopClickPropagation]>
+              {{ subgenre.name }}
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class='spotbie-category-search-yelp animated slideInUp' *ngIf="catsUp$ | async">
+  <input type='text'
+         class='spotbie-searchbar sb-input'
+         placeholder="{{ searchCategoriesPlaceHolder }}"
+         (keyup)="searchSpotBie($event)" />
+
+  <div class='spotbie-close-categories'
+       (click)="closeCategories()">
+    close
+  </div>
+</div>
+
+<app-info-object [info_object]="(infoObject$ | async)"
+                 [eventsClassification]="eventsClassification$ | async"
+                 [categories]="numberCategories$ | async"
+                 [lat]="lat$ | async"
+                 [lng]="lng$ | async"
+                 (closeWindow)="infoObject$.next(null)"
+                 *ngIf="(infoObject$ | async)">
+</app-info-object>
+
+<!--<app-my-favorites *ngIf="myFavoritesWindow.open" (closeWindow)="closeFavorites()"></app-my-favorites>-->
+<app-scroll-to-top></app-scroll-to-top>
+
+<app-loading-screen *ngIf="(loading$ | async)"></app-loading-screen>

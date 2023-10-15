@@ -1,0 +1,21 @@
+h3, h2{
+    line-height: 60px;
+}
+.sb-dashboardWrapper{
+    background-color: #27242e;
+    position: relative;
+    display: block;
+    border-bottom: 8px solid #332f3e;
+    padding: 100px 20px;
+}
+.fa-users{
+    position: relative;
+    color: #56d37e;
+    font-size: 3.5rem;
+    bottom: 4px;
+}
+@media (max-width: 560px){
+    .sb-welcome2Spotbie{
+        font-size: 1.2rem
+    }
+}

@@ -1,0 +1,191 @@
+
+.sb-input{
+    width: 450px;
+    min-width: 450px;
+    max-width: 450px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    color: #32303e;
+    background-color: white;
+    border: 1px solid #32303e;
+}
+.sb-input::placeholder{
+    color: #828282 !important;
+}
+.spotbie-log-in-picture{
+    position:absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 550px;
+    min-width: 550px;
+    max-width: 550px;
+    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    background: url(../../../../assets/images/user.png);
+    background-size: cover !important;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.4;
+}
+.spotbie-log-in-picture-inside{
+    position: relative;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    max-width: 550px;
+    min-height: 250px;
+    max-height: 250px;
+    cursor: pointer;
+}
+.spotbie-toggle{
+    margin-top: 0px;
+    margin-bottom: unset !important;
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
+}
+.spotbie-overlay-window{
+    padding-bottom: 80px;
+    background-color: #32303e !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
+    z-index: 97 !important;
+}
+
+.spotbie-help-text{
+    margin-top: 30px;
+    margin-bottom: unset !important;
+}
+.spotbie-text-link{
+    color : white;
+}
+.fa-eye::before{
+    display: none;
+}
+.fa-eye{
+    cursor: pointer;
+    position: absolute;
+    top: 30%;
+    right: 4%;
+    color: #474747;
+}
+.spotbie-forgot-your-pass{
+    position: relative;
+    margin: 0 auto;
+    width: 440px;
+    max-width: 440px;
+    margin-top: 0px;
+    text-align: right;
+    font-size: .6rem;
+}
+.sb-signUpGeneralInstructions{
+    margin: 0 auto;
+    max-width: 440px;
+    margin-top: 30px;
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: .7rem;
+    text-align: left;
+}
+.spotbie-loginWrapper{
+    padding-top: 60px;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+.spotbie-button{
+    background: linear-gradient(90deg,#35a99fdb,#64e56fd9);
+    border: 1px solid #428c67
+}
+.sb-closeButton{
+    top: 75px;
+    right: 1%;
+}
+/**WIDTH MEDIA QUERIES */
+@media (max-width: 1650px) {
+    .sb-signUpGeneralInstructions{
+        margin-top: 100px!important;
+    }
+}
+@media (max-width: 1300px) { }
+@media (max-width: 1200px) {
+    .sb-login-top-padding{
+        padding-top: 100px;
+    }
+ }
+@media (max-width: 1024px) { }
+@media (max-width: 900px)  { }
+@media (max-width: 768px) {
+    .spotbie-log-in-picture{
+        width: 95%;
+        min-width: 95%;
+        max-width: 95%;
+        height: 350px;
+        min-height: 350px;
+        max-height: 350px;
+    }
+    .spotbie-overlay-window {
+        width: 102%;
+        min-width: 102%;
+        max-width: 102%;
+        padding-top: 80px;
+    }
+    .sb-signUpGeneralInstructions{
+        margin-top: 40px!important;
+    }
+}
+@media (max-width: 700px) { }
+@media (max-width: 600px) {
+    .sb-login-top-padding{
+        padding-top: 40px;
+    }
+    .fa-eye{
+        top: 23%;
+    }
+}
+@media (max-width: 560px) { }
+@media (max-width: 460px) {
+    .sb-logo{
+        max-width: 175px;
+        width: 175px;
+        min-width: 175px;
+        max-height: 55px;
+        min-height: 55px;
+    }
+    .spotbie-overlay-window{
+        padding-top: 0px !important;
+    }
+    .spotbie-forgot-your-pass{
+        width: 90%;
+        min-width: 90%;
+        max-width: 90%;
+    }
+}
+@media (max-width: 420px){
+    #sign_up_general_instructions{
+        font-size: 11px;
+        line-height: 18px;
+    }
+}
+@media (max-width: 360px) {
+    .spotbie-input-info{
+        font-size: 16px;
+    }
+    .spotbie-button{
+        font-size: 13px;
+    }
+    .spotbie-toggle {
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        font-size: 18px;
+    }
+}
+@media (max-width: 320px) { }
+@media (max-width: 220px) { }
+@media (max-width: 120px) { }

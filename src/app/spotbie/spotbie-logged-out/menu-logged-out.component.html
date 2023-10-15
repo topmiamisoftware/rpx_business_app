@@ -1,0 +1,49 @@
+<ion-menu menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>It's on us.</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding" color="primary">
+      <ion-list>
+        <ion-item class="ion-padding-top ion-padding-bottom" color="primary" lines="full" (click)="home()">
+          <ion-icon name="home" slot="start"></ion-icon>
+          HOME
+        </ion-item>
+
+        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(1)">
+          <ion-icon name="pizza" slot="start"></ion-icon>
+          PLACES TO EAT
+        </ion-item>
+
+        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(2)">
+          <ion-icon name="pricetags" slot="start"></ion-icon>
+          SHOPPING
+        </ion-item>
+
+        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(3)">
+          <ion-icon name="glasses" slot="start"></ion-icon>
+          EVENTS
+        </ion-item>
+      </ion-list>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar id="ionToolbarLoggedOut" class="safe--area" color="tertiary">
+      <ion-buttons slot="start">
+        <ion-menu-button auto-hide="false"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <img class="spotbie-header-mini-logo" (click)="home()" src="assets/images/spotbie_logo_header.svg" />
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="has-header text-center" color="light">
+    <app-sign-up *ngIf="signUpWindow$ | async" (closeWindow)="closeSignUp($event)" (logInEvent)="logIn()"></app-sign-up>
+    <app-log-in *ngIf="logInWindow$ | async" #appLogin></app-log-in>
+    <app-map #appMap></app-map>
+  </ion-content>
+</div>

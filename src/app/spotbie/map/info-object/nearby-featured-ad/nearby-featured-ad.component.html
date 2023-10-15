@@ -1,0 +1,18 @@
+<div class='spotbie-ad-wrapper-header' (click)="openAd()" *ngIf="(ad$ | async) as ad">
+    <img class="spotbie-ad-image" src="{{ ad.images_mobile }}" />
+
+    <div class='sb-ad-bottom' *ngIf="(businessReady$ | async) && (business$ | async) as business">
+        <span class='spotbie-text-gradient sb-sponsoredName text-uppercase'>{{ ad.name }}</span>
+
+        <span class='sb-text-light-green-gradient sb-totalRewards text-uppercase' style="font-size: 1rem;">{{ totalRewards }} REWARDS</span>
+
+        <span class='spotbie-text-gradient sb-distanceMiles text-uppercase'>
+              <i class='fas fa-map-marker-alt'></i>
+          {{ distance | number:'1.1-2':'en-US' }} miles
+        </span>
+
+        <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;">
+              {{ (business.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+        </span>
+    </div>
+</div>
