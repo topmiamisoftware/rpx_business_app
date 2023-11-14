@@ -1,81 +1,53 @@
-import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
-import { UserauthService } from 'src/app/services/userauth.service';
-import { LoyaltyPointsComponent } from '../loyalty-points/loyalty-points.component';
-import { QrComponent } from '../qr/qr.component';
-import { RedeemableComponent } from '../redeemable/redeemable.component';
-import { RewardMenuComponent } from '../reward-menu/reward-menu.component';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {UserauthService} from '../../../services/userauth.service';
+import {QrComponent} from '../qr/qr.component';
+import {RewardMenuComponent} from '../reward-menu/reward-menu.component';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-business-dashboard',
   templateUrl: './business-dashboard.component.html',
-  styleUrls: ['./business-dashboard.component.css']
+  styleUrls: ['./business-dashboard.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BusinessDashboardComponent implements OnInit {
 
   @Output() openBusinessSettingsEvt = new EventEmitter()
 
-  @ViewChild('loyaltyPointsApp') loyaltyPointsApp: LoyaltyPointsComponent
   @ViewChild('rewardMenuApp') rewardMenuApp: RewardMenuComponent
   @ViewChild('qrApp') qrApp: QrComponent
-  @ViewChild('redeemablesApp') redeemablesApp: RedeemableComponent
-  @ViewChild('lpAppAnchor') lpAppAnchor: ElementRef
   @ViewChild('qrCodeAppAnchor') qrCodeAppAnchor: ElementRef
   @ViewChild('rewardMenuAppAnchor') rewardMenuAppAnchor: ElementRef
 
-  displayBusinessSetUp: boolean = false
-  businessFetched: boolean = false
-  getRedeemableItems: boolean =  false
+  displayBusinessSetUp$ = new BehaviorSubject<boolean>(false);
+  businessFetched$ = new BehaviorSubject<boolean>(false);
+  getRedeemableItems$ = new BehaviorSubject<boolean>(false);
 
   constructor(private userAuthServe: UserauthService) { }
 
-  redeemedLp(){
-    this.getRedeemableItems = true
-    this.redeemablesApp.getRedeemed()
-  }
-
-  openLoyaltyPoints(){
-    console.log('BusinessDashboardComponent loyaltyPointsApp')
-    this.loyaltyPointsApp.initBusinessLoyaltyPoints()
-  }
-
-  scrollToLpAppAnchor(){
-    this.lpAppAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    this.loyaltyPointsApp.initBusinessLoyaltyPoints();
-  }
-
-  scrollToQrAppAnchor(){
-    this.qrCodeAppAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  scrollToRewardMenuAppAnchor(){
-    this.rewardMenuAppAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  closeAll(){
-    this.loyaltyPointsApp.closeThis()
-    this.rewardMenuApp.closeWindow()
-    this.qrApp.closeQr()
+  ngOnInit(): void {
+    this.checkIfBusinessIsSet()
   }
 
   checkIfBusinessIsSet(){
     this.userAuthServe.getSettings().subscribe(resp => {
-        if(resp.business === null) {
-          this.displayBusinessSetUp = true;
+        if(!resp.business) {
+          this.displayBusinessSetUp$.next(true);
         } else if(resp.is_subscribed === false) {
-          this.displayBusinessSetUp = false;
+          this.displayBusinessSetUp$.next(false);
           this.openSettings();
         } else {
-          this.displayBusinessSetUp = false
+          this.displayBusinessSetUp$.next(false);
         }
-        this.businessFetched = true
-      })
+        this.businessFetched$.next(true);
+      });
   }
 
   openSettings(){
-    this.openBusinessSettingsEvt.emit()
+    this.openBusinessSettingsEvt.emit();
   }
 
-  ngOnInit(): void {
-    this.checkIfBusinessIsSet()
+  openLoyaltyPoints(){
+    console.log('BusinessDashboardComponent loyaltyPointsApp')
   }
 }

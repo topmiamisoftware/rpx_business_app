@@ -1,12 +1,14 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import {CapacitorConfig} from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'SpotbieBusiness',
+  appId: 'com.exentriks.spotmee.spotbie-business',
+  appName: 'SB-Business',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+    url: 'http://10.0.0.250:4200',
+    cleartext: true,
+  },
 };
 
 export default config;

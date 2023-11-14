@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QrComponent } from './qr.component';
-
-import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { NgxMaskModule, IConfig } from 'ngx-mask';
+import {NgxMaskDirective, NgxMaskPipe, IConfig, provideNgxMask} from 'ngx-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RewardMenuModule } from '../reward-menu/reward-menu.module';
+import {QRCodeModule} from "angularx-qrcode";
 
 export const options : Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -16,15 +14,16 @@ export const options : Partial<IConfig> | (() => Partial<IConfig>) = null;
   ],
   imports: [
     CommonModule,
-    NgxQRCodeModule,
-    ZXingScannerModule,
+    QRCodeModule,
     ReactiveFormsModule,
     RewardMenuModule,
     FormsModule,
-    NgxMaskModule.forRoot(options)  
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
   exports: [
     QrComponent
-  ]
+  ],
+  providers: [provideNgxMask()],
 })
 export class QrModule { }

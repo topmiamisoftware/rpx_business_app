@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { catchError } from 'rxjs/operators'
-import { handleError } from 'src/app/helpers/error-helper'
-import * as spotbieGlobals from 'src/app/globals'
+import { handleError } from '../../helpers/error-helper'
+import * as spotbieGlobals from '../../globals'
 
 const ADS_API = spotbieGlobals.API+'in-house'
 
@@ -14,65 +14,44 @@ export class AdsService {
 
   constructor(private http: HttpClient) { }
 
-  public getHeaderBanner(headerBannerReqObj: any): Observable<any>{
-
+  getHeaderBanner(headerBannerReqObj: any): Observable<any>{
     const getAd = `${ADS_API}/header-banner`
 
     return this.http.post(getAd, headerBannerReqObj).pipe(
-      catchError(
-        handleError("getHeaderBanner")
-      )
-    )
-
+      catchError(handleError("getHeaderBanner"))
+    );
   }
 
-  public getNearByFeatured(nearByFeaturedReqObj: any): Observable<any>{
-
+  getNearByFeatured(nearByFeaturedReqObj: any): Observable<any>{
     const getAd = `${ADS_API}/featured-ad-list`
 
     return this.http.post(getAd, nearByFeaturedReqObj).pipe(
-      catchError(
-        handleError("getNearByFeatured")
-      )
-    )
-
+      catchError(handleError("getNearByFeatured"))
+    );
   }  
 
-  public getAds():  Observable<any>{
-    
+  getAds():  Observable<any>{
     const getAdsApi = `${ADS_API}/index`
 
     return this.http.post(getAdsApi, null).pipe(
-      catchError(
-        handleError("getAds")
-      )
-    )
+      catchError(handleError("getAds")),
+    );
 
   }
 
-  public getAdByUUID(searchObjSb: any):  Observable<any>{
-    
+  getAdByUUID(searchObjSb: any):  Observable<any>{
     const getAdsApi = `${ADS_API}/get-by-uuid`
 
     return this.http.post(getAdsApi, searchObjSb).pipe(
-      catchError(
-        handleError("getAdByUUID")
-      )
-    )
-
+      catchError(handleError("getAdByUUID")),
+    );
   }
 
-  public getBottomHeader(searchObjSb: any):  Observable<any>{
-
+  getBottomHeader(searchObjSb: any):  Observable<any>{
     const getAdsApi = `${ADS_API}/footer-banner`
 
     return this.http.post(getAdsApi, searchObjSb).pipe(
-      catchError(
-        handleError("getBottomHeader")
-      )
-    )
-
+      catchError(handleError("getBottomHeader")),
+    );
   }
-
-  
 }

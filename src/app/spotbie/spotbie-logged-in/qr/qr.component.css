@@ -53,6 +53,7 @@ h5{
 }
 .sb-v-wrapper{
     flex-direction: column;
+    text-align: center;
 }
 .fa-exclamation-triangle{
     position: relative;

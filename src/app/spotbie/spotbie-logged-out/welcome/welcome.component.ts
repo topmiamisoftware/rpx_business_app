@@ -8,22 +8,22 @@ import { Router } from '@angular/router';
 })
 export class WelcomeComponent implements OnInit {
 
-  @Output() locationPrompted = new EventEmitter()
+  @Output() locationPrompted = new EventEmitter();
 
-  public currentCard: number = 0
+  public currentCard = 0;
 
   constructor() { }
 
   public switchCard(){
-    this.locationPrompted.emit()
+    this.locationPrompted.emit();
   }
 
   public whichCard(card: number){
 
     if(card === this.currentCard)
-      return { 'display' : 'block' }
+      {return { display : 'block' };}
     else
-      return { 'display' : 'none' }
+      {return { display : 'none' };}
 
   }
 

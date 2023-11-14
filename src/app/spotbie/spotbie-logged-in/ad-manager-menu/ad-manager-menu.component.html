@@ -1,7 +1,4 @@
-
-
 <div>
-
     <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">IN-HOUSE</h4>
 
     <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2 mb-3">
@@ -9,14 +6,12 @@
     </p>
 
     <div class='sb-menuAdWrapper'>
-    
         <div class='sb-menuAd' 
                 *ngFor="let ad of adList"
                 [ngStyle]="adTileStyling(ad)"
                 (click)="openAd(ad)">
             
             <h6>{{ ad.name }}</h6>
-
         </div>            
 
         <div class='spotbie-button text-uppercase mt-5'
@@ -24,11 +19,9 @@
                 (click)="addAd()">
             NEW PROMOTION
         </div>
-
     </div>
 
     <div class='spotbie-text-gradient text-uppercase' (click)="closeWindow()" *ngIf="fullScreenWindow">CLOSE</div>
-
 </div>
 
 <app-ad-creator *ngIf="itemCreator"

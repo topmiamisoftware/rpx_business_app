@@ -9,7 +9,7 @@ h1{
 }
 h2{
     position: absolute;
-    right: 364px; 
+    right: 364px;
     font-size: 30px;
     letter-spacing: 4px;
     font-weight: normal;
@@ -85,33 +85,33 @@ img{
     color: unset !important;
     background: -webkit-linear-gradient(45deg, #eee, #fbfbfb);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;    
+    -webkit-text-fill-color: transparent;
 }
 /**WIDTH MEDIA QUERIES */
-@media (max-width: 1300px) { 
+@media (max-width: 1300px) {
 
 }
-@media (max-width: 1200px) {   
+@media (max-width: 1200px) {
 
 }
-@media (max-width: 1024px) { 
+@media (max-width: 1024px) {
 
 }
-@media (max-width: 900px) { 
+@media (max-width: 900px) {
     .spotbie-overlay-window {
         overflow-y: hidden;
     }
 }
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
 
 }
-@media (max-width: 700px) { 
+@media (max-width: 700px) {
     .spotbie-flash-card{
         border-radius: 0px;
     }
     h1{
         font-size: 80px;
-    }    
+    }
     h2{
         right: 0px;
         left: 0px;
@@ -121,22 +121,22 @@ img{
     }
     h2 strong.sep-two {
         display: none;
-    }  
+    }
 }
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
 
 }
-@media (max-width: 560px) { 
-  
+@media (max-width: 560px) {
+
 }
-@media (max-width: 460px) { 
+@media (max-width: 460px) {
     h1{
         font-size: 58px;
         height: 120px;
-        max-height: 120px;        
-    }  
+        max-height: 120px;
+    }
     h2{
-        font-size: 16px;   
+        font-size: 16px;
     }
     .spotbie-button{
         font-size: 1rem;
@@ -146,14 +146,14 @@ img{
     }
     .spotbie-overlay-window {
         background-color: rgba(0,0,0,.9);
-    }    
+    }
 }
-@media (max-width: 420px) { 
+@media (max-width: 420px) {
     img{
         max-width: 200px;
-    }                  
+    }
 }
-@media (max-width: 360px) { 
+@media (max-width: 360px) {
     h1{
         height: 115px;
         max-height: 115px;
@@ -171,9 +171,9 @@ img{
 @media (max-width: 320px) {
 
 }
-@media (max-width: 220px) { 
+@media (max-width: 220px) {
 
 }
-@media (max-width: 120px) { 
+@media (max-width: 120px) {
 
 }

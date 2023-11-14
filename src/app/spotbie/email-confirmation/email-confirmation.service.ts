@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { HttpClient } from '@angular/common/http'
-import { environment } from 'src/environments/environment'
-import { retryWithBackOff } from 'src/app/helpers/retry.operators'
+import { environment } from '../../../environments/environment'
+import { retryWithBackOff } from '../../helpers/retry.operators'
 
 const EMAIL_API = `${environment.apiEndpoint}user/unique-email`
 const SEND_EMAIL_CODE_API = `${environment.apiEndpoint}user/send-code`

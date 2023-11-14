@@ -1,34 +1,39 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import {environment} from '../../../environments/environment.prod';
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {from, Observable, switchMap} from 'rxjs';
+import {Preferences} from '@capacitor/preferences';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    return from(Preferences.get({key: 'spotbiecom_session'})).pipe(
+      switchMap(getRes => {
+        const token = getRes.value;
+        let modifiedReq;
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (token && token !== 'null') {
+          modifiedReq = req.clone({
+            withCredentials: true,
+            setHeaders: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else {
+          modifiedReq = req.clone({
+            withCredentials: true,
+          });
+        }
 
-    const token = localStorage.getItem('spotbiecom_session')
-
-    let modifiedReq
-
-    if(token && token !== '' && token !== 'null'){
-
-      modifiedReq = req.clone({
-        withCredentials: true,
-        setHeaders: {
-          Authorization : `Bearer ${token}`
-        },
-      });
-
-    } else {
-      modifiedReq = req.clone({
-        withCredentials: true,
-      });
-    }
-
-    return next.handle(modifiedReq);
-
+        return next.handle(modifiedReq);
+      })
+    );
   }
-
 }

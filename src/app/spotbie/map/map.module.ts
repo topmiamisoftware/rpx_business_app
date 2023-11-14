@@ -9,13 +9,12 @@ import { HelperModule } from '../../helpers/helper.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserInfoObjectComponent } from './user-info-object/user-info-object.component';
 import { RouterModule } from '@angular/router';
-import { UserDashboardModule } from '../spotbie-logged-in/user-dashboard/user-dashboard.module';
-import { ShareIconsModule } from 'ngx-sharebuttons/icons';
 import { InfoObjectModule } from './info-object/info-object.module';
 import { AdsModule } from '../ads/ads.module';
 import { StopClickPropagationDirective } from '../../directives/stop-click-propagation.directive';
 import { GoogleMapsModule } from '@angular/google-maps';
 import {IonicModule} from "@ionic/angular";
+import {BusinessDashboardModule} from "../spotbie-logged-in/business-dashboard/business-dashboard.module";
 
 @NgModule({
   declarations: [MapComponent, UserInfoObjectComponent],
@@ -26,11 +25,10 @@ import {IonicModule} from "@ionic/angular";
         SpotbiePipesModule,
         ReactiveFormsModule,
         FormsModule,
-        ShareIconsModule,
         InfoObjectModule,
         RouterModule,
         HelperModule,
-        UserDashboardModule,
+        BusinessDashboardModule,
         AdsModule,
         GoogleMapsModule,
         IonicModule,

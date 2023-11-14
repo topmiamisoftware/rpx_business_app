@@ -18,7 +18,6 @@
     background-size: cover;
     text-align: center;
     z-index: 97;
-    background: url(src/assets/images/home_imgs/jpg/spotbie-miami-find-new-friends.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -32,7 +31,7 @@
 }
 .spotbie-select-menu{
     position: absolute;
-    padding-top: 120px;
+    padding-top: 100px;
     overflow-y: scroll;
     min-width: 100%;
     width: 100%;
@@ -73,6 +72,11 @@
 }
 .sb-closeButton{
     z-index: 98;
+}
+.spotbie-agm-map.sb-map-results-open{
+  height: 60vh;
+  max-height: 60vh;
+  min-height: 60vh;
 }
 .spotbie-save-settings-button{
     margin-bottom: 10px;
@@ -124,9 +128,6 @@
     width: 650px;
     min-width: 650px;
     max-width: 650px;
-    height: 500px;
-    min-height: 500px;
-    max-height: 500px;
     background-color: #353535;
 }
 .agm-map-container-inner{
@@ -350,6 +351,57 @@ textarea{
 h6{
   font-size: 1.9rem;
 }
+ion-item, ion-list{
+  background: white;
+}
+
+.item-native {
+  background: white;
+}
+
+ion-select {
+  --placeholder-color: #332f3e;
+  --placeholder-opacity: 1;
+  width: 90%;
+  min-width: 90%;
+  max-width: 90%;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: white;
+}
+
+ion-select::part(placeholder),
+ion-select::part(text) {
+  flex: 0 0 auto;
+  background-color: white;
+}
+
+ion-select::part(placeholder)::first-letter {
+  font-size: 1rem;
+  background-color: white;
+}
+
+ion-select::part(text) {
+  color: #332f3e;
+  background-color: white;
+}
+
+ion-select::part(icon) {
+  color: #332f3e;
+  opacity: 1;
+  background-color: white;
+}
+
+.action-sheet-group.sc-ion-action-sheet-ios {
+  background-color: white !important;
+}
+
+.sb-select, ion-item{
+  --background: 'white';
+  --border-color: 'none';
+  --border-width: 0px;
+}
 /**WIDTH MEDIA QUERIES */
 @media (max-width: 1300px) {
 
@@ -494,6 +546,9 @@ h6{
     .sb-input{
         min-width: 90%;
     }
+    ion-list {
+      max-width: 90%;
+    }
     .spotbie-input-info{
         margin-top: 0px;
         width: 90%;
@@ -539,6 +594,8 @@ h6{
         width: 15%;
         min-width: 15%;
         padding: 8px 0!important;
+        padding-top: 13px !important;
+        padding-bottom: 11px !important;
     }
     .spotbie-category-pick{
         max-width: 90%;

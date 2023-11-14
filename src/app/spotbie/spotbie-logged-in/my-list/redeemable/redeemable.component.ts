@@ -3,14 +3,10 @@ import {
   EventEmitter,
   OnInit,
   Output,
-  AfterViewInit,
 } from '@angular/core';
-import {AllowedAccountTypes} from '../../../../helpers/enum/account-type.enum';
 import {LoyaltyPointsService} from '../../../../services/loyalty-points/loyalty-points.service';
 import {Redeemable} from '../../../../models/redeemable';
 import {BehaviorSubject} from 'rxjs';
-import {Router} from '@angular/router';
-import {Preferences} from "@capacitor/preferences";
 import {filter} from "rxjs/operators";
 import {LoadingController} from "@ionic/angular";
 
@@ -94,7 +90,6 @@ export class RedeemableComponent implements OnInit {
         });
 
         this.rewards$.next(true);
-
         this.loading$.next(false);
       },
       error: error => {

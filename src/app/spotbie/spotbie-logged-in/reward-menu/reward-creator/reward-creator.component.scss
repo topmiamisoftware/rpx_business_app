@@ -25,6 +25,62 @@
     background-color: #fff;
     border-radius: 0px;
 }
+ion-item{
+  background-color: white;
+}
+
+ion-item, ion-list{
+  background: white;
+}
+
+.item-native {
+  background: white;
+}
+
+ion-select {
+  --placeholder-color: #332f3e;
+  --placeholder-opacity: 1;
+  width: 90%;
+  min-width: 90%;
+  max-width: 90%;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: white;
+}
+
+ion-select::part(placeholder),
+ion-select::part(text) {
+  flex: 0 0 auto;
+  background-color: white;
+}
+
+ion-select::part(placeholder)::first-letter {
+  font-size: 1rem;
+  background-color: white;
+}
+
+ion-select::part(text) {
+  color: #332f3e;
+  background-color: white;
+}
+
+ion-select::part(icon) {
+  color: #332f3e;
+  opacity: 1;
+  background-color: white;
+}
+
+.action-sheet-group.sc-ion-action-sheet-ios {
+  background-color: white !important;
+}
+
+.sb-select, ion-item{
+  --background: 'white';
+  --border-color: 'none';
+  --border-width: 0px;
+}
+
 .spotbie-background-upload-input{
     display: none;
 }

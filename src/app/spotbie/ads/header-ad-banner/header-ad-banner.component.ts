@@ -1,13 +1,24 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import { AdsService } from '../ads.service';
-import { Business } from 'src/app/models/business';
-import { getDistanceFromLatLngInMiles } from 'src/app/helpers/measure-units.helper';
-import { Ad } from 'src/app/models/ad';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { FOOD_CATEGORIES, SHOPPING_CATEGORIES, EVENT_CATEGORIES } from '../../map/map_extras/map_extras';
-import { AllowedAccountTypes } from 'src/app/helpers/enum/account-type.enum';
-import { InfoObjectType } from 'src/app/helpers/enum/info-object-type.enum';
-import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-points.service';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import {AdsService} from '../ads.service';
+import {Business} from '../../../models/business';
+import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
+import {Ad} from '../../../models/ad';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
+import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
+import {Preferences} from "@capacitor/preferences";
+import {BehaviorSubject} from "rxjs";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/header_banner_in_house.jpg'
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
@@ -23,15 +34,16 @@ const HEADER_TIMER_INTERVAL = 16000
 @Component({
   selector: 'app-header-ad-banner',
   templateUrl: './header-ad-banner.component.html',
-  styleUrls: ['./header-ad-banner.component.css']
+  styleUrls: ['./header-ad-banner.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderAdBannerComponent implements OnInit, OnDestroy {
+export class HeaderAdBannerComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
   @Input() lat: number
   @Input() lng: number
   @Input() business: Business = new Business()
   @Input() ad: Ad = null
-  @Input() accountType: string = null
+  @Input() accountType: number = null
   @Input() categories: number
   @Input() editMode: boolean = false
   @Input() eventsClassification: number = null
@@ -53,34 +65,40 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
 
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
+              private changeDetectorRef: ChangeDetectorRef,
               private loyaltyPointsService: LoyaltyPointsService) {
                 this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
                   this.loyaltyPointBalance = loyaltyPointBalance
                 })
   }
 
-  getHeaderBanner(){
-    let adId = null
-    let accountType
+  ngOnChanges() {
+    this.changeDetectorRef.markForCheck();
+  }
+
+  async getHeaderBanner(){
+    let adId = null;
+    let accountType = null;
 
     // Stop the service if there's a window on top of the ad component.
     const needleElement = document.getElementsByClassName('sb-closeButton')
 
     if(needleElement.length > 1){
       // There's a componenet on top of the bottom header.
-      return
+      return;
     }
 
     if(this.editMode) {
       if(this.ad == null) {
-        this.ad = new Ad()
-        this.ad.id = 2
-        adId = this.ad.id
+        this.ad = new Ad();
+        this.ad.id = 2;
+        adId = this.ad.id;
       } else {
-        adId = this.ad.id
+        adId = this.ad.id;
       }
 
-      accountType = parseInt(localStorage.getItem('spotbie_userType'), 10)
+      accountType = await Preferences.get({ key: 'spotbie_userType'});
+      accountType = parseInt(accountType.value, 10);
 
       switch(accountType){
         case 1:
@@ -99,23 +117,22 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
       }
     } else {
       switch(this.accountType){
-        case 'food':
-          accountType = 1
+        case 1:
           this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
           this.genericAdImageMobile = PLACE_TO_EAT_AD_IMAGE_MOBILE
           break
-        case 'shopping':
-          accountType = 2
+        case 2:
           this.genericAdImage = SHOPPING_AD_IMAGE
           this.genericAdImageMobile = SHOPPING_AD_IMAGE_MOBILE
           break
-        case 'events':
-          accountType = 3
+        case 3:
           this.genericAdImage = EVENTS_AD_IMAGE
           this.genericAdImageMobile = EVENTS_AD_IMAGE_MOBILE
           this.categories = this.eventsClassification
           break
       }
+
+      accountType = this.accountType;
     }
 
     const headerBannerReqObj = {
@@ -169,6 +186,8 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
 
       this.displayAd = true
       this.totalRewards = resp.totalRewards
+
+      this.changeDetectorRef.detectChanges();
     } else {
       console.log('getHeaderBannerAdCallback', resp)
     }
@@ -217,6 +236,8 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
       this.ad.images = image
       this.genericAdImage = image
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   updateAdImageMobile(image: string){
@@ -224,6 +245,7 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
       this.ad.images_mobile = image
       this.genericAdImageMobile = image
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   getAdWrapperClass(){
@@ -234,15 +256,9 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    // Add 'implements AfterViewInit' to the class.
-    this.isDesktop = this.deviceDetectorService.isDesktop()
-    if(this.isMobile === false){
-      this.isMobile = ( this.deviceDetectorService.isMobile() || this.deviceDetectorService.isTablet() )
-    } else {
-        this.isDesktop = false;
-    }
-    this.getHeaderBanner()
+    this.isDesktop = !this.isMobile;
+
+    this.getHeaderBanner();
   }
 
   ngOnDestroy(): void {

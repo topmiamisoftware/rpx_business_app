@@ -1,4 +1,4 @@
-<div class='spotbie-ad-wrapper-header' (click)="openAd()" *ngIf="(ad$ | async) as ad">
+.<div class='spotbie-ad-wrapper-header' (click)="openAd()" *ngIf="(ad$ | async) as ad">
     <img class="spotbie-ad-image" src="{{ ad.images_mobile }}" />
 
     <div class='sb-ad-bottom' *ngIf="(businessReady$ | async) && (business$ | async) as business">

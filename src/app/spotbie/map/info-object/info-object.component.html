@@ -70,17 +70,8 @@
     </div>
 
     <div class='mt-4 mb-4' *ngIf="infoObject?.is_community_member">
-      <span class='sb-text-light-green-gradient'>LOYALTY POINTS THIS MONTH</span><br/>
-
-      <h1 class='spotbie-text-gradient mb-4'>
-        {{ infoObject?.balance | number:'1.0':'en-US' }}
-      </h1>
-
-      <br/><br/>
-
       <span class='spotbie-text-gradient' style='font-size: .8rem;'>DOLLAR VALUE RATE</span><br/>
       <span class='sb-text-light-green-gradient mt-4 mb-4' style='font-size: 1.8rem;'>{{ infoObject?.rewardRate | currency : 'USD' }}</span><br/>
-      <span class='spotbie-text-gradient' style='font-size: .8rem;'> PER DOLLAR SPENT</span><br/>
       <span class='sb-text-light-green-gradient mt-4'> {{ infoObject?.loyalty_point_dollar_percent_value | number:'1.1-2':'en-US' }}% REWARD RATE</span>
     </div>
 
@@ -155,10 +146,8 @@
            (click)="visitInfoObjectPage()"></i>
       </div>
 
-      <div class='spotbie-info-object-address' [ngClass]="getFontClasses()" *ngIf="infoObject?.type_of_info_object === eInfoObjectType.Yelp" (click)="openWithGoogleMaps()">
-        {{ infoObject?.location.display_address[0] }}
-        <br/>
-        {{ infoObject?.location.display_address[1] }}
+      <div class='spotbie-info-object-address' [ngClass]="getFontClasses()" *ngIf="(objectDisplayAddress$ | async) as address" (click)="openWithGoogleMaps()">
+        {{ address }}
       </div>
     </div>
 

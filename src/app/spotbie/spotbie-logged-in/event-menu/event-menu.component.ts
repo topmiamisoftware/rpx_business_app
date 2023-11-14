@@ -8,6 +8,7 @@ import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-po
 import { BusinessMenuServiceService } from 'src/app/services/spotbie-logged-in/business-menu/business-menu-service.service'
 import { EventCreatorComponent } from './event-creator/event-creator.component'
 import { map } from 'rxjs/operators';
+import {Preferences} from "@capacitor/preferences";
 
 @Component({
   selector: 'app-event-menu',
@@ -119,8 +120,10 @@ export class EventMenuComponent implements OnInit {
       return { 'background': 'linear-gradient(90deg,#35a99f,#64e56f)' }
   }
 
-  ngOnInit(): void {
-    this.userType = parseInt(localStorage.getItem('spotbie_userType'), 10)
+  async ngOnInit() {
+
+    let userType = await Preferences.get({key: 'spotbie_userType'});
+    this.userType = parseInt(userType.value, 10);
 
     if(this.userType !== AllowedAccountTypes.Personal){
       this.getLoyaltyPointBalance()

@@ -1,13 +1,24 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { AllowedAccountTypes } from 'src/app/helpers/enum/account-type.enum';
-import { InfoObjectType } from 'src/app/helpers/enum/info-object-type.enum';
-import { getDistanceFromLatLngInMiles } from 'src/app/helpers/measure-units.helper';
-import { Ad } from 'src/app/models/ad';
-import { Business } from 'src/app/models/business';
-import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-points.service';
-import { EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES } from '../../map/map_extras/map_extras';
-import { AdsService } from '../ads.service';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
+import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
+import {Ad} from '../../../models/ad';
+import {Business} from '../../../models/business';
+import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
+import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
+import {AdsService} from '../ads.service';
+import {Preferences} from "@capacitor/preferences";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/footer_banner_in_house.jpg'
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
@@ -23,15 +34,15 @@ const BOTTOM_BANNER_TIMER_INTERVAL = 16000
 @Component({
   selector: 'app-bottom-ad-banner',
   templateUrl: './bottom-ad-banner.component.html',
-  styleUrls: ['./bottom-ad-banner.component.css']
+  styleUrls: ['./bottom-ad-banner.component.css'],
 })
-export class BottomAdBannerComponent implements OnInit, OnDestroy {
+export class BottomAdBannerComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
   @Input() lat: number
   @Input() lng: number
   @Input() business: Business = new Business()
   @Input() ad: Ad = null
-  @Input() accountType: string = null
+  @Input() accountType: number = null
   @Input() categories: number
   @Input() editMode: boolean = false
   @Input() eventsClassification: number = null
@@ -52,14 +63,19 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
   switchAdInterval: any = false
 
   constructor(private adsService: AdsService,
+              private changeDetectorRef: ChangeDetectorRef,
               private deviceDetectorService: DeviceDetectorService,
               private loyaltyPointsService: LoyaltyPointsService) {
                 this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
                   this.loyaltyPointBalance = loyaltyPointBalance
-                })
+                });
               }
 
-  getBottomHeader(){
+  ngOnChanges() {
+    this.changeDetectorRef.markForCheck();
+  }
+
+  async getBottomHeader(){
     let adId = null
     let accountType
 
@@ -73,7 +89,6 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
     }
 
     if (this.editMode) {
-
       if (this.ad == null) {
         this.ad = new Ad()
         this.ad.id = 2
@@ -82,7 +97,8 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
         adId = this.ad.id
       }
 
-      accountType = parseInt(localStorage.getItem('spotbie_userType'), 10);
+      accountType = await Preferences.get({key: 'spotbie_userType'});
+      accountType = parseInt(accountType.value, 10);
 
       switch(accountType){
         case 1:
@@ -100,25 +116,23 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
           break
       }
     } else {
-
       switch(this.accountType){
-        case 'food':
-          accountType = 1
+        case 1:
           this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
           this.genericAdImageMobile = PLACE_TO_EAT_AD_IMAGE_MOBILE
           break
-        case 'shopping':
-          accountType = 2
+        case 2:
           this.genericAdImage = SHOPPING_AD_IMAGE
           this.genericAdImageMobile = SHOPPING_AD_IMAGE_MOBILE
           break
-        case 'events':
-          accountType = 3
+        case 3:
           this.genericAdImage = EVENTS_AD_IMAGE
           this.genericAdImageMobile = EVENTS_AD_IMAGE_MOBILE
           this.categories = this.eventsClassification
           break
       }
+
+      accountType = this.accountType;
     }
 
     const searchObjSb = {
@@ -188,9 +202,9 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
 
       this.totalRewards = resp.totalRewards
       this.displayAd = true
-    } else {
-      console.log('getSingleAdListCb', resp)
 
+      this.changeDetectorRef.detectChanges();
+    } else {
       if (!this.switchAdInterval) {
         this.switchAdInterval = setInterval(() => {
           if (!this.editMode) this.getBottomHeader()
@@ -207,7 +221,7 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
     if(this.business != null) {
       this.communityMemberOpen = true
     } else {
-      window.open('/business', '_blank')
+      window.open('/business', '_blank');
     }
     // this.router.navigate([`/business-menu/${this.business.qr_code_link}`])
   }
@@ -231,6 +245,8 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
       this.ad.images = image
       this.genericAdImage = image
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   updateAdImageMobile(image: string){
@@ -238,15 +254,14 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy {
       this.ad.images_mobile = image
       this.genericAdImageMobile = image
     }
+    this.changeDetectorRef.detectChanges();
   }
 
-  ngOnInit(): void {
-    this.isDesktop = this.deviceDetectorService.isDesktop()
-    if(this.isMobile === false) {
-      this.isMobile = this.deviceDetectorService.isMobile() || this.deviceDetectorService.isTablet();
-    } else {
-      this.isDesktop = false;
-    }
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.isDesktop = !this.isMobile;
+
     this.getBottomHeader()
   }
 

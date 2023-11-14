@@ -1,7 +1,7 @@
 <ion-menu menuId="main-menu" contentId="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>It's on us.</ion-title>
+      <ion-title>Loyalty Points</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding" color="primary">
@@ -42,7 +42,6 @@
   </ion-header>
 
   <ion-content class="has-header text-center" color="light">
-    <app-sign-up *ngIf="signUpWindow$ | async" (closeWindow)="closeSignUp($event)" (logInEvent)="logIn()"></app-sign-up>
     <app-log-in *ngIf="logInWindow$ | async" #appLogin></app-log-in>
     <app-map #appMap></app-map>
   </ion-content>

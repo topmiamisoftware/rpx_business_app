@@ -49,7 +49,6 @@ export class LocationService {
   }
 
   public getSpotBieCommunityMemberList(searchObj: any): Observable<any> {
-
     const getBusinessesApi = `${SB_COMMUNITY_MEMBERS_API}`
 
     return this.http.post<any>(getBusinessesApi, searchObj).pipe(

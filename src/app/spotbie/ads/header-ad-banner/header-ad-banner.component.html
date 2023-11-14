@@ -8,13 +8,13 @@
     <img class="spotbie-ad-image" [src]="ad.images | safe" *ngIf="!editMode && isDesktop" />
     <img class="spotbie-ad-image" [src]="ad.images_mobile | safe" *ngIf="!editMode && !isDesktop" />
 
-    <img class="spotbie-ad-image" [src]="genericAdImage | safe" *ngIf="editMode && ad.id == 2 && isDesktop" />
-    <img class="spotbie-ad-image" [src]="genericAdImageMobile | safe" *ngIf="editMode && ad.id == 2 && !isDesktop" />
+    <img class="spotbie-ad-image 12" [src]="genericAdImage | safe" *ngIf="editMode && ad.id == 2 && isDesktop" />
+    <img class="spotbie-ad-image 123" [src]="genericAdImageMobile | safe" *ngIf="editMode && ad.id == 2 && isMobile" />
 
     <img class="spotbie-ad-image" [src]="ad.images | safe" *ngIf="editMode && ad.id != 2 && isDesktop" />
     <img class="spotbie-ad-image" [src]="ad.images_mobile | safe" *ngIf="editMode && ad.id != 2 && !isDesktop" />
 
-    <div class='sb-ad-bottom' *ngIf="isDesktop && !isMobile && business !== null">
+    <div class='sb-ad-bottom' *ngIf="!isMobile && business !== null">
         <span class='spotbie-text-gradient sb-sponsoredName text-uppercase'>{{ business.name }}</span>
 
         <span class='spotbie-text-gradient m-2 mt-0 mb-0'>-</span>
@@ -37,7 +37,7 @@
         <span class='spotbie-text-gradient sb-address text-uppercase'><i class='fas fa-map-marker-alt'></i> {{ business.address }}</span>
     </div>
 
-    <div class='sb-ad-bottom' *ngIf="(!isDesktop || isMobile) && business !== null">
+    <div class='sb-ad-bottom' *ngIf="isMobile && business !== null">
         <span class='spotbie-text-gradient sb-sponsoredName text-uppercase'>{{ business.name }}</span>
         <span class='sb-text-light-green-gradient sb-totalRewards text-uppercase' style="font-size: 1rem;">{{ totalRewards }} REWARDS</span>
         <span class='spotbie-text-gradient sb-distanceMiles text-uppercase'>{{ distance | number:'1.1-2':'en-US' }} miles</span>

@@ -1,13 +1,21 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { AllowedAccountTypes } from 'src/app/helpers/enum/account-type.enum';
-import { InfoObjectType } from 'src/app/helpers/enum/info-object-type.enum';
-import { getDistanceFromLatLngInMiles } from 'src/app/helpers/measure-units.helper';
-import { Ad } from 'src/app/models/ad';
-import { Business } from 'src/app/models/business';
-import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-points.service';
-import { EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES } from '../../map/map_extras/map_extras';
-import { AdsService } from '../ads.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
+import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
+import {Ad} from '../../../models/ad';
+import {Business} from '../../../models/business';
+import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
+import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
+import {AdsService} from '../ads.service';
+import {Preferences} from "@capacitor/preferences";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
 const SHOPPING_AD_IMAGE = 'assets/images/def/shopping/featured_banner_in_house.jpg'
@@ -18,43 +26,48 @@ const FEATURED_BANNER_TIMER_INTERVAL = 16000
 @Component({
   selector: 'app-nearby-featured-ad',
   templateUrl: './nearby-featured-ad.component.html',
-  styleUrls: ['./nearby-featured-ad.component.css']
+  styleUrls: ['./nearby-featured-ad.component.css'],
 })
-export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
+export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() lat: number
   @Input() lng: number
   @Input() business: Business = new Business()
   @Input() ad: Ad = null
-  @Input() accountType: string = null
+  @Input() accountType: number = null
   @Input() editMode: boolean = false
   @Input() categories: number
   @Input() eventsClassification: number = null
 
-  public link: string
-  public displayAd: boolean = false
-  public distance: number = 0
-  public totalRewards: number = 0
-  public categoriesListFriendly: string[] = []
-  public rewardMenuOpen: boolean = false
-  public isMobile: boolean = false
-  public currentCategoryList: Array<string> = []
-  public loyaltyPointBalance: any
-  public adTypeWithId: boolean = false
-  public adList: Array<Ad> = []
-  public genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
-  public businessReady: boolean = false
-  public switchAdInterval: any = false
+  link: string
+  displayAd: boolean = false
+  distance: number = 0
+  totalRewards: number = 0
+  categoriesListFriendly: string[] = []
+  rewardMenuOpen: boolean = false
+  isMobile: boolean = false
+  currentCategoryList: Array<string> = []
+  loyaltyPointBalance: any
+  adTypeWithId: boolean = false
+  adList: Array<Ad> = []
+  genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
+  businessReady: boolean = false
+  switchAdInterval: any = false
 
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
+              private changeDetection: ChangeDetectorRef,
               private loyaltyPointsService: LoyaltyPointsService) {
     this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
       this.loyaltyPointBalance = loyaltyPointBalance
     })
   }
 
-  public getNearByFeatured(){
+  ngOnChanges(){
+    this.changeDetection.markForCheck();
+  }
+
+  async getNearByFeatured(){
     let adId = null
     let accountType
 
@@ -67,15 +80,16 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
     }
 
     if(this.editMode){
-      if (this.ad == null) {
-        this.ad = new Ad()
-        this.ad.id = 2
-        adId = this.ad.id
+      if (!this.ad) {
+        this.ad = new Ad();
+        this.ad.id = 2;
+        adId = this.ad.id;
       } else {
-        adId = this.ad.id
+        adId = this.ad.id;
       }
 
-      accountType = parseInt(localStorage.getItem('spotbie_userType'), 10)
+      accountType = await Preferences.get({key: 'spotbie_userType'});
+      accountType = parseInt(accountType.value, 10);
 
       switch(accountType){
         case 1:
@@ -91,16 +105,13 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
       }
     } else {
       switch(this.accountType){
-        case 'food':
-          accountType = 1
+        case 1:
           this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
           break
-        case 'shopping':
-          accountType = 2
+        case 2:
           this.genericAdImage = SHOPPING_AD_IMAGE
           break
-        case 'events':
-          accountType = 3
+        case 3:
           this.genericAdImage = EVENTS_AD_IMAGE
           this.categories = this.eventsClassification
           break
@@ -123,7 +134,7 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
     )
   }
 
-  public async getNearByFeaturedCallback(resp: any){
+  async getNearByFeaturedCallback(resp: any){
     if(resp.success){
       this.ad = resp.ad
       this.business = resp.business
@@ -148,8 +159,6 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
         this.business.is_community_member = true
         this.business.type_of_info_object = InfoObjectType.SpotBieCommunity
 
-        this.totalRewards = resp.totalRewards
-
         this.currentCategoryList.reduce((previousValue: string, currentValue: string, currentIndex: number, array: string[]) => {
           if(resp.business.categories.indexOf(currentIndex) > -1)
             this.categoriesListFriendly.push(this.currentCategoryList[currentIndex])
@@ -162,10 +171,14 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
           this.lat,
           this.lng
         )
-      } else
+      } else {
         this.distance = 5
+      }
 
+      this.totalRewards = resp.totalRewards
       this.displayAd = true
+
+      this.changeDetection.detectChanges();
 
       if(!this.switchAdInterval){
         this.switchAdInterval = setInterval( () => {
@@ -174,11 +187,12 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
           }
         }, FEATURED_BANNER_TIMER_INTERVAL)
       }
-    } else
+    } else {
       console.log('getNearByFeaturedCallback', resp)
+    }
   }
 
-  public getAdStyle(){
+  getAdStyle(){
     if(this.adTypeWithId) {
       return {
         position : 'relative',
@@ -188,33 +202,34 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy {
     }
   }
 
-  public closeRewardMenu(){
+  closeRewardMenu(){
     this.rewardMenuOpen = false
   }
 
-  public clickGoToSponsored(){
+  clickGoToSponsored(){
     window.open('/business', '_blank')
   }
 
-  public switchAd(){
+  switchAd(){
     this.getNearByFeatured()
   }
 
-  public openAd(): void{
-    this.rewardMenuOpen = true
+  openAd(): void{
+    this.rewardMenuOpen = true;
     // this.router.navigate([`/business-menu/${this.business.qr_code_link}`])
   }
 
-  public updateAdImage(image: string = ''){
+  updateAdImage(image: string = ''){
     if(image !== ''){
       this.ad.images = image
       this.genericAdImage = image
     }
+    this.changeDetection.detectChanges();
   }
 
   ngOnInit(): void {
-    this.isMobile = this.deviceDetectorService.isMobile()
-    this.getNearByFeatured()
+    this.isMobile = this.deviceDetectorService.isMobile();
+    this.getNearByFeatured();
   }
 
   ngOnDestroy(): void {

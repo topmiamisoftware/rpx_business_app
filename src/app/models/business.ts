@@ -16,7 +16,7 @@ export class Business {
     type_of_info_object: string;
     is_community_member: boolean = true
     cleanCategories: string;
-    categories: number[] = []
+    categories: number[] = [];
     rewardRate: number;
     loyalty_point_dollar_percent_value: number;
     balance: number;

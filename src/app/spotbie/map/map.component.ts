@@ -20,7 +20,6 @@ import {MapObjectIconPipe} from '../../pipes/map-object-icon.pipe';
 import {LocationService} from '../../services/location-service/location.service';
 import * as map_extras from './map_extras/map_extras';
 import * as sorterHelpers from '../../helpers/results-sorter.helper';
-import {UserDashboardComponent} from '../spotbie-logged-in/user-dashboard/user-dashboard.component';
 import {SortOrderPipe} from '../../pipes/sort-order.pipe';
 import {Business} from '../../models/business';
 import {BottomAdBannerComponent} from '../ads/bottom-ad-banner/bottom-ad-banner.component';
@@ -36,6 +35,7 @@ import {
   IOSSettings,
 } from 'capacitor-native-settings';
 import {Preferences} from '@capacitor/preferences';
+import {BusinessDashboardComponent} from "../spotbie-logged-in/business-dashboard/business-dashboard.component";
 
 const YELP_BUSINESS_SEARCH_API = 'https://api.yelp.com/v3/businesses/search';
 const BANNED_YELP_IDS = map_extras.BANNED_YELP_IDS;
@@ -54,9 +54,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Output() signUpEvt = new EventEmitter();
   @Output() openBusinessSettingsEvt = new EventEmitter();
 
-  @ViewChild('homeDashboard') homeDashboard: UserDashboardComponent;
+  // @ViewChild('homeDashboard') homeDashboard: BusinessDashboardComponent;
+  // @ViewChild('featureWrapperAnchor') featureWrapperAnchor: ElementRef;
   @ViewChild('featureWrapper') featureWrapper: ElementRef;
-  @ViewChild('featureWrapperAnchor') featureWrapperAnchor: ElementRef;
   @ViewChild('scrollMapAppAnchor') scrollMapAppAnchor: ElementRef;
   @ViewChild('bottomAdBanner') bottomAdBanner: BottomAdBannerComponent = null;
   @ViewChild('singleAdApp') singleAdApp: HeaderAdBannerComponent = null;
@@ -681,6 +681,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.locationService.getBusinesses(searchObj).subscribe(resp => {
           this.getBusinessesSearchCallback(resp);
         });
+
         // Retrieve the SpotBie Community Member Results
         this.locationService
           .getSpotBieCommunityMemberList(searchObjSb)
@@ -829,7 +830,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     this.catsUp$.next(true);
-    this.loading$.next(false);
 
     const closeCategoryPicker: Gesture = this.gestureCtrl.create(
       {
@@ -844,7 +844,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     closeCategoryPicker.enable();
 
     // I'm sure there's a better way to do this... but then again there's no time right now.
-    const topBar = document.getElementsByTagName('ion-header')[1].offsetHeight;
+    const topBar = document.getElementsByTagName('ion-header')[1].clientHeight;
     setTimeout(() => {
       const spotbieCategories = document.getElementById('spotbieCategories');
       spotbieCategories.style.paddingTop = topBar + 'px';
@@ -872,15 +872,11 @@ export class MapComponent implements OnInit, AfterViewInit {
   goToQrCode() {
     this.closeCategories();
     this.openWelcome();
-
-    this.homeDashboard.startQrScanner();
   }
 
   goToLp() {
     this.closeCategories();
     this.openWelcome();
-
-    this.homeDashboard.redeemedLp();
   }
 
   closeCategories(): void {
@@ -931,6 +927,8 @@ export class MapComponent implements OnInit, AfterViewInit {
           loc_y: this.lng$.getValue(),
           categories: this.searchKeyword$.getValue(),
         };
+
+        console.log('SEARCH OBJECT', searchObjSb);
 
         //Retrieve the SpotBie Community Member Results
         this.locationService
@@ -1605,6 +1603,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     } else {
       return true;
     }
+  }
+
+  openBusinesSettings() {
+    this.openBusinessSettingsEvt.emit()
   }
 
   openAppSettings() {

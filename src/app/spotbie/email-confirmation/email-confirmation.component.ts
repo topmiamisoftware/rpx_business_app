@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EmailConfirmationError } from 'src/app/errors/user.errors';
-import { logErrorMessage } from 'src/app/helpers/retry.operators';
+import { EmailConfirmationError } from '../../errors/user.errors';
+import { logErrorMessage } from '../../helpers/retry.operators';
 import { EmailConfirmationService } from './email-confirmation.service';
 
 @Component({

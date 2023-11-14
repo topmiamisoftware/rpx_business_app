@@ -7,12 +7,11 @@ import {MenuLoggedOutComponent} from './menu-logged-out.component';
 import {LogInComponent} from './log-in/log-in.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HelperModule} from '../../helpers/helper.module';
-import {SignUpComponent} from './sign-up/sign-up.component';
 import {IonicModule} from '@ionic/angular';
 import {MapModule} from '../map/map.module';
 
 @NgModule({
-  declarations: [MenuLoggedOutComponent, LogInComponent, SignUpComponent],
+  declarations: [MenuLoggedOutComponent, LogInComponent],
   imports: [
     CommonModule,
     FormsModule,

@@ -64,7 +64,7 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
   infoObjectDescription: string;
   infoObjectTitle: string;
   objectCategories: string = '';
-  objectDisplayAddress: string;
+  objectDisplayAddress$ = new BehaviorSubject<string>(null);
   eInfoObjectType: any = InfoObjectType;
 
   constructor(
@@ -96,8 +96,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
   }
 
   private pullInfoObject(): void {
-    console.log('pullInfoObject');
-
     if (this.router.url.indexOf('event') > -1) {
       const infoObjectId = this.activatedRoute.snapshot.paramMap.get('id');
       this.urlApi = `id=${infoObjectId}`;
@@ -119,9 +117,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
   }
 
   private pullInfoObjectCallback(httpResponse: any): void {
-    console.log('httpResponse', httpResponse);
-    console.log('this.infoObjectCategory;', this.infoObjectCategory);
-
     if (httpResponse.success) {
       const infoObject = httpResponse.data as InfoObject;
       infoObject.type_of_info_object_category = this.infoObjectCategory;
@@ -176,9 +171,7 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
       }
 
       if (!infoObject.is_community_member) {
-        this.objectDisplayAddress = `${infoObject.location.display_address[0]}, ${infoObject.location.display_address[1]}`;
-      } else {
-        this.objectDisplayAddress = infoObject.address;
+        this.objectDisplayAddress$.next(this.infoObject$.getValue().location.display_address.join(', '));
       }
 
       infoObject.categories.forEach(category => {
@@ -192,11 +185,17 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
 
       switch (infoObject.type_of_info_object_category) {
         case 1:
-          this.infoObjectTitle = `${infoObject.name} - ${this.objectCategories} - ${this.objectDisplayAddress}`;
-          this.infoObjectDescription = `Let's go eat at ${infoObject.name}. I know you'll enjoy some of these categories ${this.objectCategories}. They are located at ${this.objectDisplayAddress}.`;
+          this.infoObjectTitle = `${infoObject.name} - ${
+            this.objectCategories
+          } - ${this.objectDisplayAddress$.getValue()}`;
+          this.infoObjectDescription = `Let's go eat at ${
+            infoObject.name
+          }. They are located at ${this.objectDisplayAddress$.getValue()}.`;
           break;
         case 2:
-          this.infoObjectTitle = `${infoObject.name} - ${this.objectCategories} - ${this.objectDisplayAddress}`;
+          this.infoObjectTitle = `${infoObject.name} - ${
+            this.objectCategories
+          } - ${this.objectDisplayAddress$.getValue()}`;
           this.infoObjectDescription = `I really recommend you go shopping at ${infoObject.name}!`;
           break;
       }
@@ -221,9 +220,15 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
 
     let displayAddress = '';
 
-    this.infoObject$.getValue().location.display_address.forEach(element => {
-      displayAddress = displayAddress + ' ' + element;
-    });
+    if (
+      this.infoObject$.getValue().type_of_info_object === 'spotbie_community'
+    ) {
+      displayAddress = this.infoObject$.getValue().address;
+    } else {
+      this.infoObject$.getValue().location.display_address.forEach(element => {
+        displayAddress = displayAddress + ' ' + element;
+      });
+    }
 
     if (confirmNav) {
       await AppLauncher.openUrl({
@@ -410,10 +415,13 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
             infoObject.user_type === 3
           ) {
             this.infoObjectLink = `${environment.baseUrl}community/${infoObject.qr_code_link}`;
+            this.objectDisplayAddress$.next(infoObject.address);
             switch (infoObject.user_type) {
               case 1:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
-                this.infoObjectDescription = `Let's go eat at ${infoObject.name}. I know you'll enjoy some of these categories ${this.infoObjectCategory}. They are located at ${this.objectDisplayAddress}.`;
+                this.infoObjectDescription = `Let's go eat at ${
+                  infoObject.name
+                }. They are located at ${this.objectDisplayAddress$.getValue()}.`;
                 break;
               case 2:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;

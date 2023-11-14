@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core'
-import * as spotbieGlobals from 'src/app/globals'
+import * as spotbieGlobals from '../../../../globals'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { handleError } from 'src/app/helpers/error-helper'
+import { handleError } from '../../../../helpers/error-helper'
 import { catchError } from 'rxjs/operators'
-import { Reward } from 'src/app/models/reward'
+import { Reward } from '../../../../models/reward'
 import { Store } from '@ngrx/store'
-import { setValue } from 'src/app/spotbie/spotbie-logged-in/loyalty-points/loyalty-points.actions'
-import { LoyaltyPointBalance } from 'src/app/models/loyalty-point-balance'
+import { setValue } from '../../../../spotbie/spotbie-logged-in/loyalty-points/loyalty-points.actions'
 
 const REWARD_API = `${spotbieGlobals.API}reward`
 

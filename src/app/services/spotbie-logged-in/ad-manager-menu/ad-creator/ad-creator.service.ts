@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
-import * as spotbieGlobals from 'src/app/globals'
+import * as spotbieGlobals from '../../../../globals'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { handleError } from 'src/app/helpers/error-helper'
+import { handleError } from '../../../../helpers/error-helper'
 import { catchError } from 'rxjs/operators'
-import { Ad } from 'src/app/models/ad'
+import { Ad } from '../../../../models/ad'
 
 const ADS_API = spotbieGlobals.API+'in-house'
 

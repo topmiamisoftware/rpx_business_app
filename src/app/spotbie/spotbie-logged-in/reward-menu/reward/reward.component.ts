@@ -1,61 +1,69 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Reward } from 'src/app/models/reward';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {Reward} from '../../../../models/reward';
+import {Preferences} from "@capacitor/preferences";
 
 @Component({
   selector: 'app-reward',
   templateUrl: './reward.component.html',
-  styleUrls: ['./reward.component.css']
+  styleUrls: ['./reward.component.css'],
 })
-export class RewardComponent implements OnInit {
+export class RewardComponent implements OnInit, AfterViewInit {
+  @Output() closeWindowEvt = new EventEmitter();
 
-  @Output('closeWindowEvt') closeWindowEvt = new EventEmitter()
+  @Input() fullScreenMode = true;
+  @Input() reward: Reward;
+  @Input() userPointToDollarRatio: number;
 
-  @Input('fullScreenMode') fullScreenMode: boolean = true
+  loading = false;
+  successful_url_copy = false;
+  isLoggedIn: string;
 
-  @Input('reward') reward: Reward
+  constructor() {}
 
-  @Input('userPointToDollarRatio') userPointToDollarRatio: number
+  async ngAfterViewInit() {
+    const isLoggedInRet = await Preferences.get({key: 'spotbie_loggedIn'});
+    this.isLoggedIn = isLoggedInRet.value;
 
-  public loading: boolean = false
-  
-  public infoObjectImageUrl = 'assets/images/home_imgs/spotbie-white-icon.svg'
+    // I'm sure there's a better way to do this but I don't have time right now.
+    const closeButton = document.getElementById('sb-closeButtonReward');
 
-  public successful_url_copy: boolean = false
+    const p =
+      this.isLoggedIn === '0' || !this.isLoggedIn
+        ? document.getElementById('ionToolbarLoggedOut').offsetHeight
+        : document.getElementById('ionToolbarLoggedIn').offsetHeight;
 
-  public rewardLink: string = null
-
-  constructor() { }
-
-  public getFullScreenModeClass(){
-
-    console.log("getFullScreenModeClass", this.fullScreenMode)
-
-    if(this.fullScreenMode)
-      return 'fullScreenMode'
-    else
-      return ''
-  
+    closeButton.style.top = p + 'px';
   }
 
-  public closeThis(){
-    this.closeWindowEvt.emit()
+  ngOnInit() {}
+
+  getFullScreenModeClass() {
+    if (this.fullScreenMode) {
+      return 'fullScreenMode';
+    } else {
+      return '';
+    }
   }
 
-  public linkCopy(input_element) {
-    
-    input_element.select();
+  closeThis() {
+    this.closeWindowEvt.emit();
+  }
+
+  linkCopy(inputElement) {
+    inputElement.select();
     document.execCommand('copy');
-    input_element.setSelectionRange(0, input_element.value.length);
+    inputElement.setSelectionRange(0, inputElement.value.length);
     this.successful_url_copy = true;
 
-    setTimeout(function() {
+    setTimeout(() => {
       this.successful_url_copy = false;
-    }.bind(this), 2500);
-
+    }, 2500);
   }
-
-  ngOnInit(): void {
-
-  }
-
 }

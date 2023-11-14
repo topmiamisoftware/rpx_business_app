@@ -46,6 +46,7 @@
     [eventsClassification]="eventsClassification$ | async"
     [accountType]="searchCategory$ | async"
     [categories]="bottomBannerCategories$ | async"
+    [isMobile]="isMobile"
     [lat]="lat$ | async"
     [lng]="lng$ | async">
   </app-bottom-ad-banner>
@@ -57,6 +58,7 @@
                           [eventsClassification]="eventsClassification$ | async"
                           [accountType]="searchCategory$ | async"
                           [categories]="numberCategories$ | async"
+                          [isMobile]="isMobile"
                           [lat]="lat$ | async"
                           [lng]="lng$ | async"></app-header-ad-banner>
 
@@ -323,6 +325,7 @@
                             [eventsClassification]="eventsClassification$ | async"
                             [accountType]="searchCategory$ | async"
                             [categories]="numberCategories$ | async"
+                            [isMobile]="isMobile"
                             [lat]="lat$ | async"
                             [lng]="lng$ | async"></app-bottom-ad-banner>
     </div>
@@ -350,8 +353,8 @@
 
   <ng-container *ngIf="(isLoggedIn$ | async) === '1' && !(showSearchResults$ | async) && !(map$ | async)">
     <div class='map-prompt-mobile align-items-center justify-content-center' #featureWrapper>
-      <app-user-dashboard (spawnCategoriesEvt)="spawnCategories($event)" #homeDashboard
-      ></app-user-dashboard>
+      <app-business-dashboard (openBusinessSettingsEvt)="openBusinesSettings()">
+      </app-business-dashboard>
     </div>
   </ng-container>
 </div>
@@ -410,8 +413,5 @@
                  (closeWindow)="infoObject$.next(null)"
                  *ngIf="(infoObject$ | async)">
 </app-info-object>
-
-<!--<app-my-favorites *ngIf="myFavoritesWindow.open" (closeWindow)="closeFavorites()"></app-my-favorites>-->
-<app-scroll-to-top></app-scroll-to-top>
 
 <app-loading-screen *ngIf="(loading$ | async)"></app-loading-screen>

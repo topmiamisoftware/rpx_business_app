@@ -17,3 +17,10 @@ export class User {
   loyalty_point_balance: any;
   next_payment: string;
 }
+
+export enum BusinessMembership {
+  Starter = 'spotbie.business_subscription_price1',
+  Intermediate = 'spotbie.business_subscription_price_1_2',
+  Ultimate = 'spotbie.business_subscription_price_2_2',
+  Legacy = 'spotbie.business_subscription_price',
+}

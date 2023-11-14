@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
-import { logOutCallback } from 'src/app/helpers/logout-callback'
+import { logOutCallback } from '../../helpers/logout-callback'
 import { UserauthService } from '../userauth.service'
 
 @Injectable({

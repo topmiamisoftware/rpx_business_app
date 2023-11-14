@@ -1,101 +1,62 @@
-<table class="spotbie-el-100
-              spotbie-menu
-              spotbie-menu-fixed"
-       id="spotbie-topMenu"
-       #spotbieMainMenu>
-  <tr>
-    <td class="sb-menu-nav" (click)="slideMenu()" *ngIf="!isDesktop">
-      <i class="fa fa-bars" *ngIf="!menuActive"></i>
-      <i class="fa fa-times" *ngIf="menuActive"></i>
-    </td>
+<ion-menu menuId="logged-in-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Loyalty Points</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding" color="primary">
+    <ion-list>
+      <ion-item class="ion-padding-top ion-padding-bottom" color="primary" lines="full" (click)="home()">
+        <ion-icon name="home" slot="start"></ion-icon>
+        HOME
+      </ion-item>
 
-    <td [ngStyle]="getPointsWrapperStyle()">
-      <img class="spotbie-header-mini-logo" src="assets/images/spotbie_logo_header.svg" *ngIf="isDesktop" (click)="home()"/>
-
-      <span class='sb-loyalty-points' (click)="toggleLoyaltyPoints()" >{{ userLoyaltyPoints | number:'1.0':'en-US' }}</span>
-
-      <img class='sb-loyalty-points' *ngIf="!isMobile && !isTablet" (click)="toggleRedeemables()"  src="assets/images/spotbie-loyalty-points.svg" />
-
-      <div class="sb-businessMenu" *ngIf="!isDesktop">
-        <img class='sb-loyalty-points' (click)="toggleRedeemables()" src="assets/images/spotbie-loyalty-points.svg" />
-      </div>
-
-      <!--<div *ngIf="this.userType == eAllowedAccountTypes.PlaceToEat ||
-                  this.userType == eAllowedAccountTypes.Shopping ||
-                  this.userType == eAllowedAccountTypes.Events"
-            (click)="toggleRedeemables()"
-            class="sb-businessMenu">
-
-        <img class='sb-loyalty-points' src="assets/images/menu spotbie-01.svg" />
-
-      </div>-->
-
-      <img class='sb-qr' (click)="toggleQRScanner()"  src="assets/images/spotbie-qr.svg" />
-
-      <span class='sb-userName' (click)="openWindow(settingsWindow)" *ngIf="userName !== null && isDesktop">{{ userName }}</span>
-    </td>
-
-    <td *ngIf="isDesktop" class="sb-desktopNavBar" style="text-align: right; cursor: default;">
-      <span (click)="spawnCategories('food')" *ngIf="this.userType === eAllowedAccountTypes.Personal">
+      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(1)">
+        <ion-icon name="pizza" slot="start"></ion-icon>
         PLACES TO EAT
-      </span>
+      </ion-item>
 
-      <span (click)="spawnCategories('shopping')" *ngIf="this.userType === eAllowedAccountTypes.Personal">
-        RETAIL
-      </span>
+      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(2)">
+        <ion-icon name="pricetags" slot="start"></ion-icon>
+        SHOPPING
+      </ion-item>
 
-      <span (click)="spawnCategories('events')" *ngIf="this.userType === eAllowedAccountTypes.Personal">
+      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(3)">
+        <ion-icon name="glasses" slot="start"></ion-icon>
         EVENTS
-      </span>
+      </ion-item>
 
-      <div class="sb-businessMenu" *ngIf="this.userType === eAllowedAccountTypes.Events">
-        <img class='sb-loyalty-points' (click)="openEvents()" src="assets/images/spotbie-loyalty-points.svg" />
-      </div>
+      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="openSettings()">
+        <ion-icon name="cog" slot="start"></ion-icon>
+        SETTINGS
+      </ion-item>
 
-      <span (click)="logOut()">
+      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="logOut()">
+        <ion-icon name="power" slot="start"></ion-icon>
         LOG OUT
-      </span>
-    </td>
-  </tr>
-</table>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
 
-<div class="spotbie-slider-menu-background" *ngIf="menuActive">
-  <table class="spotbie-slider-menu
-                animated slideInLeft" #spotbieMainMenu>
-    <tr>
-      <td>
-        <div (click)="home()" *ngIf="this.userType !== eAllowedAccountTypes.Personal">
-          HOME
-        </div>
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar id='ionToolbarLoggedIn' class="safe--area" color="tertiary">
+      <ion-buttons slot="start">
+        <ion-menu-button auto-hide="false"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="end" (click)="toggleLoyaltyPoints()">
+        <ion-button>
+          <img class='sb-loyalty-points' src="assets/images/spotbie-loyalty-points.svg" />
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <!-- we neeed the main-ion-content class so that we can sett he background to transparent for the scanner -->
+  <ion-content class="main-ion-content has-header">
+    <!--<app-event-menu *ngIf="eventMenuOpen"></app-event-menu>-->
+    <app-map #spotbieMap *ngIf="mapApp$ | async" (openBusinessSettingsEvt)="openSettings()"></app-map>
 
-        <div (click)="spawnCategories('food')">
-          PLACES TO EAT <i class="fa fa-angle-right"></i>
-        </div>
-
-        <div (click)="spawnCategories('shopping')">
-          RETAIL <i class="fa fa-angle-right"></i>
-        </div>
-
-        <div (click)="spawnCategories('events')">
-          EVENTS <i class="fa fa-angle-right"></i>
-        </div>
-
-        <!--<div (click)="myFavorites()">
-          MY FAVORITES <i class="fas fa-angle-right"></i>
-        </div>-->
-
-        <div (click)="openWindow(settingsWindow)">
-          SETTINGS
-        </div>
-
-        <div (click)="logOut()">
-          LOG OUT
-        </div>
-      </td>
-    </tr>
-  </table>
+    <app-settings *ngIf="settingsWindow$ | async" #spotbieSettings (closeWindowEvt)="closeSettings()"></app-settings>
+  </ion-content>
 </div>
-
-<app-map [business]="business" *ngIf="mapApp.open" #spotbieMap (openBusinessSettingsEvt)="openBusinessSettings()"></app-map>
-
-<app-settings *ngIf="settingsWindow.open" #spotbieSettings (closeWindowEvt)="closeWindow(settingsWindow)"></app-settings>

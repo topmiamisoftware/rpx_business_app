@@ -5,6 +5,7 @@ import { SpEvent } from 'src/app/models/event'
 import { LoyaltyPointBalance } from 'src/app/models/loyalty-point-balance'
 import { EventCreatorService } from 'src/app/services/spotbie-logged-in/event-menu/event-creator/event-creator.service'
 import * as spotbieGlobals from '../../../../globals'
+import {Preferences} from "@capacitor/preferences";
 
 const event_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}event/upload-media`
 const event_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -167,9 +168,8 @@ export class EventCreatorComponent implements OnInit {
     this.eventMediaInput.nativeElement.click()
   }
 
-  public uploadMedia(files): void {
-
-    const file_list_length = files.length
+  async uploadMedia(files) {
+    const file_list_length = files.length;
 
     if (file_list_length === 0) {
       this.eventMediaMessage = 'You must upload at least one file.'
@@ -202,41 +202,37 @@ export class EventCreatorComponent implements OnInit {
 
     }
 
-    let token = localStorage.getItem('spotbiecom_session')
+    let token = await Preferences.get({key: 'spotbiecom_session'});
 
     this.http.post(event_MEDIA_UPLOAD_API_URL, formData,
                     {
                       reportProgress: true,
                       observe: 'events',
                       withCredentials: true, headers: {
-                        'Authorization' : `Bearer ${token}`
+                        'Authorization' : `Bearer ${token.value}`
                       }
                     }
                   ).subscribe(event => {
 
-      if (event.type === HttpEventType.UploadProgress)
+      if (event.type === HttpEventType.UploadProgress) {
         this.eventMediaUploadProgress = Math.round(100 * event.loaded / event.total)
-      else if (event.type === HttpEventType.Response)
+      } else if (event.type === HttpEventType.Response) {
         this.eventMediaUploadFinished(event.body)
+      }
+    });
 
-    })
-
-    return
-
+    return;
   }
 
   private eventMediaUploadFinished(httpResponse: any): void {
-
-    console.log('eventMediaUploadFinished', httpResponse)
-
     if (httpResponse.success){
-      this.eventUploadImage = httpResponse.image
-      this.eventCreatorForm.get('eventImage').setValue(this.eventUploadImage)
-    } else
-      console.log('eventMediaUploadFinished', httpResponse)
+      this.eventUploadImage = httpResponse.image;
+      this.eventCreatorForm.get('eventImage').setValue(this.eventUploadImage);
+    } else {
+      console.log('eventMediaUploadFinished', httpResponse);
+    }
 
-    this.loading = false
-
+    this.loading = false;
   }
 
   public eventTypeChange(){

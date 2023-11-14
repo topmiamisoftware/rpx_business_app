@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Preferences} from '@capacitor/preferences';
 
 @Component({
   selector: 'app-menu',
@@ -6,34 +7,17 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
   styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent implements OnInit {
+  @ViewChild('spotbieMainMenu') spotbieMainMenu;
+  @ViewChild('spotbieHoveredApp') spotbieHoveredApp;
 
-  @Input() public_profile_info : any
-  @Input() album_id : string
-  @Input() album_media_id : string  
-
-  @ViewChild('spotbieMainMenu') spotbieMainMenu
-
-  @ViewChild('spotbieHoveredApp') spotbieHoveredApp
-
-  public public_profile : boolean
-
-  public isLoggedIn: boolean = false
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-
     // save timezone
-    const userTimezone =  Intl.DateTimeFormat().resolvedOptions().timeZone
-    localStorage.setItem('spotbie_userTimeZone', userTimezone)
-
-    // check log in status, turn map on if we are logged out
-    const cookiedLoggedIn = localStorage.getItem('spotbie_loggedIn')
-
-    if (cookiedLoggedIn == '1') this.isLoggedIn = true
-
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    Preferences.set({
+      key: 'spotbie_userTimeZone',
+      value: userTimezone,
+    });
   }
-
-  ngAfterViewInit() {}
-  
 }

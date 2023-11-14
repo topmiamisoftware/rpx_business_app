@@ -9,7 +9,7 @@ import {Preferences} from '@capacitor/preferences';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('appMap') appMap: MapComponent;
+   // @ViewChild('appMap') appMap: MapComponent;
 
   arrowOn = false;
   getStartedPrompt = true;

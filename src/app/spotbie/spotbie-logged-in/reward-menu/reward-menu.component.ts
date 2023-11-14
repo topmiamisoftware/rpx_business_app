@@ -1,19 +1,24 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { AllowedAccountTypes } from 'src/app/helpers/enum/account-type.enum'
-import { LoyaltyPointBalance } from 'src/app/models/loyalty-point-balance'
-import { Business } from 'src/app/models/business'
-import { Reward } from 'src/app/models/reward'
-import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-points.service'
-import { BusinessMenuServiceService } from 'src/app/services/spotbie-logged-in/business-menu/business-menu-service.service'
-import { RewardCreatorComponent } from './reward-creator/reward-creator.component'
-import { RewardComponent } from './reward/reward.component'
-import { environment } from 'src/environments/environment'
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core'
+import {ActivatedRoute, Router} from '@angular/router'
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
+import {Business} from '../../../models/business'
+import {Reward} from '../../../models/reward'
+import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service'
+import {
+  BusinessMenuServiceService
+} from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service'
+import {RewardCreatorComponent} from './reward-creator/reward-creator.component'
+import {RewardComponent} from './reward/reward.component'
+import {environment} from '../../../../environments/environment'
+import {Preferences} from "@capacitor/preferences";
+import {BehaviorSubject} from "rxjs";
+import {UserauthService} from "../../../services/userauth.service";
 
 @Component({
   selector: 'app-reward-menu',
   templateUrl: './reward-menu.component.html',
-  styleUrls: ['./reward-menu.component.css']
+  styleUrls: ['./reward-menu.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RewardMenuComponent implements OnInit {
 
@@ -29,22 +34,24 @@ export class RewardMenuComponent implements OnInit {
   @Output() notEnoughLpEvt = new EventEmitter()
 
   eAllowedAccountTypes = AllowedAccountTypes
-  menuItemList: Array<any>
-  itemCreator: boolean = false
-  rewardApp: boolean = false
+  menuItemList$ =  new BehaviorSubject<Array<any>>([]);
+  itemCreator$ = new BehaviorSubject<boolean>(false);
+  rewardApp$ = new BehaviorSubject<boolean>(false);
   userLoyaltyPoints
   userResetBalance
-  userPointToDollarRatio
-  rewards: Array<Reward> = null
-  reward: Reward
-  userType: number = null
-  business: Business = new Business()
-  loyaltyPointsBalance: any
-  isLoggedIn: string = null
+  userPointToDollarRatio$ =  new BehaviorSubject<number>(null);
+  rewards$ = new BehaviorSubject<Array<Reward>>([]);
+  reward$ = new BehaviorSubject<Reward>(null);
+  userType$= new BehaviorSubject<number>(0);
+  business$= new BehaviorSubject<Business>(new Business());
+  loyaltyPointsBalance$ = new BehaviorSubject<any>(null);
+  isLoggedIn$ = new BehaviorSubject<string>(null);
+  showCreate$ = new BehaviorSubject<boolean>(false);
 
   constructor(private loyaltyPointsService: LoyaltyPointsService,
               private businessMenuService: BusinessMenuServiceService,
               private router: Router,
+              private userService: UserauthService,
               route: ActivatedRoute){
       if(this.router.url.indexOf('business-menu') > -1){
         this.qrCodeLink = route.snapshot.params.qrCode
@@ -60,7 +67,7 @@ export class RewardMenuComponent implements OnInit {
 
   getLoyaltyPointBalance(){
     this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointsBalance => {
-        this.loyaltyPointsBalance = loyaltyPointsBalance
+        this.loyaltyPointsBalance$.next(loyaltyPointsBalance);
       })
   }
 
@@ -75,22 +82,26 @@ export class RewardMenuComponent implements OnInit {
   }
 
   private async fetchRewardsCb(resp){
-    this.rewards = resp.rewards
+    if (resp.business.id === this.userService.userProfile.business.id) {
+      this.showCreate$.next(true);
+    }
 
-    if(this.userType === this.eAllowedAccountTypes.Personal || this.isLoggedIn !== '1'){
-      this.userPointToDollarRatio = resp.loyalty_point_dollar_percent_value
-      this.business = resp.business
+    this.rewards$.next(resp.rewards);
+
+    if(this.userType$.getValue() === this.eAllowedAccountTypes.Personal || this.isLoggedIn$.getValue() !== '1'){
+      this.userPointToDollarRatio$.next(resp.loyalty_point_dollar_percent_value);
+      this.business$.next(resp.business);
     }
   }
 
   addItem(){
-    if(this.loyaltyPointsBalance.balance === 0){
+    if(this.loyaltyPointsBalance$.getValue().balance === 0){
       this.notEnoughLpEvt.emit()
       this.closeWindow()
       return
     }
 
-    this.itemCreator = !this.itemCreator
+    this.itemCreator$.next(!this.itemCreator$.getValue());
   }
 
   closeWindow(){
@@ -98,24 +109,24 @@ export class RewardMenuComponent implements OnInit {
   }
 
   openReward(reward: Reward){
-    this.reward = reward
-    this.reward.link = `${environment.baseUrl}business-menu/${this.qrCodeLink}/${this.reward.uuid}`
-    this.rewardApp = true
+    this.reward$.next(reward);
+    this.reward$.getValue().link = `${environment.baseUrl}business-menu/${this.qrCodeLink}/${this.reward$.getValue().uuid}`
+    this.rewardApp$.next(true);
   }
 
   closeReward(){
-    this.reward = null
-    this.rewardApp = false
+    this.reward$.next(null);
+    this.rewardApp$.next(false);
   }
 
   editReward(reward: Reward){
-    this.reward = reward
-    this.itemCreator = true
+    this.reward$.next(reward);
+    this.itemCreator$.next(true);
   }
 
   closeRewardCreator(){
-    this.reward = null
-    this.itemCreator = false
+    this.reward$.next(null);
+    this.itemCreator$.next(false);
   }
 
   closeRewardCreatorAndRefetchRewardList(){
@@ -130,11 +141,13 @@ export class RewardMenuComponent implements OnInit {
       return { background: 'linear-gradient(90deg,#35a99f,#64e56f)' }
   }
 
-  ngOnInit(): void {
-    this.userType = parseInt(localStorage.getItem('spotbie_userType'), 10)
-    this.isLoggedIn = localStorage.getItem('spotbie_loggedIn')
+  async ngOnInit() {
+    let userType = await Preferences.get({key: 'spotbie_userType'});
+    this.userType$.next(parseInt(userType.value, 10));
 
-    if( this.userType !== this.eAllowedAccountTypes.Personal) {
+    this.isLoggedIn$.next((await Preferences.get({key: 'spotbie_loggedIn'})).value);
+
+    if( this.userType$.getValue() !== this.eAllowedAccountTypes.Personal) {
       this.getLoyaltyPointBalance()
       this.fetchRewards()
     } else {

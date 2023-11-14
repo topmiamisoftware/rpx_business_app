@@ -1,5 +1,3 @@
-<app-loading-screen *ngIf="loading"></app-loading-screen>
-
 <div class="spotbie-overlay-window">
 
     <div class='sb-closeButton' (click)="closeThis()">
@@ -9,21 +7,9 @@
     <div #spbTopAnchor></div>
 
     <div class='sb-adCreatorWrapper'>
-
-        <p class="cursor-pointer"
-            *ngIf="(ad !== null && ad !== undefined) && ad.is_live !== 1"
-            style="font-size: .8rem;"
-            (click)="activateAdMembership()">
-
-            <i class="fas fa-exclamation-triangle"></i>
-            <span class='spotbie-text-gradient text-uppercase '>ACTIVATE PROMOTION</span>
-
-        </p>
-
         <h5 class="spotbie-text-gradient text-center text-uppercase pt-3 mb-4">PROMOTION EDITOR</h5>
 
         <form [formGroup]="adCreatorForm" *ngIf="adCreatorFormUp">
-
             <div class='spotbie-text-gradient text-uppercase text-center' #spbInputInfo></div>
 
             <div *ngIf="(adFormSubmitted || showErrors) && f.adType.errors else adTypeTemplate"
@@ -39,13 +25,22 @@
                 </label>
             </ng-template>
 
-            <mat-form-field class="sb-input" style="padding-left: 0px;" appearance="fill">
-                <mat-label>Promotion Format</mat-label>
-
-                <mat-select formControlName="adType" [(value)]="selected" (selectionChange)="adTypeChange()">
-                  <mat-option *ngFor="let adType of adTypeList; let i = index;" [value]="i">{{ adType.name }}</mat-option>
-                </mat-select>
-            </mat-form-field>
+            <ion-list class='sb-input mb-3'>
+              <ion-item>
+                <ion-select aria-label="Promotion Format"
+                            placeholder="Promotion Format"
+                            interface="action-sheet"
+                            class="sb-select"
+                            formControlName="adType"
+                            toggleIcon="caret-down-sharp"
+                            (ionChange)="adTypeChange()"
+                            [value]="selected">
+                  <ion-select-option *ngFor="let adType of adTypeList; let i = index;" [value]="i">
+                    {{ adType.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-list>
 
             <div *ngIf="adFormSubmitted && f.adName.errors else adNameNormalTemplate"
                     class="spotbie-input-info spotbie-text-gradient spotbie-error mt-2 mb-2">
@@ -65,14 +60,12 @@
             </ng-template>
 
             <input class="sb-input"
-                    (click)="$event.target.select()"
                     formControlName="adName"
                     type="text"
                     placeholder="My Ad"
                     maxlength="50" />
 
             <input type="hidden" formControlName="adImage" />
-
             <input type="hidden" formControlName="adImageMobile" />
         </form>
 
@@ -106,7 +99,7 @@
                 <app-bottom-ad-banner #adApp class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true"></app-bottom-ad-banner>
             </div>
 
-            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;">DESKTOP PREVIEW</h6>
+            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">DESKTOP PREVIEW</h6>
         </form>
 
         <form>
@@ -151,7 +144,7 @@
             <i class='fa fa-check'></i>
         </div>
 
-        <div class='mt-5 mb-5 sb-deleteMe' *ngIf="ad !== null && ad !== undefined" (click)="deleteMe()">
+        <div class='mt-5 mb-5 sb-deleteMe' *ngIf="ad" (click)="deleteMe()">
             <span class="spotbie-text-gradient">DELETE SUBSCRIPTION </span><i class='fa fa-trash'></i>
         </div>
 

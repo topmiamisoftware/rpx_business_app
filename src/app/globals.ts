@@ -1,6 +1,6 @@
 'user strict'
 
-import { environment } from 'src/environments/environment'
+import { environment } from '../environments/environment'
 
 export const API = `${environment.apiEndpoint}`
 export const RESOURCES = `${environment.apiEndpoint}`

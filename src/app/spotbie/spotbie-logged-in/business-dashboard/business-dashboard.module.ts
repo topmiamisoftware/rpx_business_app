@@ -5,7 +5,6 @@ import { QrModule } from '../qr/qr.module';
 import { LoyaltyPointsModule } from '../loyalty-points/loyalty-points.module';
 import { RewardMenuModule } from '../reward-menu/reward-menu.module';
 import { RouterModule } from '@angular/router';
-import { RedeemableModule } from '../redeemable/redeemable.module';
 import { AdManagerModule } from '../ad-manager-menu/ad-manager-menu.module';
 import {CustomerManagerModule} from '../customer-manager/customer-manager.module';
 
@@ -20,7 +19,6 @@ import {CustomerManagerModule} from '../customer-manager/customer-manager.module
     RouterModule,
     QrModule,
     AdManagerModule,
-    RedeemableModule,
     CustomerManagerModule,
   ],
   exports : [

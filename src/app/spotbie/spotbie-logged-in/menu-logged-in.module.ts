@@ -1,23 +1,19 @@
-import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { DeviceDetectorService } from 'ngx-device-detector'
-import { HttpClientModule } from '@angular/common/http'
-import { MenuLoggedInComponent } from './menu-logged-in.component'
-import { SpotbiePipesModule } from 'src/app/spotbie-pipes/spotbie-pipes.module'
-import { RouterModule } from '@angular/router'
-import { HelperModule } from 'src/app/helpers/helper.module'
-import { MapModule } from '../map/map.module'
-import { SettingsModule } from './settings/settings.module';
-import { RedeemableModule } from './redeemable/redeemable.module';
-// import { EventMenuModule } from './event-menu/event-menu.module'
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import {MenuLoggedInComponent} from './menu-logged-in.component';
+import {SpotbiePipesModule} from '../../spotbie-pipes/spotbie-pipes.module';
+import {RouterModule} from '@angular/router';
+import {HelperModule} from '../../helpers/helper.module';
+import {MapModule} from '../map/map.module';
+import {SettingsModule} from './settings/settings.module';
+import {IonicModule} from '@ionic/angular';
+//import { EventMenuModule } from './event-menu/event-menu.module';
 
 @NgModule({
-  declarations: [
-    MenuLoggedInComponent,
-  ],
+  declarations: [MenuLoggedInComponent],
   imports: [
-    RedeemableModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -28,13 +24,9 @@ import { RedeemableModule } from './redeemable/redeemable.module';
     MapModule,
     SettingsModule,
     RouterModule,
-    // EventMenuModule
+    IonicModule.forRoot(),
+    //EventMenuModule
   ],
-  providers: [
-    DeviceDetectorService
-  ],
-  exports: [
-    MenuLoggedInComponent
-  ]
+  exports: [MenuLoggedInComponent],
 })
-export class MenuLoggedInModule { }
+export class MenuLoggedInModule {}

@@ -1,28 +1,28 @@
-import { environment } from "src/environments/environment"
+import {Preferences} from '@capacitor/preferences';
 
-export const logOutCallback = function(resp: any, locationReload: boolean = true): void{
+export const logOutCallback = function (resp: any): void {
+  if (resp.success) {
+    Preferences.set({
+      key: 'spotbie_loggedIn',
+      value: '0',
+    });
+    Preferences.set({
+      key: 'spotbie_userApiKey',
+      value: null,
+    });
+    Preferences.set({
+      key: 'spotbie_rememberMe',
+      value: '0',
+    });
+    Preferences.set({
+      key: 'spotbie_rememberMeToken',
+      value: null,
+    });
+    Preferences.set({
+      key: 'spotbie_userType',
+      value: null,
+    });
 
-    console.log('LOG OUT CALLBACK');
-
-    if(resp.success){
-
-        let loggedOutFavorites = localStorage.getItem('spotbie_currentFavorites')
-
-        localStorage.clear()
-        
-        localStorage.setItem('spotbie_currentFavorites', loggedOutFavorites)
-
-        localStorage.setItem('spotbie_locationPrompted', '1')
-        localStorage.setItem('spotbie_userId', '0')
-        localStorage.setItem('spotbie_loggedIn', '0')
-        localStorage.setItem('spotbie_userApiKey', null)
-        localStorage.setItem('spotbie_rememberMe', '0')
-        localStorage.setItem('spotbie_rememberMeToken', null)
-        localStorage.setItem('spotbie_userType', null)
-
-        if(locationReload) 
-            window.open(environment.baseUrl + 'home', '_self')
-
-    }
-
-}
+    location.href = '/home';
+  }
+};

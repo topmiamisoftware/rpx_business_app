@@ -1,21 +1,23 @@
 
 
-<div *ngIf="isLoggedIn == '1' && (userType !== eAllowedAccountTypes.Personal && userType !== eAllowedAccountTypes.Unset)">
+<div *ngIf="(isLoggedIn$ | async) === '1' &&
+            (userType$ | async) !== eAllowedAccountTypes.Personal &&
+            (userType$ | async) !== eAllowedAccountTypes.Unset">
   <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">REWARD MENU</h4>
 
-  <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2">
+  <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2" *ngIf="(showCreate$ | async)">
     Rewards that your business will offer to the SpotBie Community.
   </p>
 
   <div class='sb-menuItemWrapper'>
     <div class='sb-addMenuItem'
          (click)="addItem()"
-         *ngIf="rewards !== null && rewards.length < 8">
+         *ngIf="((rewards$ | async) !== null) && ((rewards$ | async).length < 8) && (showCreate$ | async)">
       <h6 class="spotbie-text-gradient">+ ADD REWARD</h6>
     </div>
 
     <div class='sb-menuItem'
-         *ngFor="let reward of rewards"
+         *ngFor="let reward of (rewards$ | async)"
          [ngStyle]="rewardTileStyling(reward)"
          (click)="editReward(reward)">
 
@@ -27,7 +29,7 @@
 
       <h6 *ngIf="reward.type === 1">
         <span class='sb-text-light-green-gradient'>
-            {{ (reward.point_cost * (loyaltyPointsBalance.loyalty_point_dollar_percent_value / 100)) | currency : 'USD' }}
+            {{ (reward.point_cost * ((loyaltyPointsBalance$ | async).loyalty_point_dollar_percent_value / 100)) | currency : 'USD' }}
         </span>
         <br/>
         <span class='spotbie-text-gradient' style='font-size: .5rem;'>
@@ -40,7 +42,7 @@
   <div class='spotbie-text-gradient text-uppercase' (click)="closeWindow()" *ngIf="fullScreenMode">CLOSE</div>
 </div>
 
-<div *ngIf="(userType === eAllowedAccountTypes.Personal || isLoggedIn !== '1')" [ngClass]="getWindowClass()">
+<div *ngIf="((userType$ | async) === eAllowedAccountTypes.Personal || (isLoggedIn$ | async) !== '1')" [ngClass]="getWindowClass()">
 
   <h5 class="spotbie-text-gradient text-center text-uppercase pt-2 mb-4">REWARD MENU</h5>
 
@@ -49,7 +51,7 @@
   </p>
 
   <div class='sb-menuItemWrapper'>
-    <div class='sb-menuItem' *ngFor="let reward of rewards">
+    <div class='sb-menuItem' *ngFor="let reward of (rewards$ | async)">
       <div class='sb-menuItemInner'
            [ngStyle]="rewardTileStyling(reward)"
            (click)="openReward(reward)">
@@ -63,7 +65,7 @@
 
       <h6 *ngIf="reward.type === 1">
           <span class='sb-text-light-green-gradient'>
-              {{  reward.point_cost * (userPointToDollarRatio / 100) | currency : 'USD' }}
+              {{  reward.point_cost * ((userPointToDollarRatio$ | async) / 100) | currency : 'USD' }}
           </span>
         <br/>
         <span class='spotbie-text-gradient sb-discountTitle' style='font-size: .5rem;'>
@@ -76,16 +78,16 @@
   <div class='spotbie-text-gradient text-uppercase cursor-pointer mt-5' (click)="closeWindow()" *ngIf="fullScreenMode">CLOSE</div>
 </div>
 
-<app-reward-creator *ngIf="itemCreator"
+<app-reward-creator *ngIf="(itemCreator$ | async) === true"
                     (closeRewardCreatorAndRefetchRewardListEvt)="closeRewardCreatorAndRefetchRewardList()"
                     (closeParentWindowEvt)="closeWindow()"
                     (closeRewardCreatorEvt)="closeRewardCreator()"
                     #rewardCreator
-                    [reward]="reward"></app-reward-creator>
+                    [reward]="(reward$ | async)"></app-reward-creator>
 
-<app-reward *ngIf="rewardApp"
+<app-reward *ngIf="(rewardApp$ | async) === true"
             #appRewardViewer
-            [reward]="reward"
+            [reward]="(reward$ | async)"
             [fullScreenMode]="rewardAppFullScreen"
-            [userPointToDollarRatio]="userPointToDollarRatio"
+            [userPointToDollarRatio]="userPointToDollarRatio$ | async"
             (closeWindowEvt)="closeReward()"></app-reward>

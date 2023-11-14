@@ -8,24 +8,18 @@
 
   <div class='sb-ad-bottom' *ngIf="businessReady && business !== null">
     <span class='spotbie-text-gradient sb-sponsoredName text-uppercase'>{{ business.name }}</span>
-
-    <br/>
     <span class='sb-text-light-green-gradient sb-totalRewards text-uppercase' style="font-size: 1rem;">{{ totalRewards }} REWARDS</span>
+    <span class='spotbie-text-gradient sb-distanceMiles text-uppercase'>{{ distance | number:'1.1-2':'en-US' }} miles</span>
 
-    <br/>
-    <span class='sb-text-light-green-gradient sb-distanceMiles text-uppercase'>
-            <i class='fas fa-map-marker-alt'></i>
-            {{ distance | number:'1.1-2':'en-US' }} miles
-    </span>
-
-    <br/>
     <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;" *ngIf="!editMode">
-        {{ (business.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
-    </span>
+            {{ (business.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+        </span>
 
     <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;" *ngIf="editMode">
-        {{ (loyaltyPointBalance.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
-    </span>
+             {{ (loyaltyPointBalance.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+        </span>
+
+    <span class='spotbie-text-gradient sb-address text-uppercase'><i class='fas fa-map-marker-alt'></i> {{ business.address }}</span>
   </div>
 </div>
 

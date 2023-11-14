@@ -6,12 +6,12 @@ import { HttpClientModule } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core'
-import { NgxMaskModule, IConfig } from 'ngx-mask'
-import { environment } from 'src/environments/environment'
+import {NgxMaskDirective, NgxMaskPipe, IConfig, provideNgxMask} from 'ngx-mask';
 import { SettingsComponent } from './settings.component'
-import { HelperModule } from 'src/app/helpers/helper.module';
+import { HelperModule } from '../../../helpers/helper.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatIconModule} from "@angular/material/icon";
+import {IonicModule} from "@ionic/angular";
 
 export const options : Partial<IConfig> | (() => Partial<IConfig>) = null
 
@@ -28,19 +28,15 @@ export const options : Partial<IConfig> | (() => Partial<IConfig>) = null
         RouterModule,
         MatChipsModule,
         MatAutocompleteModule,
+        MatIconModule,
         MatFormFieldModule,
-        AgmCoreModule.forRoot({
-            apiKey: environment.google_maps_apiKey,
-            language: 'en',
-            libraries: ['geometry', 'places']
-        }),
-        NgxMaskModule.forRoot(options),
+        NgxMaskDirective,
+        NgxMaskPipe,
+        IonicModule,
     ],
-  providers: [
-    GoogleMapsAPIWrapper
-  ],
   exports: [
     SettingsComponent
-  ]
+  ],
+  providers: [provideNgxMask()],
 })
 export class SettingsModule { }
