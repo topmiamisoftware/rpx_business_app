@@ -296,7 +296,7 @@ a, a:hover, a:active, a:after{
 .sb-closeButton{
     position: fixed;
     display: block;
-    top: 75px;
+    top: calc(75px + env(safe-area-inset-top));
     right: 1%;
     padding: 10px;
     padding-top: 6px;
@@ -927,7 +927,7 @@ ion-action-sheet, .sc-ion-action-sheet-ios-h {
         padding-bottom: 20px;
     }
     .sb-closeButton{
-        top: 80px;
+        top: calc(80px + env(safe-area-inset-top));
         right: 2%;
     }
 }
@@ -939,7 +939,7 @@ ion-action-sheet, .sc-ion-action-sheet-ios-h {
         color: #212529;
     }
     .sb-closeButton{
-        top: 70px;
+        top: calc(70px + env(safe-area-inset-top));;
     }
 }
 @media (max-width: 600px) {
@@ -975,7 +975,7 @@ ion-action-sheet, .sc-ion-action-sheet-ios-h {
     .sb-closeButton{
         max-width: 50px;
         font-size: 20px;
-        top: 68px;
+        top: calc(55px + env(safe-area-inset-top));
         right: 15px;
     }
     .spotbie-button {
