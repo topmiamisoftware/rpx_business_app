@@ -1,4 +1,4 @@
-export enum AllowedAccountTypes {
+export enum AccountTypes {
     Unset = 0,
     PlaceToEat = 1,
     Shopping = 2,

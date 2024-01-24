@@ -167,21 +167,27 @@
                 </div>
             </ng-template>
 
-            <input type="file"
-                    class='spotbie-background-upload-input'
-                    #rewardMediaInput
-                    (change)="uploadMedia(rewardMediaInput.files)"
-                    accept="image/jpeg, image/gif, image/png"
-                    multiple=false />
-
-            <div class='spotbie-upload-new-background-holder'
-                    [ngStyle]="{ 'background' : 'url(' + (rewardUploadImage$ | async) + ')' }"
-                    (click)="startRewardMediaUploader()"
-                    #spotbieRewardUploader>
+            <ng-container *ngIf="($showDeniedMediaUploader | async) === false">
+              <div class='spotbie-upload-new-background-holder'
+                   [ngStyle]="{ 'background' : 'url(' + (rewardUploadImage$ | async) + ')' }"
+                   (click)="startRewardMediaUploader()"
+                   #spotbieRewardUploader>
                 <div class='spotbie-click-or-drag-upload'>
-                    <span class="spotbie-text-gradient text-uppercase">tap or drag to upload</span>
+                  <span class="spotbie-text-gradient text-uppercase">tap to upload</span>
                 </div>
-            </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="($showDeniedMediaUploader | async) === true">
+              <div class='spotbie-upload-new-background-holder'>
+                <div class='spotbie-click-or-drag-upload' (click)="openAppSettings()">
+                  <span>PHOTO LIBRARY DISABLED</span>
+                  <br/>
+                  <i class="fas fa-camera-alt"></i>
+                  <span class="spotbie-text-gradient text-uppercase"> OPEN SETTINGS</span>
+                </div>
+              </div>
+            </ng-container>
         </form>
 
         <div class='spotbie-button text-uppercase mt-5' (click)="saveReward()">

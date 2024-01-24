@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {InfoObjectComponent} from './spotbie/map/info-object/info-object.component';
 import {LoginGuardServiceService} from './services/route-services/login-guard-service.service';
 import {RewardMenuComponent} from './spotbie/spotbie-logged-in/reward-menu/reward-menu.component';
 import {LoyaltyPointsComponent} from './spotbie/spotbie-logged-in/loyalty-points/loyalty-points.component';
-import {MyList} from './spotbie/spotbie-logged-in/my-list/my-list.component';
 
 const routes: Routes = [
   {
@@ -40,7 +39,6 @@ const routes: Routes = [
   {path: 'place-to-eat/:name/:id', component: InfoObjectComponent},
   {path: 'shopping/:name/:id', component: InfoObjectComponent},
   {path: 'event/:name/:id', component: InfoObjectComponent},
-  {path: 'login-success', redirectTo: '/user-home', pathMatch: 'full'},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
 ];
 

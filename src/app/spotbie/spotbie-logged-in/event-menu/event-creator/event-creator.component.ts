@@ -1,11 +1,13 @@
 import { HttpClient, HttpEventType } from '@angular/common/http'
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
-import { SpEvent } from 'src/app/models/event'
-import { LoyaltyPointBalance } from 'src/app/models/loyalty-point-balance'
-import { EventCreatorService } from 'src/app/services/spotbie-logged-in/event-menu/event-creator/event-creator.service'
 import * as spotbieGlobals from '../../../../globals'
 import {Preferences} from "@capacitor/preferences";
+import {SpEvent} from "../../../../models/event";
+import {LoyaltyPointBalance} from "../../../../models/models/loyalty-point-balance";
+import {
+  EventCreatorService
+} from "../../../../services/spotbie-logged-in/event-menu/event-creator/event-creator.service";
 
 const event_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}event/upload-media`
 const event_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -27,31 +29,20 @@ export class EventCreatorComponent implements OnInit {
   @Output() closeThisEvt = new EventEmitter()
   @Output() closeeventCreatorAndRefetcheventListEvt = new EventEmitter()
 
-  public loading: boolean = false
-
-  public eventCreatorForm: UntypedFormGroup
-  public eventCreatorFormUp: boolean = false
-
-  public eventFormSubmitted: boolean = false
-
-  public eventUploadImage: string = '../../assets/images/home_imgs/find-places-to-eat.svg'
-
-  public eventMediaMessage: string = "Upload event Image"
-
-  public eventMediaUploadProgress: number = 0
-
-  public businessPointsDollarValue: string = '0'
-
-  public dollarValueCalculated: boolean = false
-
-  public eventTypeList: Array<string> = ['Something From Our Menu', 'Discount', 'An Experience']
-
-  public eventCreated: boolean = false
-  public eventDeleted: boolean = false
-
-  public uploadMediaForm: boolean = false
-
-  public loyaltyPointBalance: LoyaltyPointBalance
+  loading: boolean = false
+  eventCreatorForm: UntypedFormGroup
+  eventCreatorFormUp: boolean = false
+  eventFormSubmitted: boolean = false
+  eventUploadImage: string = '../../assets/images/home_imgs/find-places-to-eat.svg'
+  eventMediaMessage: string = "Upload event Image"
+  eventMediaUploadProgress: number = 0
+  businessPointsDollarValue: string = '0'
+  dollarValueCalculated: boolean = false
+  eventTypeList: Array<string> = ['Something From Our Menu', 'Discount', 'An Experience']
+  eventCreated: boolean = false
+  eventDeleted: boolean = false
+  uploadMediaForm: boolean = false
+  loyaltyPointBalance: LoyaltyPointBalance
 
   constructor(private formBuilder: UntypedFormBuilder,
               private eventCreatorService: EventCreatorService,
@@ -65,14 +56,11 @@ export class EventCreatorComponent implements OnInit {
 
   get f() { return this.eventCreatorForm.controls }
 
-  public initeventForm(){
-
+  initeventForm(){
     const eventTypeValidators = [Validators.required]
     const eventValueValidators = [Validators.required]
-
     const eventNameValidators = [Validators.required, Validators.maxLength(50)]
     const eventDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)]
-
     const eventImageValidators = [Validators.required]
 
     this.eventCreatorForm = this.formBuilder.group({
@@ -83,10 +71,7 @@ export class EventCreatorComponent implements OnInit {
       eventImage: ['', eventImageValidators]
     })
 
-    if(this.event !== null && this.event !== undefined){
-
-      //console.log("event is ", this.event)
-
+    if(this.event){
       this.eventCreatorForm.get('eventType').setValue(this.event.type)
       this.eventCreatorForm.get('eventValue').setValue(this.event.point_cost)
       this.eventCreatorForm.get('eventName').setValue(this.event.name)
@@ -95,15 +80,13 @@ export class EventCreatorComponent implements OnInit {
       this.eventUploadImage = this.event.images
 
       this.calculateDollarValue()
-
     }
 
     this.eventCreatorFormUp = true
     this.loading = false
-
   }
 
-  public calculateDollarValue(){
+  calculateDollarValue(){
 
     let pointPercentage = this.loyaltyPointBalance.loyalty_point_dollar_percent_value
     let itemPrice = this.eventValue
@@ -117,7 +100,7 @@ export class EventCreatorComponent implements OnInit {
 
   }
 
-  public saveEvent(){
+  saveEvent(){
 
     this.eventFormSubmitted = true
     this.spbTopAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -151,7 +134,7 @@ export class EventCreatorComponent implements OnInit {
 
   }
 
-  public saveeventCb(resp: any){
+  saveeventCb(resp: any){
 
     console.log(resp)
 
@@ -164,7 +147,7 @@ export class EventCreatorComponent implements OnInit {
 
   }
 
-  public startEventMediaUploader(): void{
+  startEventMediaUploader(): void{
     this.eventMediaInput.nativeElement.click()
   }
 
@@ -235,7 +218,7 @@ export class EventCreatorComponent implements OnInit {
     this.loading = false;
   }
 
-  public eventTypeChange(){
+  eventTypeChange(){
 
     if(this.eventType == 0){
       //event is discount
@@ -248,19 +231,19 @@ export class EventCreatorComponent implements OnInit {
 
   }
 
-  public closeThis(){
+  closeThis(){
     this.closeThisEvt.emit()
   }
 
-  public closeWindow(){
+  closeWindow(){
     this.closeWindowEvt.emit()
   }
 
-  public closeeventCreatorAndRefetcheventList(){
+  closeeventCreatorAndRefetcheventList(){
     this.closeeventCreatorAndRefetcheventListEvt.emit()
   }
 
-  public deleteMe(){
+  deleteMe(){
 
     this.eventCreatorService.deleteMe(this.event).subscribe(
       resp => {
@@ -283,7 +266,7 @@ export class EventCreatorComponent implements OnInit {
 
   }
 
-  public subscribe(){
+  subscribe(){
 
 
   }

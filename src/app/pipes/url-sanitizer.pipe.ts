@@ -12,5 +12,4 @@ export class UrlSanitizerPipe implements PipeTransform {
       if(!url) return null;
       return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-
 }

@@ -1,20 +1,20 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AllowedAccountTypes} from '../../../../helpers/enum/account-type.enum';
-import {InfoObjectType} from '../../../../helpers/enum/info-object-type.enum';
-import {getDistanceFromLatLngInMiles} from '../../../../helpers/measure-units.helper';
-import {Ad} from '../../../../models/ad';
-import {Business} from '../../../../models/business';
-import {AdsService} from '../../../ads/ads.service';
+import {AccountTypes} from '../../../../../helpers/enum/account-type.enum';
+import {InfoObjectType} from '../../../../../helpers/enum/info-object-type.enum';
+import {getDistanceFromLatLngInMiles} from '../../../../../helpers/measure-units.helper';
+import {Ad} from '../../../../../models/ad';
+import {Business} from '../../../../../models/business';
+import {AdsService} from '../../../../ads/ads.service';
 import {
   EVENT_CATEGORIES,
   FOOD_CATEGORIES,
   SHOPPING_CATEGORIES,
-} from '../../map_extras/map_extras';
-import {getRandomInt} from '../../../../helpers/numbers.helper';
+} from '../../../map_extras/map_extras';
+import {getRandomInt} from '../../../../../helpers/numbers.helper';
 import {BehaviorSubject} from 'rxjs';
-import {BusinessMenuServiceService} from '../../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
+import {BusinessMenuServiceService} from '../../../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
 import {Preferences} from '@capacitor/preferences';
 import {AppLauncher} from '@capacitor/app-launcher';
 
@@ -147,13 +147,13 @@ export class NearbyFeaturedAdComponent implements OnInit {
 
       if (!this.editMode && business) {
         switch (business.user_type) {
-          case AllowedAccountTypes.PlaceToEat:
+          case AccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES;
             break;
-          case AllowedAccountTypes.Events:
+          case AccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES;
             break;
-          case AllowedAccountTypes.Shopping:
+          case AccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES;
             break;
         }

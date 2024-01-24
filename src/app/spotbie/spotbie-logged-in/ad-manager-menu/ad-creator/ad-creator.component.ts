@@ -20,6 +20,10 @@ import {NearbyFeaturedAdComponent} from '../../../ads/nearby-featured-ad/nearby-
 import {environment} from '../../../../../environments/environment'
 import * as spotbieGlobals from '../../../../globals'
 import {Preferences} from "@capacitor/preferences";
+import {Camera, CameraResultType, GalleryPhoto, Photo} from "@capacitor/camera";
+import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
+import {PickedFile} from "@capawesome/capacitor-file-picker";
+import {BehaviorSubject} from "rxjs";
 
 const AD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}in-house/upload-media`
 const AD_MEDIA_MAX_UPLOAD_SIZE = 10e+6
@@ -46,9 +50,9 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   @Output() closeThisEvt = new EventEmitter()
   @Output() closeAdCreatorAndRefetchAdListEvt = new EventEmitter()
 
-   loading: boolean
-   adCreatorForm: UntypedFormGroup
-   adCreatorFormUp: boolean
+  loading: boolean
+  adCreatorForm: UntypedFormGroup
+  adCreatorFormUp: boolean
    adFormSubmitted: boolean
    showErrors: boolean
    adUploadImage: string = null
@@ -64,7 +68,8 @@ export class AdCreatorComponent implements OnInit, OnChanges {
    adDeleted: boolean
    loyaltyPointBalance: any
    selected: number = 0
-   business: Business = null
+   business: Business = null;
+  $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
 
   constructor(private formBuilder: UntypedFormBuilder,
               private adCreatorService: AdCreatorService,
@@ -162,42 +167,74 @@ export class AdCreatorComponent implements OnInit, OnChanges {
       this.showErrors = true;
       return;
     }
-    if (type === 'mobile') {
-      this.adMediaMobileInput.nativeElement.click()
-    } else {
-      this.adMediaInput.nativeElement.click()
-    }
+
+     Camera.checkPermissions().then((status) => {
+       if (status.photos === 'granted'){
+         this.adMediaUploaders(type);
+       } else {
+         Camera.requestPermissions({permissions: ['photos']}).then(status => {
+           if (status.photos === 'granted') {
+             this.adMediaUploaders(type);
+           } else if (status.photos === 'denied') {
+             this.showDeniedMediaUploader();
+           }
+         });
+       }
+     });
   }
 
-   async uploadMedia(files, type: string): Promise<void> {
-    const fileListLength = files.length
-
-    if (fileListLength === 0) {
-      this.adMediaMessage = 'Upload at least one image.'
-      return
-    } else if (fileListLength > 1) {
-      this.adMediaMessage = 'Upload only one image.'
-      return
+  convertToBlob(image: Photo) {
+    const rawData = atob(image.base64String);
+    const bytes = new Array(rawData.length);
+    for (var x = 0; x < rawData.length; x++) {
+      bytes[x] = rawData.charCodeAt(x);
     }
+    const arr = new Uint8Array(bytes);
+    return new Blob([arr], {type: 'image/png'});
+  }
 
+  openAppSettings() {
+    NativeSettings.open({
+      optionAndroid: AndroidSettings.ApplicationDetails,
+      optionIOS: IOSSettings.App,
+    });
+  }
+
+  showDeniedMediaUploader() {
+    this.$showDeniedMediaUploader.next(true);
+  }
+
+  async adMediaUploaders(type: string) {
+    this.$showDeniedMediaUploader.next(false);
+    const result = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64
+    });
+
+    return this.uploadMedia(result, type);
+  }
+
+
+  async uploadMedia(file: Photo, type: string): Promise<void> {
     this.loading = true;
 
     const formData = new FormData()
 
-    let fileToUpload
-    let uploadSize = 0
+    let fileToUpload;
+    let uploadSize = 0;
 
-    for (let i = 0; i < fileListLength; i++) {
-      fileToUpload = files[i] as File
-      uploadSize += fileToUpload.size
+    fileToUpload = file;
+    uploadSize += fileToUpload.size
 
-      if (uploadSize > AD_MEDIA_MAX_UPLOAD_SIZE) {
-        this.adMediaMessage = 'Max upload size is 10MB.'
-        this.loading = false;
-        return;
-      }
-      formData.append('image', fileToUpload, fileToUpload.name);
+    if (uploadSize > AD_MEDIA_MAX_UPLOAD_SIZE) {
+      this.adMediaMessage = 'Max upload size is 10MB.'
+      this.loading = false;
+      return;
     }
+
+    let fileName = new Date().toDateString();
+    formData.append('image', this.convertToBlob(fileToUpload), fileName);
 
     const token = await Preferences.get({key: 'spotbiecom_session'});
     this.http.post(AD_MEDIA_UPLOAD_API_URL, formData,

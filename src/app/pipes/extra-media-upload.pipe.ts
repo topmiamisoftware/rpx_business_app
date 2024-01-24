@@ -7,7 +7,6 @@ const SPOTBIE_TOP_DOMAIN = spotbieGlobals.API;
   name: 'extraMediaPath'
 })
 export class ExtraMediaUploadPipe implements PipeTransform {
-
   transform(extra_media_path: string): string {
     if (!extra_media_path) { return; }
     // console.log("Extra Media Path from pipe : ", extra_media_path);
@@ -16,5 +15,4 @@ export class ExtraMediaUploadPipe implements PipeTransform {
     // console.log("the Extra Media Path : ", extra_media_path);
     return extra_media_path;
   }
-
 }

@@ -6,7 +6,7 @@ import {handleError} from '../helpers/error-helper';
 import {User} from '../models/user';
 
 import * as spotbieGlobals from '../globals';
-import {AllowedAccountTypes} from "../helpers/enum/account-type.enum";
+import {AccountTypes} from "../helpers/enum/account-type.enum";
 
 const USER_API = spotbieGlobals.API + 'user';
 
@@ -45,9 +45,9 @@ export class UserauthService {
     let apiUrl
 
     switch(businessInfo.accountType){
-      case AllowedAccountTypes.PlaceToEat:
-      case AllowedAccountTypes.Shopping:
-      case AllowedAccountTypes.Events:
+      case AccountTypes.PlaceToEat:
+      case AccountTypes.Shopping:
+      case AccountTypes.Events:
         apiUrl = `${BUSINESS_API}/verify`
         break
     }
@@ -80,9 +80,9 @@ export class UserauthService {
     let apiUrl
 
     switch(businessInfo.accountType){
-      case AllowedAccountTypes.PlaceToEat:
-      case AllowedAccountTypes.Shopping:
-      case AllowedAccountTypes.Events:
+      case AccountTypes.PlaceToEat:
+      case AccountTypes.Shopping:
+      case AccountTypes.Events:
         apiUrl = `${BUSINESS_API}/save-business`
         break
     }

@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { AllowedAccountTypes } from '../../../helpers/enum/account-type.enum';
+import { AccountTypes } from '../../../helpers/enum/account-type.enum';
 import { Business } from '../../../models/business';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
@@ -186,7 +186,7 @@ export class QrComponent implements OnInit {
     let a = await Preferences.get({key: 'spotbie_userType'});
     let accountType = parseInt(a.value, 10);
 
-    if (accountType === AllowedAccountTypes.Personal) {
+    if (accountType === AccountTypes.Personal) {
       this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
         this.userLoyaltyPoints$.next(loyaltyPointBalance);
       });

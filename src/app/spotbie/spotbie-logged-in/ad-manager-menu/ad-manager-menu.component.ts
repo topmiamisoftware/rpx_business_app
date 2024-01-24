@@ -10,7 +10,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { AllowedAccountTypes } from '../../../helpers/enum/account-type.enum'
+import { AccountTypes } from '../../../helpers/enum/account-type.enum'
 import { LoyaltyPointBalance } from '../../../models/loyalty-point-balance'
 import { Ad } from '../../../models/ad'
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service'
@@ -33,7 +33,7 @@ export class AdManagerMenuComponent implements OnInit, OnChanges {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  eAllowedAccountTypes = AllowedAccountTypes
+  eAllowedAccountTypes = AccountTypes
   menuItemList: Array<any>
   itemCreator: boolean = false
   userLoyaltyPoints: any

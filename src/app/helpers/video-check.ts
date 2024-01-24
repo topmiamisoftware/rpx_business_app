@@ -24,13 +24,11 @@ export function videoEmbedCheck(stream_content : string, _sanitizer : DomSanitiz
           return 'no_video';
         }
     }
-
 }
 
 export function checkFriendTags(txt : string){}
 
 export async function checkStreamText(e ?: any){
-
   clearTimeout(this.check_stream_text_timeout)
 
   let text
@@ -42,7 +40,6 @@ export async function checkStreamText(e ?: any){
   }
 
   this.check_stream_text_timeout = setTimeout(async function(){
-
     let youtube_obj : any = await videoEmbedCheck(text, this._sanitizer)
 
     if(youtube_obj.video_url == this.current_video_url) return
@@ -60,5 +57,4 @@ export async function checkStreamText(e ?: any){
   }.bind(this, text), 700)
 
   this.checkFriendTags(text)
-
 }

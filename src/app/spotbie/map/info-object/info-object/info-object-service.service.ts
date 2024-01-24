@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {handleError} from '../../../helpers/error-helper';
+import {handleError} from '../../../../helpers/error-helper';
 import {Observable} from 'rxjs';
-import * as spotbieGlobals from '../../../globals';
+import * as spotbieGlobals from '../../../../globals';
 import {catchError} from 'rxjs/operators';
 
 const PULL_INFO_API = `${spotbieGlobals.API}surroundings/pull-info-object`;

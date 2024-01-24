@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core'
-import * as spotbieGlobals from 'src/app/globals'
+import * as spotbieGlobals from '../../../../globals'
 import { HttpClient } from '@angular/common/http'
-import { Observable } from 'rxjs'
-import { handleError } from 'src/app/helpers/error-helper'
-import { catchError } from 'rxjs/operators'
-import { Reward } from 'src/app/models/reward'
-import { SpEvent } from 'src/app/models/event'
+import { Observable } from 'rxjs';
+import { handleError } from '../../../../helpers/error-helper';
+import { catchError } from 'rxjs/operators';
+import { SpEvent } from '../../../../models/event';
 
 const REWARD_API = `${spotbieGlobals.API}reward` 
 

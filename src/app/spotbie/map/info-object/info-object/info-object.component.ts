@@ -8,18 +8,18 @@ import {
 } from '@angular/core';
 import {InfoObjectServiceService} from './info-object-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DateFormatPipe, TimeFormatPipe} from '../../../pipes/date-format.pipe';
-import {SpotbieMetaService} from '../../../services/meta/spotbie-meta.service';
-import {setYelpRatingImage} from '../../../helpers/info-object-helper';
+import {DateFormatPipe, TimeFormatPipe} from '../../../../pipes/date-format.pipe';
+import {SpotbieMetaService} from '../../../../services/meta/spotbie-meta.service';
+import {setYelpRatingImage} from '../../../../helpers/info-object-helper';
 import {
   spotbieMetaDescription,
   spotbieMetaTitle,
   spotbieMetaImage,
-} from '../../../constants/spotbie';
-import {InfoObject} from '../../../models/info-object';
-import {environment} from '../../../../environments/environment';
-import {Ad} from '../../../models/ad';
-import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
+} from '../../../../constants/spotbie';
+import {InfoObject} from '../../../../models/info-object';
+import {environment} from '../../../../../environments/environment';
+import {Ad} from '../../../../models/ad';
+import {InfoObjectType} from '../../../../helpers/enum/info-object-type.enum';
 import {BehaviorSubject} from 'rxjs';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Preferences} from '@capacitor/preferences';

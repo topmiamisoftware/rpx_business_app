@@ -3,7 +3,7 @@ import * as spotbieGlobals from '../../../globals'
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { handleError } from '../../../helpers/error-helper';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 const REWARD_API = `${spotbieGlobals.API}reward`
 const BUSINESS_API = `${spotbieGlobals.API}business`
@@ -14,7 +14,7 @@ const BUSINESS_API = `${spotbieGlobals.API}business`
 export class BusinessMenuServiceService {
   constructor(private http: HttpClient) {}
 
-  public fetchRewards(fetchRewardsReq: any = null): Observable<any>{
+  fetchRewards(fetchRewardsReq: any = null): Observable<any>{
     const rewardsApi = `${REWARD_API}/index`;
 
     return this.http.post<any>(rewardsApi, fetchRewardsReq).pipe(
@@ -22,8 +22,7 @@ export class BusinessMenuServiceService {
     );
   }
 
-  public getCommunityMember(fetchRewardsReq: any){
-
+  getCommunityMember(fetchRewardsReq: any){
     const communityMemberApi = `${BUSINESS_API}/show`
 
     return this.http.post<any>(communityMemberApi, fetchRewardsReq).pipe(

@@ -8,15 +8,10 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
   name: 'dateFormat'
 })
 export class DateFormatPipe implements PipeTransform {
-
   transform(d : Date) : string {
-
-    let format_date = monthNames[d.getMonth()] + " " + (d.getDate() + 1) + ", " + d.getFullYear()  
-
+    let format_date = monthNames[d.getMonth()] + " " + (d.getDate() + 1) + ", " + d.getFullYear()
     return format_date
-
   }
-
 }
 
 @Pipe({
@@ -24,8 +19,7 @@ export class DateFormatPipe implements PipeTransform {
 })
 export class TimeFormatPipe implements PipeTransform {
 
-  transform(timex : string) : string { 
-
+  transform(timex : string) : string {
     let time = timex.split(':'); // convert to array
 
     // fetch
@@ -48,7 +42,5 @@ export class TimeFormatPipe implements PipeTransform {
     timeValue += (hours >= 12) ? " PM" : " AM";  // get AM/PM
 
     return timeValue
-
   }
-
 }

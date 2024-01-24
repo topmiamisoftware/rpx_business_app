@@ -9,13 +9,7 @@ import {
 import {InfoObjectServiceService} from './info-object-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DateFormatPipe, TimeFormatPipe} from '../../../pipes/date-format.pipe';
-import {SpotbieMetaService} from '../../../services/meta/spotbie-meta.service';
 import {setYelpRatingImage} from '../../../helpers/info-object-helper';
-import {
-  spotbieMetaDescription,
-  spotbieMetaTitle,
-  spotbieMetaImage,
-} from '../../../constants/spotbie';
 import {InfoObject} from '../../../models/info-object';
 import {environment} from '../../../../environments/environment';
 import {Ad} from '../../../models/ad';
@@ -24,12 +18,10 @@ import {BehaviorSubject} from 'rxjs';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Preferences} from '@capacitor/preferences';
 import {Share} from '@capacitor/share';
+import {SpotbieUser} from "../../../models/spotbieuser";
+import {AccountTypes} from "../../../helpers/enum/account-type.enum";
 
 const YELP_BUSINESS_DETAILS_API = 'https://api.yelp.com/v3/businesses/';
-
-const SPOTBIE_META_DESCRIPTION = spotbieMetaDescription;
-const SPOTBIE_META_TITLE = spotbieMetaTitle;
-const SPOTBIE_META_IMAGE = spotbieMetaImage;
 
 @Component({
   selector: 'app-info-object',
@@ -58,7 +50,7 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
   infoObject$: BehaviorSubject<InfoObject> | null =
     new BehaviorSubject<InfoObject>(null);
   infoObjectImageUrl: string;
-  private infoObjectCategory: number;
+  infoObjectCategory: number;
   isLoggedIn$ = new BehaviorSubject<string>(null);
   infoObjectLink: string;
   infoObjectDescription: string;
@@ -71,7 +63,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
     private infoObjectService: InfoObjectServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private spotbieMetaService: SpotbieMetaService
   ) {}
 
   getFullScreenModeClass() {
@@ -89,13 +80,13 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/home']);
     } else {
       this.closeWindow.emit(null);
-      this.spotbieMetaService.setTitle(SPOTBIE_META_TITLE);
-      this.spotbieMetaService.setDescription(SPOTBIE_META_DESCRIPTION);
-      this.spotbieMetaService.setImage(SPOTBIE_META_IMAGE);
     }
   }
 
   private pullInfoObject(): void {
+    /**
+     * TODO: There are better ways to check what URL segment you're on.
+     */
     if (this.router.url.indexOf('event') > -1) {
       const infoObjectId = this.activatedRoute.snapshot.paramMap.get('id');
       this.urlApi = `id=${infoObjectId}`;
@@ -131,28 +122,28 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
 
       if (
         this.router.url.indexOf('place-to-eat') > -1 ||
-        infoObject.type_of_info_object_category === 1
+        infoObject.type_of_info_object_category === AccountTypes.PlaceToEat
       ) {
         infoObject.type_of_info_object = InfoObjectType.Yelp;
-        infoObject.type_of_info_object_category = 1;
+        infoObject.type_of_info_object_category = AccountTypes.PlaceToEat;
         this.infoObjectLink = `${environment.baseUrl}place-to-eat/${infoObject.alias}/${infoObject.id}`;
       }
 
       if (
         this.router.url.indexOf('shopping') > -1 ||
-        infoObject.type_of_info_object_category === 2
+        infoObject.type_of_info_object_category === AccountTypes.Shopping
       ) {
         infoObject.type_of_info_object = InfoObjectType.Yelp;
-        infoObject.type_of_info_object_category = 2;
+        infoObject.type_of_info_object_category = AccountTypes.Shopping;
         this.infoObjectLink = `${environment.baseUrl}shopping/${infoObject.alias}/${infoObject.id}`;
       }
 
       if (
         this.router.url.indexOf('events') > -1 ||
-        infoObject.type_of_info_object_category === 3
+        infoObject.type_of_info_object_category === AccountTypes.Events
       ) {
         infoObject.type_of_info_object = InfoObjectType.TicketMaster;
-        infoObject.type_of_info_object_category = 3;
+        infoObject.type_of_info_object_category = AccountTypes.Events;
         this.infoObjectLink = `${environment.baseUrl}event/${infoObject.alias}/${infoObject.id}`;
       }
 
@@ -201,10 +192,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
       }
 
       infoObject.rating_image = setYelpRatingImage(infoObject.rating);
-
-      this.spotbieMetaService.setTitle(this.infoObjectTitle);
-      this.spotbieMetaService.setDescription(this.infoObjectDescription);
-      this.spotbieMetaService.setImage(this.infoObjectImageUrl);
 
       this.infoObject$.next(infoObject);
       this.loading$.next(false);
@@ -355,10 +342,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
     this.infoObjectDescription = `Hey! Let's go to ${infoObject.name} together. It's at ${infoObject._embedded.venues[0].name} located in ${infoObject._embedded.venues[0].address.line1}, ${infoObject._embedded.venues[0].city.name} ${infoObject._embedded.venues[0].postalCode}. Prices range from $${infoObject.priceRanges[0].min} to $${infoObject.priceRanges[0].min}`;
     this.infoObjectTitle = title;
 
-    this.spotbieMetaService.setTitle(title);
-    this.spotbieMetaService.setDescription(this.infoObjectDescription);
-    this.spotbieMetaService.setImage(infoObject.image_url);
-
     return;
   }
 
@@ -410,24 +393,24 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
           this.rewardMenuUp$.next(true);
 
           if (
-            infoObject.user_type === 1 ||
-            infoObject.user_type === 2 ||
-            infoObject.user_type === 3
+            infoObject.user_type === AccountTypes.PlaceToEat ||
+            infoObject.user_type === AccountTypes.Shopping ||
+            infoObject.user_type === AccountTypes.Events
           ) {
             this.infoObjectLink = `${environment.baseUrl}community/${infoObject.qr_code_link}`;
             this.objectDisplayAddress$.next(infoObject.address);
             switch (infoObject.user_type) {
-              case 1:
+              case AccountTypes.PlaceToEat:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `Let's go eat at ${
                   infoObject.name
                 }. They are located at ${this.objectDisplayAddress$.getValue()}.`;
                 break;
-              case 2:
+              case AccountTypes.Shopping:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `I really recommend you go shopping at ${infoObject.name}!`;
                 break;
-              case 3:
+              case AccountTypes.Events:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `Let's go to ${infoObject.name}!`;
                 break;
@@ -438,6 +421,9 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
           return;
       }
     } else {
+      /**
+       * TODO: There's a better way to check what route segment you're on.
+       */
       if (
         this.router.url.indexOf('shopping') > -1 ||
         this.router.url.indexOf('place-to-eat') > -1 ||

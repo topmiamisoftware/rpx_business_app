@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core'
 import {ActivatedRoute, Router} from '@angular/router'
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
+import {AccountTypes} from '../../../helpers/enum/account-type.enum'
 import {Business} from '../../../models/business'
 import {Reward} from '../../../models/reward'
 import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service'
@@ -33,7 +33,7 @@ export class RewardMenuComponent implements OnInit {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  eAllowedAccountTypes = AllowedAccountTypes
+  eAllowedAccountTypes = AccountTypes
   menuItemList$ =  new BehaviorSubject<Array<any>>([]);
   itemCreator$ = new BehaviorSubject<boolean>(false);
   rewardApp$ = new BehaviorSubject<boolean>(false);

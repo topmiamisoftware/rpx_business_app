@@ -7,11 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class LoadingScreenComponent implements OnInit {
 
-  @Input('loadingText') loadingText: string = 'LOADING...'
+  @Input('loadingText') loadingText: string = 'LOADING...';
 
   constructor() { }
 
   ngOnInit(): void {
   }
-
 }

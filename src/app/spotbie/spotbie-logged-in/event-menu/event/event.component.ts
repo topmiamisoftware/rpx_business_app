@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SpEvent } from 'src/app/models/event';
+import { SpEvent } from '../../../../models/event';
 
 @Component({
   selector: 'app-event',

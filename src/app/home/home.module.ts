@@ -10,7 +10,6 @@ import {MenuLoggedOutModule} from '../spotbie/spotbie-logged-out/menu-logged-out
 import {WelcomeModule} from '../spotbie/welcome/welcome.module';
 import {MenuLoggedInModule} from '../spotbie/spotbie-logged-in/menu-logged-in.module';
 import {MenuLoggedInComponent} from '../spotbie/spotbie-logged-in/menu-logged-in.component';
-// import {TestModeModule} from '../spotbie/test-mode/test-mode.module';
 import {IonicModule} from '@ionic/angular';
 
 const routes: Routes = [{path: '', component: HomeComponent}];
@@ -22,11 +21,9 @@ const routes: Routes = [{path: '', component: HomeComponent}];
     MenuLoggedInModule,
     MenuLoggedOutModule,
     MenuModule,
-    SpotbiePipesModule,
     MapModule,
     HelperModule,
     WelcomeModule,
-    // TestModeModule,
     IonicModule,
     RouterModule.forChild(routes),
   ],

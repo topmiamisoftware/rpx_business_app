@@ -9,7 +9,7 @@ import {UserauthService} from '../../services/userauth.service';
 import {MapComponent} from '../map/map.component';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {LoyaltyPointsService} from '../../services/loyalty-points/loyalty-points.service';
-import {AllowedAccountTypes} from '../../helpers/enum/account-type.enum';
+import {AccountTypes} from '../../helpers/enum/account-type.enum';
 import {SettingsComponent} from './settings/settings.component';
 import {logOutCallback} from '../../helpers/logout-callback';
 import {BehaviorSubject, take} from 'rxjs';
@@ -58,7 +58,7 @@ export class MenuLoggedInComponent implements AfterViewInit {
 
     this.userType = parseInt(retAccType.value);
 
-    if (this.userType === AllowedAccountTypes.Personal) {
+    if (this.userType === AccountTypes.Personal) {
       this.business = false;
     } else {
       this.business = true;

@@ -1,4 +1,3 @@
-
 import { Observable, of, throwError } from "rxjs"
 import {
 	delay,
@@ -12,7 +11,6 @@ const DEFAULT_MAX_RETRIES: number = 3;
 const DEFAULT_BACKOFF: number = 1000;
 
 export function logErrorMessage(maxRetry: number, serverResponse, context: any = null, matDialog: MatDialog = null){
-
 	context.requestRetries = maxRetry
 	context.serverResponse = serverResponse
 
@@ -37,7 +35,6 @@ export function logErrorMessage(maxRetry: number, serverResponse, context: any =
 	Sentry.setContext("Error Context", context)*/
 
 	if(matDialog !== null){
-		
 		const dialogConfig = new MatDialogConfig()
 
 		dialogConfig.autoFocus = true
@@ -59,9 +56,6 @@ export function logErrorMessage(maxRetry: number, serverResponse, context: any =
 		  dialogConfig
 		)
 	}
-
-	
-	
 }
 
 export function retryWithBackOff(

@@ -33,4 +33,12 @@ export class CustomerManagerService {
       catchError(handleError('getCustomerList'))
     );
   }
+
+  sendTextMessage() {
+
+  }
+
+  sendEmail() {
+
+  }
 }

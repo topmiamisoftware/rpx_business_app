@@ -26,7 +26,7 @@ import {HttpClient, HttpEventType} from '@angular/common/http';
 import {Observable} from 'rxjs/internal/Observable'
 import {LocationService} from '../../../services/location-service/location.service'
 import {environment} from '../../../../environments/environment'
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
+import {AccountTypes} from '../../../helpers/enum/account-type.enum'
 import {SpotbiePaymentsService} from '../../../services/spotbie-payments/spotbie-payments.service'
 import {BehaviorSubject, combineLatest, of} from "rxjs";
 import {Preferences} from "@capacitor/preferences";
@@ -107,8 +107,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   addressResults: any;
   passwordSubmitted: boolean = false;
   settingsFormInitiated: boolean = false;
-  mapStyles = map_extras.MAP_STYLES;
-  locationPrompt: boolean = true;
   placeSettingsFormUp: boolean = false;
   place: any;
   claimBusiness: boolean = false;
@@ -118,16 +116,8 @@ export class SettingsComponent implements OnInit, OnChanges {
   businessVerified: boolean = false;
   placeToEatMediaMessage: string;
   placeToEatMediaUploadProgress: number = 0
-  customPatterns = {
-    0: {pattern: new RegExp('\[0-9\]')},
-    A: {pattern: new RegExp('\[A-Z\]')}
-  }
   calendlyUp: boolean = false;
   businessCategoryList: Array<string> = [];
-  selectable = true;
-  removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  filteredBusinessCategories: string[] = this.businessCategoryList;
   activeBusinessCategories: string;
   city: string = null;
   country: string = null;
@@ -135,7 +125,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   line2: string = null;
   postalCode: string = null;
   state: string = null;
-  friendlyCategories: string = null;
   isSocialAccount: boolean = false;
   map$ = new BehaviorSubject<boolean>(true);
   displayLocationEnablingInstructions$ = new BehaviorSubject<boolean>(false);
@@ -178,34 +167,12 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.changeDetectionRef.markForCheck();
   }
 
-  add(event): void {
-    this.activeBusinessCategories = event.detail.value;
-    this.businessSettingsForm.get('originCategories').setValue(event.detail.value);
-  }
-
   private fetchCurrentSettings(): any {
     this.userAuthService.getSettings().subscribe(resp => {
-        this.populateSettings(resp);
-      }, error => {
-        console.log('Error', error);
-      });
-  }
-
-  cancelPlaceSettings() {
-    this.placeSettingsFormUp = false;
-  }
-
-  cancelMembership() {
-    const r = confirm(`
-            Are you sure you want to delete your subscription? All yours IN-HOUSE Promotions will also be deleted.
-        `);
-
-    if (r) {
-      this.paymentService.cancelBusinessMembership().subscribe(
-        resp => {
-          window.location.reload();
-        });
-    }
+      this.populateSettings(resp);
+    }, error => {
+      console.log('Error', error);
+    });
   }
 
   private populateSettings(settingsResponse: any) {
@@ -218,27 +185,27 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.user.next_payment = settingsResponse.next_payment;
       this.userSubscriptionPlan = settingsResponse.userSubscriptionPlan;
 
-      if (this.user.spotbie_user.user_type === AllowedAccountTypes.Unset && !this.settingsFormInitiated) {
+      if (this.user.spotbie_user.user_type === AccountTypes.Unset && !this.settingsFormInitiated) {
         this.loadAccountTypes = true;
       }
 
       this.chosenAccountType = this.user.spotbie_user.user_type;
 
       switch (this.chosenAccountType) {
-        case AllowedAccountTypes.PlaceToEat:
+        case AccountTypes.PlaceToEat:
           this.accountTypeCategory = 'PLACE TO EAT';
           this.accountTypeCategoryFriendlyName = 'PLACE TO EAT';
           break;
-        case AllowedAccountTypes.Events:
+        case AccountTypes.Events:
           this.accountTypeCategory = 'EVENTS';
           this.accountTypeCategoryFriendlyName = 'EVENTS BUSINESS';
           break;
-        case AllowedAccountTypes.Shopping:
+        case AccountTypes.Shopping:
           this.accountTypeCategory = 'RETAIL STORE';
           this.accountTypeCategoryFriendlyName = 'RETAIL STORE';
           break;
-        case AllowedAccountTypes.Personal:
-        case AllowedAccountTypes.Unset:
+        case AccountTypes.Personal:
+        case AccountTypes.Unset:
           this.accountTypeCategory = 'PERSONAL';
           this.accountTypeCategoryFriendlyName = 'PERSONAL';
           break;
@@ -254,9 +221,9 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.passwordForm.get('spotbie_password').setValue('userpassword')
       this.passwordForm.get('spotbie_confirm_password').setValue('123456789')
 
-      if ((this.chosenAccountType === AllowedAccountTypes.PlaceToEat ||
-          this.chosenAccountType === AllowedAccountTypes.Shopping ||
-          this.chosenAccountType === AllowedAccountTypes.Events)
+      if ((this.chosenAccountType === AccountTypes.PlaceToEat ||
+          this.chosenAccountType === AccountTypes.Shopping ||
+          this.chosenAccountType === AccountTypes.Events)
         && settingsResponse.business !== null) {
 
         this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory);
@@ -279,6 +246,28 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.loading$.next(false);
 
     this.changeDetectionRef.detectChanges();
+  }
+
+  add(event): void {
+    this.activeBusinessCategories = event.detail.value;
+    this.businessSettingsForm.get('originCategories').setValue(event.detail.value);
+  }
+
+  cancelPlaceSettings() {
+    this.placeSettingsFormUp = false;
+  }
+
+  cancelMembership() {
+    const r = confirm(`
+            Are you sure you want to delete your subscription? All yours IN-HOUSE Promotions will also be deleted.
+        `);
+
+    if (r) {
+      this.paymentService.cancelBusinessMembership().subscribe(
+        resp => {
+          window.location.reload();
+        });
+    }
   }
 
   get passKey() {
@@ -740,8 +729,8 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   getAddressCompoenent(results, field){
-    for(let j=0;j < results.address_components.length; j++){
-      for(let k=0; k < results.address_components[j].types.length; k++){
+    for(let j= 0; j < results.address_components.length; j++){
+      for(let k= 0; k < results.address_components[j].types.length; k++){
         if(results.address_components[j].types[k] === field){
           return results.address_components[j].short_name;
         }
@@ -848,8 +837,8 @@ export class SettingsComponent implements OnInit, OnChanges {
           setTimeout(function () {
             this.passwordSubmitted = false
             this.savePasswordShow = false
-          }.bind(this), 2000)
-          break
+          }.bind(this), 2000);
+          break;
         case 'SB-E-000':
           // server error
           this.savePasswordShow = false
@@ -882,22 +871,22 @@ export class SettingsComponent implements OnInit, OnChanges {
 
     switch (this.accountTypeCategory) {
       case 'PERSONAL':
-        this.chosenAccountType = AllowedAccountTypes.Personal
+        this.chosenAccountType = AccountTypes.Personal
         this.originPhoto = this.accountTypePhotos[0]
         this.accountTypeCategoryFriendlyName = 'PERSONAL'
         break
       case 'PLACE TO EAT':
-        this.chosenAccountType = AllowedAccountTypes.PlaceToEat
+        this.chosenAccountType = AccountTypes.PlaceToEat
         this.originPhoto = this.accountTypePhotos[1]
         this.accountTypeCategoryFriendlyName = 'PLACE TO EAT'
         break
       case 'EVENTS':
-        this.chosenAccountType = AllowedAccountTypes.Events
+        this.chosenAccountType = AccountTypes.Events
         this.originPhoto = this.accountTypePhotos[2]
         this.accountTypeCategoryFriendlyName = 'EVENTS BUSINESS'
         break
       case 'RETAIL STORE':
-        this.chosenAccountType = AllowedAccountTypes.Shopping;
+        this.chosenAccountType = AccountTypes.Shopping;
         this.originPhoto = this.accountTypePhotos[3];
         this.accountTypeCategoryFriendlyName = 'RETAIL STORE';
         break
@@ -906,16 +895,16 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory)
 
     switch (this.chosenAccountType) {
-      case AllowedAccountTypes.Personal:
+      case AccountTypes.Personal:
         this.initSettingsForm('personal')
         break
-      case AllowedAccountTypes.PlaceToEat:
+      case AccountTypes.PlaceToEat:
         this.initSettingsForm('place_to_eat')
         break
-      case AllowedAccountTypes.Events:
+      case AccountTypes.Events:
         this.initSettingsForm('events')
         break
-      case AllowedAccountTypes.Shopping:
+      case AccountTypes.Shopping:
         this.initSettingsForm('shopping')
         break
       default:
@@ -947,7 +936,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       let userType: any = (await Preferences.get({key: 'spotbie_userType'})).value;
       userType = parseInt(userType, 10);
 
-    if (userType !== AllowedAccountTypes.Personal) {
+    if (userType !== AccountTypes.Personal) {
       settingsFormInputObj.spotbie_acc_type = ['', accountTypeValidators]
     }
 
@@ -957,25 +946,25 @@ export class SettingsComponent implements OnInit, OnChanges {
           validators: [ValidateUsername('spotbie_username'),
             ValidatePersonName('spotbie_first_name'),
             ValidatePersonName('spotbie_last_name')]
-        })
+        });
         this.passwordForm = this.formBuilder.group({
           spotbie_password: ['', passwordValidators],
           spotbie_confirm_password: ['', passwordConfirmValidators]
         }, {
           validators: [ValidatePassword('spotbie_password'),
             MustMatch('spotbie_password', 'spotbie_confirm_password')]
-        })
-        this.accountTypeCategory = 'PERSONAL'
+        });
+        this.accountTypeCategory = 'PERSONAL';
         this.fetchCurrentSettings();
-        break
+        break;
 
       case 'events':
       case 'shopping':
       case 'place_to_eat':
-        const originTitleValidators = [Validators.required, Validators.maxLength(25)]
-        const originAddressValidators = [Validators.required]
-        const originValidators = [Validators.required]
-        const originDescriptionValidators = [Validators.required, Validators.maxLength(350), Validators.minLength(100)]
+        const originTitleValidators = [Validators.required, Validators.maxLength(25)];
+        const originAddressValidators = [Validators.required];
+        const originValidators = [Validators.required];
+        const originDescriptionValidators = [Validators.required, Validators.maxLength(350), Validators.minLength(100)];
 
         this.businessSettingsForm = this.formBuilder.group({
           originAddress: ['', originAddressValidators],
@@ -986,8 +975,8 @@ export class SettingsComponent implements OnInit, OnChanges {
         });
 
         if (this.user.business) {
-          this.businessSettingsForm.get('originAddress').setValue(this.user.business.address)
-          this.businessSettingsForm.get('spotbieOrigin').setValue(`${this.user.business.loc_x},${this.user.business.loc_y}`)
+          this.businessSettingsForm.get('originAddress').setValue(this.user.business.address);
+          this.businessSettingsForm.get('spotbieOrigin').setValue(`${this.user.business.loc_x},${this.user.business.loc_y}`);
           this.originPhoto = this.user.business.photo;
           this.businessSettingsForm.get('originDescription').setValue(this.user.business.description);
           this.businessSettingsForm.get('originTitle').setValue(this.user.business.name);
@@ -1120,23 +1109,13 @@ export class SettingsComponent implements OnInit, OnChanges {
   async startDeactivateAccount() {
     this.accountDeactivation = true;
 
-    const socialId = (await Preferences.get({key: 'spotbiecom_social_id'})).value;
+    const deactivationPasswordValidator = [Validators.required];
 
-    if (socialId && socialId.length > 0) {
-      this.isSocialAccount = true;
-    } else {
-      this.isSocialAccount = false;
-    }
+    this.deactivationForm = this.formBuilder.group({
+      spotbie_deactivation_password: ['', deactivationPasswordValidator],
+    });
 
-    if (!this.isSocialAccount) {
-      const deactivationPasswordValidator = [Validators.required];
-
-      this.deactivationForm = this.formBuilder.group({
-        spotbie_deactivation_password: ['', deactivationPasswordValidator],
-      });
-
-      this.deactivationForm.get('spotbie_deactivation_password').setValue('123456789');
-    }
+    this.deactivationForm.get('spotbie_deactivation_password').setValue('123456789');
   }
 
   deactivateAccount() {

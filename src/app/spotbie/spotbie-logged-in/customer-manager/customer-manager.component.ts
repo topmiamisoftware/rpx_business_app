@@ -13,4 +13,19 @@ export class CustomerManagerComponent implements OnInit {
   ngOnInit(): void {
     this.customerManagementService.getCustomerList().subscribe();
   }
+
+  sendTextMessage() {
+
+  }
+
+  sendEmail() {
+
+  }
+
+  /**
+   * Customer insight.
+   */
+  getInsightList() {
+
+  }
 }

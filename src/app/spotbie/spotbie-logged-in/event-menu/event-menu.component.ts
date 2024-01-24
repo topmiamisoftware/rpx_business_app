@@ -1,14 +1,15 @@
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { AllowedAccountTypes } from 'src/app/helpers/enum/account-type.enum'
-import { LoyaltyPointBalance } from 'src/app/models/loyalty-point-balance'
-import { Business } from 'src/app/models/business'
-import { Reward } from 'src/app/models/reward'
-import { LoyaltyPointsService } from 'src/app/services/loyalty-points/loyalty-points.service'
-import { BusinessMenuServiceService } from 'src/app/services/spotbie-logged-in/business-menu/business-menu-service.service'
 import { EventCreatorComponent } from './event-creator/event-creator.component'
-import { map } from 'rxjs/operators';
 import {Preferences} from "@capacitor/preferences";
+import {Reward} from "../../../models/models/reward";
+import {Business} from "../../../models/models/business";
+import {LoyaltyPointBalance} from "../../../models/models/loyalty-point-balance";
+import {LoyaltyPointsService} from "../../../services/loyalty-points/loyalty-points.service";
+import {
+  BusinessMenuServiceService
+} from "../../../services/spotbie-logged-in/business-menu/business-menu-service.service";
+import {AccountTypes} from "../../../helpers/enum/account-type.enum";
 
 @Component({
   selector: 'app-event-menu',
@@ -80,7 +81,7 @@ export class EventMenuComponent implements OnInit {
     if(resp.success){
       this.rewards = resp.rewards
 
-      if(this.userType === AllowedAccountTypes.Personal){
+      if(this.userType === AccountTypes.Personal){
         this.userPointToDollarRatio = resp.loyalty_point_dollar_percent_value
         this.business.name = resp.placeToEatName
       }
@@ -125,7 +126,7 @@ export class EventMenuComponent implements OnInit {
     let userType = await Preferences.get({key: 'spotbie_userType'});
     this.userType = parseInt(userType.value, 10);
 
-    if(this.userType !== AllowedAccountTypes.Personal){
+    if(this.userType !== AccountTypes.Personal){
       this.getLoyaltyPointBalance()
       this.fetchRewards()
     } else {

@@ -69,70 +69,69 @@
             <input type="hidden" formControlName="adImageMobile" />
         </form>
 
-        <form>
+        <ng-container *ngIf="($showDeniedMediaUploader | async) === true">
+          <div class='spotbie-upload-new-background-holder'>
+            <div class='spotbie-click-or-drag-upload' (click)="openAppSettings()">
+              <span>PHOTO LIBRARY DISABLED</span>
+              <br/>
+              <i class="fas fa-camera-alt"></i>
+              <span class="spotbie-text-gradient text-uppercase"> OPEN SETTINGS</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="($showDeniedMediaUploader | async) === false">
+          <form>
             <div *ngIf="adFormSubmitted && f.adImage.errors else adMediaUploadInfoTemplate"
-                    class="spotbie-input-info text-uppercase spotbie-text-gradient text-center spotbie-error mt-4 mb-2">
-                <div *ngIf="f.adImage.errors.required">
-                    Upload Promotion Image
-                </div>
+                 class="spotbie-input-info text-uppercase spotbie-text-gradient text-center spotbie-error mt-4 mb-2">
+              <div *ngIf="f.adImage.errors.required">
+                Upload Promotion Image
+              </div>
             </div>
 
             <ng-template #adMediaUploadInfoTemplate>
-                <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-4 mb-2 cursor-pointer"
-                    (click)="startAdMediaUploader('desktop')" #adMediaUploadInfo>
-                    {{ adMediaMessage }} ({{ adTypeList[selected].dimensions }})
-                </div>
+              <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-4 mb-2 cursor-pointer"
+                   (click)="startAdMediaUploader('desktop')" #adMediaUploadInfo>
+                {{ adMediaMessage }} ({{ adTypeList[selected].dimensions }})
+              </div>
             </ng-template>
 
-            <input type="file"
-                    class='spotbie-background-upload-input'
-                    #adMediaInput
-                    (change)="uploadMedia(adMediaInput.files, 'desktop')"
-                    accept="image/jpeg, image/gif, image/png"
-                    multiple=false />
-
             <div (click)="startAdMediaUploader('desktop')" class='cursor-pointer mt-2 mb-2'>
-                <app-header-ad-banner #adApp class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true"></app-header-ad-banner>
-                <app-nearby-featured-ad #adApp class="pe-none" *ngIf="adType == 1" [ad]="ad" [business]="business" [editMode]="true"></app-nearby-featured-ad>
+              <app-header-ad-banner #adApp class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true"></app-header-ad-banner>
+              <app-nearby-featured-ad #adApp class="pe-none" *ngIf="adType == 1" [ad]="ad" [business]="business" [editMode]="true"></app-nearby-featured-ad>
 
-                <div class='cursor-pointer mt-5 mb-2' *ngIf="adType == 2"></div>
-                <app-bottom-ad-banner #adApp class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true"></app-bottom-ad-banner>
+              <div class='cursor-pointer mt-5 mb-2' *ngIf="adType == 2"></div>
+              <app-bottom-ad-banner #adApp class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true"></app-bottom-ad-banner>
             </div>
 
             <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">DESKTOP PREVIEW</h6>
-        </form>
+          </form>
 
-        <form>
-            <div *ngIf="adType !== 1">
-                <div *ngIf="adFormSubmitted && f.adImage.errors else adMediaMobileUploadInfoTemplate"
-                    class="spotbie-input-info text-uppercase spotbie-text-gradient text-center spotbie-error mt-5 mb-2">
-                    <div *ngIf="f.adImage.errors.required">
-                        Upload Promotion Image
-                    </div>
+          <form>
+            <ng-container *ngIf="adType !== 1">
+              <div *ngIf="adFormSubmitted && f.adImage.errors else adMediaMobileUploadInfoTemplate"
+                   class="spotbie-input-info text-uppercase spotbie-text-gradient text-center spotbie-error mt-5 mb-2">
+                <div *ngIf="f.adImage.errors.required">
+                  Upload Promotion Image
                 </div>
+              </div>
 
-                <ng-template #adMediaMobileUploadInfoTemplate>
-                    <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-5 mb-2 cursor-pointer"
-                        (click)="startAdMediaUploader('mobile')" #adMediaUploadInfo>
-                        {{ adMediaMessage }} - MOBILE - ({{ adTypeList[selected].dimensionsMobile }})
-                    </div>
-                </ng-template>
-            </div>
-
-            <input type="file"
-                    class='spotbie-background-upload-input'
-                    #adMediaMobileInput
-                    (change)="uploadMedia(adMediaMobileInput.files, 'mobile')"
-                    accept="image/jpeg, image/gif, image/png"
-                    multiple=false />
+              <ng-template #adMediaMobileUploadInfoTemplate>
+                <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-5 mb-2 cursor-pointer"
+                     (click)="startAdMediaUploader('mobile')" #adMediaUploadInfo>
+                  {{ adMediaMessage }} - MOBILE - ({{ adTypeList[selected].dimensionsMobile }})
+                </div>
+              </ng-template>
+            </ng-container>
 
             <div (click)="startAdMediaUploader('mobile')" class='spotbie-mobile-ad cursor-pointer mt-3 mb-2'>
-                <app-header-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-header-ad-banner>
-                <app-bottom-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-bottom-ad-banner>
+              <app-header-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-header-ad-banner>
+              <app-bottom-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-bottom-ad-banner>
             </div>
 
             <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">MOBILE PREVIEW</h6>
-        </form>
+          </form>
+        </ng-container>
 
         <p class="mt-4" style="font-size: .8rem;">
             <i class="fa fa-map-marker-alt"></i>

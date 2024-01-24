@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AllowedAccountTypes } from '../../../helpers/enum/account-type.enum';
+import { AccountTypes } from '../../../helpers/enum/account-type.enum';
 import { LoyaltyPointBalance } from '../../../models/loyalty-point-balance';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import {Preferences} from "@capacitor/preferences";
@@ -22,7 +22,7 @@ export class LoyaltyPointsComponent implements OnInit {
   @ViewChild('businessLoyaltyPointsInfo') businessLoyaltyPointsInfo;
   // @ViewChild('businessLoyaltyTierInfo') businessLoyaltyTierInfo;
 
-  eAllowedAccountTypes = AllowedAccountTypes;
+  eAllowedAccountTypes = AccountTypes;
   loading = false;
   userPointToDollarRatio: number | string = 0;
   businessLoyaltyPointsOpen = false;
@@ -65,7 +65,7 @@ export class LoyaltyPointsComponent implements OnInit {
   }
 
   loyaltyPointsClass(){
-    if( this.userType !== AllowedAccountTypes.Personal)
+    if( this.userType !== AccountTypes.Personal)
       return 'sb-loyalty-points cursor-pointer'
     else
       return 'sb-loyalty-points no-cursor'
@@ -76,7 +76,7 @@ export class LoyaltyPointsComponent implements OnInit {
   get f() { return this.businessLoyaltyPointsForm.controls }
 
   initBusinessLoyaltyPoints() {
-    if(this.userType === AllowedAccountTypes.Personal){
+    if(this.userType === AccountTypes.Personal){
       this.openRedeemed.emit();
       return;
     }
@@ -135,7 +135,7 @@ export class LoyaltyPointsComponent implements OnInit {
     let accountType = await Preferences.get({key: 'spotbie_userType'});
     this.userType = parseInt(accountType.value, 10);
 
-    if(this.userType === AllowedAccountTypes.Personal){
+    if(this.userType === AccountTypes.Personal){
       this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
         this.loyaltyPointBalance = loyaltyPointBalance;
       });

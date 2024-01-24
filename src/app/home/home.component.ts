@@ -1,6 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {MapComponent} from '../spotbie/map/map.component';
 import {Preferences} from '@capacitor/preferences';
 
 @Component({
@@ -9,17 +8,22 @@ import {Preferences} from '@capacitor/preferences';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-   // @ViewChild('appMap') appMap: MapComponent;
 
-  arrowOn = false;
   getStartedPrompt = true;
 
   constructor(private router: Router) {}
 
+  /**
+   *  Will hide the Get Started screen
+   */
   getStarted() {
     this.getStartedPrompt = false;
   }
 
+  /**
+   * If the user is logged-in then navigate to the user-home component which holds
+   * the business dashboard.
+   */
   async checkIfLoggedIn() {
     const ret = await Preferences.get({key: 'spotbie_loggedIn'});
     const isLoggedIn = ret.value;

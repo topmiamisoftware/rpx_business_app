@@ -1,3 +1,8 @@
+/**
+ * This component is used for the welcome screen that holds the "Get Started" button which is
+ * displayed as soon as you open the SpotBie app.
+ */
+
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 @Component({

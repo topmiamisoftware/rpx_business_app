@@ -1,5 +1,4 @@
 export function getDistanceFromLatLngInMiles(lat1, lon1, lat2, lon2) {
-
     var R = 3958; // Radius of the earth in miles
     var dLat = deg2rad(lat2-lat1);  // deg2rad below
     var dLon = deg2rad(lon2-lon1); 

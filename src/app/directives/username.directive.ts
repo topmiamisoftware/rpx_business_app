@@ -7,9 +7,8 @@ export class UsernameDirective {
     constructor(public ref: ElementRef) { }
 
     @HostListener('input', ['$event']) onInput(event) {
-  
-        let regex = /^[a-zA-Z0-9]*$/
-        let replaceRegex = /[^a-zA-Z0-9/-]+/
+        const regex = /^[a-zA-Z0-9]*$/
+        const replaceRegex = /[^a-zA-Z0-9/-]+/
         let str = event.target.value
 
         // allow letters and numbers only.
@@ -18,15 +17,11 @@ export class UsernameDirective {
             this.ref.nativeElement.value = str
             event.preventDefault()
         }
-
     }
 
     @HostListener('input', ['$event']) onBlur(event) {
-
-        let replaceRegex = /[^a-zA-Z0-9/-]+/
-        let str = event.target.value.replace(replaceRegex, "")
+        const replaceRegex = /[^a-zA-Z0-9/-]+/
+        const str = event.target.value.replace(replaceRegex, "")
         event.target.value = str
-
     }
-
 }

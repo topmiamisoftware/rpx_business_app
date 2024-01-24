@@ -10,6 +10,8 @@ import {environment} from '../../../../../environments/environment';
 import * as spotbieGlobals from '../../../../globals';
 import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
+import {Camera, CameraResultType, Photo} from "@capacitor/camera";
+import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -28,7 +30,6 @@ export class RewardCreatorComponent implements OnInit {
   }
 
   @ViewChild('spbInputInfo') spbInputInfo;
-  @ViewChild('rewardMediaInput') rewardMediaInput;
   @ViewChild('spbTopAnchor') spbTopAnchor;
 
   @Output() closeParentWindowEvt = new EventEmitter();
@@ -53,6 +54,7 @@ export class RewardCreatorComponent implements OnInit {
   loyaltyPointBalance$ = new BehaviorSubject<any>(null);
   qrCodeClaimReward = new BehaviorSubject<string>(QR_CODE_CALIM_REWARD_SCAN_BASE_URL);
   // existingTiers: Array<LoyaltyTier> = this.loyaltyPointsService.existingTiers;
+  $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
 
   constructor(private formBuilder: UntypedFormBuilder,
               private rewardCreatorService: RewardCreatorService,
@@ -160,41 +162,71 @@ export class RewardCreatorComponent implements OnInit {
     }, 1500);
   }
 
-  startRewardMediaUploader(): void{
-    this.rewardMediaInput.nativeElement.click();
+  async startRewardMediaUploader(): Promise<void> {
+    Camera.checkPermissions().then((status) => {
+      if (status.photos === 'granted'){
+        this.rewardMediaUploaders();
+      } else {
+        Camera.requestPermissions({permissions: ['photos']}).then(status => {
+          if (status.photos === 'granted') {
+            this.rewardMediaUploaders();
+          } else if (status.photos === 'denied') {
+            this.showDeniedMediaUploader();
+          }
+        });
+      }
+    });
   }
 
-  async uploadMedia(files) {
-    const file_list_length = files.length;
+  showDeniedMediaUploader() {
+    this.$showDeniedMediaUploader.next(true);
+  }
 
-    if (file_list_length === 0) {
-      this.rewardMediaMessage$.next('You must upload at least one file.');
-      return;
-    } else if (file_list_length > 1) {
-      this.rewardMediaMessage$.next('Upload only one item image.');
-      return;
+  async rewardMediaUploaders() {
+    this.$showDeniedMediaUploader.next(false);
+    const result = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64
+    });
+
+    return this.uploadMedia(result);
+  }
+
+  convertToBlob(image: Photo) {
+    const rawData = atob(image.base64String);
+    const bytes = new Array(rawData.length);
+    for (var x = 0; x < rawData.length; x++) {
+      bytes[x] = rawData.charCodeAt(x);
     }
+    const arr = new Uint8Array(bytes);
+    return new Blob([arr], {type: 'image/png'});
+  }
+
+  openAppSettings() {
+    NativeSettings.open({
+      optionAndroid: AndroidSettings.ApplicationDetails,
+      optionIOS: IOSSettings.App,
+    });
+  }
+
+  async uploadMedia(file: Photo): Promise<void> {
 
     this.loading$.next(true);
 
     const formData = new FormData();
 
-    let file_to_upload;
+    let file_to_upload = file;
     let upload_size = 0;
 
-    for (let i = 0; i < file_list_length; i++) {
-      file_to_upload = files[i] as File;
-
-      upload_size += file_to_upload.size;
-
-      if (upload_size > REWARD_MEDIA_MAX_UPLOAD_SIZE) {
-        this.rewardMediaMessage$.next('Max upload size is 25MB.');
-        this.loading$.next(false);
-        return;
-      }
-
-      formData.append('image', file_to_upload, file_to_upload.name);
+    if (upload_size > REWARD_MEDIA_MAX_UPLOAD_SIZE) {
+      this.rewardMediaMessage$.next('Max upload size is 25MB.');
+      this.loading$.next(false);
+      return;
     }
+
+    let fileName = new Date().toDateString();
+    formData.append('image', this.convertToBlob(file_to_upload), fileName);
 
     const token = await Preferences.get({ key: 'spotbiecom_session'});
 

@@ -1,7 +1,6 @@
 import {Business} from './business';
 
 export class LoyaltyPointBalance {
-
     private _balance: number = null
     private _reset_balance: number = null
     private _loyalty_point_dollar_percent_value: number = null
@@ -28,13 +27,6 @@ export class LoyaltyPointBalance {
     }
     set loyalty_point_dollar_percent_value(value: number) {
         this._loyalty_point_dollar_percent_value = value
-    }
-
-    get end_of_month(): string {
-        return this._end_of_month
-    }
-    set end_of_month(value: string) {
-        this._end_of_month = value
     }
 }
 

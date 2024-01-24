@@ -30,12 +30,6 @@ export class LoyaltyTier {
     this._description = value
   }
 
-  get entranceValue(): number {
-    return this._entranceValue
-  }
-  set entranceValue(value: number) {
-    this._entranceValue = value
-  }
   set lp_entrance(value: number) {
     this._entranceValue = value
   }

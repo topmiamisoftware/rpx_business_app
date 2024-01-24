@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {AccountTypes} from '../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
 import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
 import {Ad} from '../../../models/ad';
@@ -172,13 +172,13 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy, OnChanges, Af
 
       if(!this.editMode && resp.business !== null) {
         switch(this.business.user_type){
-          case AllowedAccountTypes.PlaceToEat:
+          case AccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES
             break
-          case AllowedAccountTypes.Events:
+          case AccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES
             break
-          case AllowedAccountTypes.Shopping:
+          case AccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES
             break
         }

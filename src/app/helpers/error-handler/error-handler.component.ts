@@ -8,16 +8,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class ErrorHandlerComponent implements OnInit {
 
-  displayMessage: string
-
-  constructor(private dialogRef: MatDialogRef<ErrorHandlerComponent>, @Inject(MAT_DIALOG_DATA) private dat) {}
+  displayMessage: string;
+  constructor(
+    private dialogRef: MatDialogRef<ErrorHandlerComponent>,
+    @Inject(MAT_DIALOG_DATA) private dat
+  ) {}
 
   ngOnInit(): void {
-    this.displayMessage = this.dat.errorMessage
+    this.displayMessage = this.dat.errorMessage;
   }
 
   close() {
-    this.dialogRef.close()
+    this.dialogRef.close();
   }
-
 }

@@ -25,6 +25,5 @@ export function ValidateUsername(username_control_name: string) {
         } else {
             username.setErrors(null);
         }
-
     };
 }

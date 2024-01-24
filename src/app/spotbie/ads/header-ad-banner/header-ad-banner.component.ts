@@ -14,7 +14,7 @@ import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helpe
 import {Ad} from '../../../models/ad';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {AccountTypes} from '../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
 import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
 import {Preferences} from "@capacitor/preferences";
@@ -69,7 +69,7 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy, AfterViewInit
               private loyaltyPointsService: LoyaltyPointsService) {
                 this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
                   this.loyaltyPointBalance = loyaltyPointBalance
-                })
+                });
   }
 
   ngOnChanges() {
@@ -156,13 +156,13 @@ export class HeaderAdBannerComponent implements OnInit, OnDestroy, AfterViewInit
 
       if(!this.editMode && resp.business !== null) {
         switch(this.business.user_type){
-          case AllowedAccountTypes.PlaceToEat:
+          case AccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES
             break
-          case AllowedAccountTypes.Events:
+          case AccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES
             break
-          case AllowedAccountTypes.Shopping:
+          case AccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES
             break
         }
