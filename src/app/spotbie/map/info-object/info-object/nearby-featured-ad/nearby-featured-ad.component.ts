@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AccountTypes} from '../../../../../helpers/enum/account-type.enum';
+import {AllowedAccountTypes} from '../../../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../../../helpers/enum/info-object-type.enum';
 import {getDistanceFromLatLngInMiles} from '../../../../../helpers/measure-units.helper';
 import {Ad} from '../../../../../models/ad';
@@ -147,13 +147,13 @@ export class NearbyFeaturedAdComponent implements OnInit {
 
       if (!this.editMode && business) {
         switch (business.user_type) {
-          case AccountTypes.PlaceToEat:
+          case AllowedAccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES;
             break;
-          case AccountTypes.Events:
+          case AllowedAccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES;
             break;
-          case AccountTypes.Shopping:
+          case AllowedAccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES;
             break;
         }

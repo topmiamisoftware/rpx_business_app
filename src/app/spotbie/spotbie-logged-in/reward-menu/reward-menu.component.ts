@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core'
 import {ActivatedRoute, Router} from '@angular/router'
-import {AccountTypes} from '../../../helpers/enum/account-type.enum'
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
 import {Business} from '../../../models/business'
 import {Reward} from '../../../models/reward'
-import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service'
 import {
   BusinessMenuServiceService
 } from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service'
@@ -13,6 +12,7 @@ import {environment} from '../../../../environments/environment'
 import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
 import {UserauthService} from "../../../services/userauth.service";
+import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
 
 @Component({
   selector: 'app-reward-menu',
@@ -33,7 +33,7 @@ export class RewardMenuComponent implements OnInit {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  eAllowedAccountTypes = AccountTypes
+  eAllowedAccountTypes = AllowedAccountTypes
   menuItemList$ =  new BehaviorSubject<Array<any>>([]);
   itemCreator$ = new BehaviorSubject<boolean>(false);
   rewardApp$ = new BehaviorSubject<boolean>(false);
@@ -48,8 +48,8 @@ export class RewardMenuComponent implements OnInit {
   isLoggedIn$ = new BehaviorSubject<string>(null);
   showCreate$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private loyaltyPointsService: LoyaltyPointsService,
-              private businessMenuService: BusinessMenuServiceService,
+  constructor( private businessMenuService: BusinessMenuServiceService,
+              private loyaltyPointsState: BusinessLoyaltyPointsState,
               private router: Router,
               private userService: UserauthService,
               route: ActivatedRoute){
@@ -66,9 +66,7 @@ export class RewardMenuComponent implements OnInit {
   }
 
   getLoyaltyPointBalance(){
-    this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointsBalance => {
-        this.loyaltyPointsBalance$.next(loyaltyPointsBalance);
-      })
+    this.loyaltyPointsBalance$.next(this.loyaltyPointsState.getState());
   }
 
   fetchRewards(qrCodeLink: string = null){
@@ -96,16 +94,16 @@ export class RewardMenuComponent implements OnInit {
 
   addItem(){
     if(this.loyaltyPointsBalance$.getValue().balance === 0){
-      this.notEnoughLpEvt.emit()
-      this.closeWindow()
-      return
+      this.notEnoughLpEvt.emit();
+      this.closeWindow();
+      return;
     }
 
     this.itemCreator$.next(!this.itemCreator$.getValue());
   }
 
   closeWindow(){
-    this.closeWindowEvt.emit()
+    this.closeWindowEvt.emit();
   }
 
   openReward(reward: Reward){
@@ -130,8 +128,8 @@ export class RewardMenuComponent implements OnInit {
   }
 
   closeRewardCreatorAndRefetchRewardList(){
-    this.closeRewardCreator()
-    this.fetchRewards()
+    this.closeRewardCreator();
+    this.fetchRewards();
   }
 
   rewardTileStyling(reward: Reward) {

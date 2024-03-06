@@ -1,15 +1,16 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { EventCreatorComponent } from './event-creator/event-creator.component'
+import {Component, Input, OnInit, Output, EventEmitter, ViewChild} from '@angular/core'
+import {ActivatedRoute, Router} from '@angular/router'
+import {EventCreatorComponent} from './event-creator/event-creator.component'
 import {Preferences} from "@capacitor/preferences";
-import {Reward} from "../../../models/models/reward";
-import {Business} from "../../../models/models/business";
-import {LoyaltyPointBalance} from "../../../models/models/loyalty-point-balance";
-import {LoyaltyPointsService} from "../../../services/loyalty-points/loyalty-points.service";
+import {Reward} from "../../../models/reward";
+import {Business} from "../../../models/business";
+import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
 import {
   BusinessMenuServiceService
 } from "../../../services/spotbie-logged-in/business-menu/business-menu-service.service";
-import {AccountTypes} from "../../../helpers/enum/account-type.enum";
+import {AllowedAccountTypes} from "../../../helpers/enum/account-type.enum";
+import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-event-menu',
@@ -26,10 +27,7 @@ export class EventMenuComponent implements OnInit {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  menuItemList: Array<any>
   itemCreator: boolean = false
-  userLoyaltyPoints: number = 0;
-  userResetBalance
   userPointToDollarRatio
   rewards: Array<Reward>
   reward: Reward
@@ -37,102 +35,69 @@ export class EventMenuComponent implements OnInit {
   userHash: string = null
   userType: number = null
   business: Business = new Business()
-  loyaltyPointsBalance: LoyaltyPointBalance
+  loyaltyPointsBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
 
-  constructor(private loyaltyPointsService: LoyaltyPointsService,
+  constructor(private loyaltyPointBalanceState: BusinessLoyaltyPointsState,
               private businessMenuService: BusinessMenuServiceService,
               private router: Router,
               route: ActivatedRoute){
-      if(this.router.url.indexOf('business-menu') > -1){
-        this.qrCodeLink = route.snapshot.params.qrCode
-        this.userHash   = route.snapshot.params.userHash
+      if (this.router.url.indexOf('business-menu') > -1) {
+        this.qrCodeLink = route.snapshot.params.qrCode;
+        this.userHash   = route.snapshot.params.userHash;
       }
   }
 
-  getWindowClass(){
-    if(this.fullScreenWindow)
-      return 'spotbie-overlay-window'
-    else
-      return ''
-  }
-
   getLoyaltyPointBalance(){
-    this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-      this.userLoyaltyPoints = loyaltyPointBalance
-    })
+    this.loyaltyPointsBalance$.next(this.loyaltyPointBalanceState.getState());
   }
 
   fetchRewards(qrCodeLink: string = null, userHash: string = null){
-    let fetchRewardsReq = null
+    let fetchRewardsReq = null;
 
     if(qrCodeLink !== null && userHash !== null){
       fetchRewardsReq = {
         qrCodeLink: qrCodeLink,
         userHash: userHash
-      }
+      };
     }
 
     this.businessMenuService.fetchRewards(fetchRewardsReq).subscribe(resp => {
         this.fetchRewardsCb(resp)
-      })
+    });
   }
 
   private fetchRewardsCb(resp){
     if(resp.success){
-      this.rewards = resp.rewards
+      this.rewards = resp.rewards;
 
-      if(this.userType === AccountTypes.Personal){
-        this.userPointToDollarRatio = resp.loyalty_point_dollar_percent_value
-        this.business.name = resp.placeToEatName
+      if(this.userType === AllowedAccountTypes.Personal){
+        this.userPointToDollarRatio = resp.loyalty_point_dollar_percent_value;
+        this.business.name = resp.placeToEatName;
       }
     }
   }
 
   addEvent(){
-    this.itemCreator = !this.itemCreator
+    this.itemCreator = !this.itemCreator;
   }
 
   closeWindow(){
-    this.closeWindowEvt.emit()
+    this.closeWindowEvt.emit();
   }
 
-  editReward(reward: Reward){
-    this.reward = reward
-    this.itemCreator = true
-
-    // this.eventCreator
-  }
-
-  closeeventCreator(){
-    this.reward = null
-    this.itemCreator = false
-  }
-
-  closeeventCreatorAndRefetchRewardList(){
-    this.closeeventCreator()
-    this.fetchRewards()
-  }
-
-  placeToEatTileStyling(reward: Reward)
-  {
-    if(reward.type === 0)
-      return { 'background': 'url(' + reward.images + ')' }
-    else
-      return { 'background': 'linear-gradient(90deg,#35a99f,#64e56f)' }
+  placeToEatTileStyling(reward: Reward) {
+    if (reward.type === 0) {
+      return {'background': 'url(' + reward.images + ')'};
+    } else {
+      return {'background': 'linear-gradient(90deg,#35a99f,#64e56f)'};
+    }
   }
 
   async ngOnInit() {
-
     let userType = await Preferences.get({key: 'spotbie_userType'});
     this.userType = parseInt(userType.value, 10);
 
-    if(this.userType !== AccountTypes.Personal){
-      this.getLoyaltyPointBalance()
-      this.fetchRewards()
-    } else {
-      if(this.qrCodeLink !== null && this.userHash !== null){
-        this.fetchRewards(this.qrCodeLink, this.userHash)
-      }
-    }
+    this.getLoyaltyPointBalance();
+    this.fetchRewards();
   }
 }

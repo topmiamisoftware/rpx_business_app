@@ -1,7 +1,7 @@
 <ion-menu menuId="logged-in-menu" contentId="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>Loyalty Points</ion-title>
+      <ion-title>SpotBie</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding" color="primary">
@@ -45,11 +45,15 @@
       <ion-buttons slot="start">
         <ion-menu-button auto-hide="false"></ion-menu-button>
       </ion-buttons>
-      <ion-buttons slot="end" (click)="toggleLoyaltyPoints()">
-        <ion-button>
-          <img class='sb-loyalty-points' src="assets/images/spotbie-loyalty-points.svg" />
-        </ion-button>
-      </ion-buttons>
+      <ng-container *ngIf="(user$ | async)?.business.is_food_truck && (userType$ | async) === eAllowedAccountTypes.PlaceToEat">
+        <ion-buttons slot="end" (click)="updateFoodTruck()">
+          <ion-button>
+            <span style="cursor: pointer">
+              <fa-icon class='faFoodTruck' [icon]="faFoodTruck"></fa-icon>
+            </span>
+          </ion-button>
+        </ion-buttons>
+      </ng-container>
     </ion-toolbar>
   </ion-header>
   <!-- we neeed the main-ion-content class so that we can sett he background to transparent for the scanner -->

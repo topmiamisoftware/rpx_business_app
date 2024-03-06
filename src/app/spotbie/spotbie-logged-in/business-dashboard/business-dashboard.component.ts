@@ -3,6 +3,7 @@ import {UserauthService} from '../../../services/userauth.service';
 import {QrComponent} from '../qr/qr.component';
 import {RewardMenuComponent} from '../reward-menu/reward-menu.component';
 import {BehaviorSubject} from "rxjs";
+import {BusinessMembership} from "../../../models/user";
 
 @Component({
   selector: 'app-business-dashboard',
@@ -21,7 +22,8 @@ export class BusinessDashboardComponent implements OnInit {
 
   displayBusinessSetUp$ = new BehaviorSubject<boolean>(false);
   businessFetched$ = new BehaviorSubject<boolean>(false);
-  getRedeemableItems$ = new BehaviorSubject<boolean>(false);
+  canUseCustomerManager$ = new BehaviorSubject<boolean>(false);
+  businessResponse$ = new BehaviorSubject<any>(null);
 
   constructor(private userAuthServe: UserauthService) { }
 
@@ -38,9 +40,28 @@ export class BusinessDashboardComponent implements OnInit {
           this.openSettings();
         } else {
           this.displayBusinessSetUp$.next(false);
+          this.businessResponse$.next(resp);
+          this.getBusinessPermissions();
         }
         this.businessFetched$.next(true);
       });
+  }
+
+  getBusinessPermissions() {
+    switch (this.businessResponse$.getValue().userSubscriptionPlan) {
+      case BusinessMembership.Starter:
+        this.canUseCustomerManager$.next(false);
+        break;
+      case BusinessMembership.Intermediate:
+        this.canUseCustomerManager$.next(true);
+        break;
+      case BusinessMembership.Ultimate:
+        this.canUseCustomerManager$.next(true);
+        break;
+      case BusinessMembership.Legacy:
+        this.canUseCustomerManager$.next(true);
+        break;
+    }
   }
 
   openSettings(){

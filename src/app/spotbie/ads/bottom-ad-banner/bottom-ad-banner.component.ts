@@ -1,24 +1,23 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges
 } from '@angular/core';
-import {DeviceDetectorService} from 'ngx-device-detector';
-import {AccountTypes} from '../../../helpers/enum/account-type.enum';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
 import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
 import {Ad} from '../../../models/ad';
 import {Business} from '../../../models/business';
-import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
 import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
 import {AdsService} from '../ads.service';
 import {Preferences} from "@capacitor/preferences";
+import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
+import {BehaviorSubject} from "rxjs";
+import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/footer_banner_in_house.jpg'
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
@@ -57,19 +56,17 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy, OnChanges, Af
   communityMemberOpen: boolean = false
   currentCategoryList: Array<string> = []
   categoryListForUi: string = null
-  loyaltyPointBalance: any
+  loyaltyPointBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
   genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
   genericAdImageMobile: string = PLACE_TO_EAT_AD_IMAGE_MOBILE
   switchAdInterval: any = false
 
   constructor(private adsService: AdsService,
               private changeDetectorRef: ChangeDetectorRef,
-              private deviceDetectorService: DeviceDetectorService,
-              private loyaltyPointsService: LoyaltyPointsService) {
-                this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-                  this.loyaltyPointBalance = loyaltyPointBalance
-                });
-              }
+              private loyaltyPointState: BusinessLoyaltyPointsState
+  ) {
+    this.loyaltyPointBalance$.next(this.loyaltyPointState.getState());
+  }
 
   ngOnChanges() {
     this.changeDetectorRef.markForCheck();
@@ -172,13 +169,13 @@ export class BottomAdBannerComponent implements OnInit, OnDestroy, OnChanges, Af
 
       if(!this.editMode && resp.business !== null) {
         switch(this.business.user_type){
-          case AccountTypes.PlaceToEat:
+          case AllowedAccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES
             break
-          case AccountTypes.Events:
+          case AllowedAccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES
             break
-          case AccountTypes.Shopping:
+          case AllowedAccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES
             break
         }

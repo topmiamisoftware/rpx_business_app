@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http'
 import {catchError, tap} from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { handleError } from '../../helpers/error-helper'
-import { Store } from '@ngrx/store'
-import { setValue } from '../../spotbie/spotbie-logged-in/loyalty-points/loyalty-points.actions'
 import { LoyaltyPointBalance } from '../../models/loyalty-point-balance'
 import * as spotbieGlobals from '../../globals'
 import {LoyaltyTier} from '../../models/loyalty-point-tier.balance';
@@ -17,73 +15,20 @@ const REDEEMABLE_API = spotbieGlobals.API+'redeemable'
   providedIn: 'root'
 })
 export class LoyaltyPointsService {
-
-  userLoyaltyPoints$: Observable<number> = this.store.select('loyaltyPoints');
   loyaltyPointBalance: LoyaltyPointBalance;
   existingTiers: Array<LoyaltyTier> = [];
 
-  constructor(private http: HttpClient,
-              private store: Store<{ loyaltyPoints }>) {
+  constructor(private http: HttpClient) {
   }
 
-  getLedger(request: any): Observable<any>{
-    const apiUrl = `${REDEEMABLE_API}/ledger?page=${request.page}`
+  getLoyaltyPointBalance(): any {
+    const apiUrl = `${LOYATLY_POINTS_API}/show`;
 
-    return this.http.get<any>(apiUrl, request).pipe(
-      catchError(handleError( 'getLedger'))
-    )
+    return this.http
+      .post<any>(apiUrl, null)
+      .pipe(catchError(handleError('getLoyaltyPointBalance')));
   }
 
-  getBalanceList(request: any): Observable<any>{
-    const apiUrl = `${REDEEMABLE_API}/balance-list?page=${request.page}`
-
-    return this.http.get<any>(apiUrl, request).pipe(
-      catchError(handleError( 'getBalanceList'))
-    )
-  }
-
-  getRedeemed(request: any): Observable<any>{
-    const apiUrl = `${REDEEMABLE_API}/lp-redeemed?page=${request.page}`
-
-    return this.http.get<any>(apiUrl, request).pipe(
-      catchError(handleError('getRedeemed'))
-    )
-  }
-
-  getRewards(request: any): Observable<any>{
-    const apiUrl = `${REDEEMABLE_API}/index?page=${request.page}`
-
-    return this.http.get<any>(apiUrl, request).pipe(
-      catchError(handleError( 'getRewards'))
-    )
-  }
-
-  getLoyaltyPointBalance(): any{
-    const apiUrl = `${LOYATLY_POINTS_API}/show`
-
-    this.http.post<any>(apiUrl, null).pipe(
-      catchError(handleError('getLoyaltyPointBalance'))
-    ).subscribe(resp => {
-          if(resp.success){
-            const loyaltyPointBalance: number = resp.loyalty_points
-            this.store.dispatch( setValue({loyaltyPointBalance}) )
-          }
-        });
-  }
-
-  addLoyaltyPoints(businessLoyaltyPointsObj: any, callback): any{
-    const apiUrl = `${REDEEMABLE_API}/redeem`
-
-    this.http.post<any>(apiUrl, businessLoyaltyPointsObj).pipe(
-      catchError(handleError('saveLoyaltyPoint'))
-    ).subscribe(resp => {
-        if(resp.success){
-          const loyaltyPointBalance: number = resp.loyalty_points
-          this.store.dispatch( setValue({loyaltyPointBalance}) )
-        }
-        callback(resp)
-      });
-  }
 
   public createRedeemable(createRedeemableObj: any): Observable<any>{
     const apiUrl = `${REDEEMABLE_API}/create`

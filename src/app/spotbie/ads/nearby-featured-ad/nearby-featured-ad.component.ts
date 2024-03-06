@@ -7,15 +7,17 @@ import {
   OnInit
 } from '@angular/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AccountTypes} from '../../../helpers/enum/account-type.enum';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
 import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
 import {Ad} from '../../../models/ad';
 import {Business} from '../../../models/business';
-import {LoyaltyPointsService} from '../../../services/loyalty-points/loyalty-points.service';
 import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
 import {AdsService} from '../ads.service';
 import {Preferences} from "@capacitor/preferences";
+import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
+import {BehaviorSubject} from "rxjs";
+import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
 const SHOPPING_AD_IMAGE = 'assets/images/def/shopping/featured_banner_in_house.jpg'
@@ -47,7 +49,7 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
   rewardMenuOpen: boolean = false
   isMobile: boolean = false
   currentCategoryList: Array<string> = []
-  loyaltyPointBalance: any
+  loyaltyPointBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
   adTypeWithId: boolean = false
   adList: Array<Ad> = []
   genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
@@ -57,10 +59,9 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
               private changeDetection: ChangeDetectorRef,
-              private loyaltyPointsService: LoyaltyPointsService) {
-    this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-      this.loyaltyPointBalance = loyaltyPointBalance
-    })
+              private businessLoyaltyState: BusinessLoyaltyPointsState
+  ) {
+    this.loyaltyPointBalance$.next(this.businessLoyaltyState.getState());
   }
 
   ngOnChanges(){
@@ -74,9 +75,9 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
     // Stop the service if there's a window on top of the ad component.
     const needleElement = document.getElementsByClassName('sb-closeButton')
 
-    if(needleElement.length > 1){
-      // There's a componenet aside from the infoObjectWindow
-      return// bounce this request
+    if (needleElement.length > 1) {
+      // There's a component aside from the infoObjectWindow
+      return; // bounce this request
     }
 
     if(this.editMode){
@@ -143,13 +144,13 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
 
       if(!this.editMode && this.business != null){
         switch(this.business.user_type){
-          case AccountTypes.PlaceToEat:
+          case AllowedAccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES
             break
-          case AccountTypes.Events:
+          case AllowedAccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES
             break
-          case AccountTypes.Shopping:
+          case AllowedAccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES
             break
         }

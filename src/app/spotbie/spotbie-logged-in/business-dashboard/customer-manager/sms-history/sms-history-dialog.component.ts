@@ -1,0 +1,52 @@
+import {Component, Inject, OnInit} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {CommonModule} from '@angular/common';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog, MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {SmsGroup} from '../models';
+import {SmsGroupEntitiesState} from './sms-group.state';
+import {MatTableModule} from '@angular/material/table';
+import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
+
+@Component({
+  selector: 'app-sms-history-dialog',
+  templateUrl: './sms-history-dialog.component.html',
+  styleUrls: ['./sms-history-dialog.component.css'],
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatTableModule, SpotbiePipesModule],
+})
+export class SmsHistoryDialogComponent implements OnInit {
+  smsGroupList$: Observable<SmsGroup[]> =
+    this.smsGroupEntitiesState.entitiesArray$;
+
+  displayedColumns: string[] = [
+    'total',
+    'total_sent',
+    'body',
+    'created_at',
+    'view_logs',
+  ];
+
+  constructor(
+    public dialogRef: MatDialogRef<SmsHistoryDialogComponent>,
+    private matDialog: MatDialog,
+    private smsGroupEntitiesState: SmsGroupEntitiesState,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+
+  ngOnInit(): void {
+    this.smsGroupEntitiesState.getSmsGroupList();
+  }
+
+  viewGroup(smsGroup: SmsGroup) {
+    console.log('SMS GROUP', smsGroup);
+  }
+
+  closeDialog() {
+    this.dialogRef.close(null);
+  }
+}

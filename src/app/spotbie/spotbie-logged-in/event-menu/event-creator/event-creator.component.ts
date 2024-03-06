@@ -4,7 +4,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import * as spotbieGlobals from '../../../../globals'
 import {Preferences} from "@capacitor/preferences";
 import {SpEvent} from "../../../../models/event";
-import {LoyaltyPointBalance} from "../../../../models/models/loyalty-point-balance";
+import {LoyaltyPointBalance} from "../../../../models/loyalty-point-balance";
 import {
   EventCreatorService
 } from "../../../../services/spotbie-logged-in/event-menu/event-creator/event-creator.service";

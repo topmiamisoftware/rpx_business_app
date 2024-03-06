@@ -9,13 +9,7 @@ import {
 import {InfoObjectServiceService} from './info-object-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DateFormatPipe, TimeFormatPipe} from '../../../../pipes/date-format.pipe';
-import {SpotbieMetaService} from '../../../../services/meta/spotbie-meta.service';
 import {setYelpRatingImage} from '../../../../helpers/info-object-helper';
-import {
-  spotbieMetaDescription,
-  spotbieMetaTitle,
-  spotbieMetaImage,
-} from '../../../../constants/spotbie';
 import {InfoObject} from '../../../../models/info-object';
 import {environment} from '../../../../../environments/environment';
 import {Ad} from '../../../../models/ad';
@@ -26,10 +20,6 @@ import {Preferences} from '@capacitor/preferences';
 import {Share} from '@capacitor/share';
 
 const YELP_BUSINESS_DETAILS_API = 'https://api.yelp.com/v3/businesses/';
-
-const SPOTBIE_META_DESCRIPTION = spotbieMetaDescription;
-const SPOTBIE_META_TITLE = spotbieMetaTitle;
-const SPOTBIE_META_IMAGE = spotbieMetaImage;
 
 @Component({
   selector: 'app-info-object',
@@ -71,7 +61,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
     private infoObjectService: InfoObjectServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private spotbieMetaService: SpotbieMetaService
   ) {}
 
   getFullScreenModeClass() {
@@ -89,9 +78,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/home']);
     } else {
       this.closeWindow.emit(null);
-      this.spotbieMetaService.setTitle(SPOTBIE_META_TITLE);
-      this.spotbieMetaService.setDescription(SPOTBIE_META_DESCRIPTION);
-      this.spotbieMetaService.setImage(SPOTBIE_META_IMAGE);
     }
   }
 
@@ -201,10 +187,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
       }
 
       infoObject.rating_image = setYelpRatingImage(infoObject.rating);
-
-      this.spotbieMetaService.setTitle(this.infoObjectTitle);
-      this.spotbieMetaService.setDescription(this.infoObjectDescription);
-      this.spotbieMetaService.setImage(this.infoObjectImageUrl);
 
       this.infoObject$.next(infoObject);
       this.loading$.next(false);
@@ -354,10 +336,6 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
 
     this.infoObjectDescription = `Hey! Let's go to ${infoObject.name} together. It's at ${infoObject._embedded.venues[0].name} located in ${infoObject._embedded.venues[0].address.line1}, ${infoObject._embedded.venues[0].city.name} ${infoObject._embedded.venues[0].postalCode}. Prices range from $${infoObject.priceRanges[0].min} to $${infoObject.priceRanges[0].min}`;
     this.infoObjectTitle = title;
-
-    this.spotbieMetaService.setTitle(title);
-    this.spotbieMetaService.setDescription(this.infoObjectDescription);
-    this.spotbieMetaService.setImage(infoObject.image_url);
 
     return;
   }

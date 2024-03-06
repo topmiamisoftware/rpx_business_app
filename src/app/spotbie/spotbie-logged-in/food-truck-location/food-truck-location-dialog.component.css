@@ -1,0 +1,228 @@
+.mat-dialog-title{
+    margin-bottom: 0px;
+    text-align: center;
+}
+.spotbie-map{
+    position: relative;
+    margin: 0 auto;
+    width: 650px;
+    min-width: 650px;
+    max-width: 650px;
+    height: 500px;
+    min-height: 500px;
+    max-height: 500px;
+    background-color: #353535;
+}
+.agm-map-container-inner{
+    margin: 0 auto !important;
+}
+agm-map{
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 500px;
+    min-height: 500px;
+    background-color: #181818;
+}
+.sb-input{
+    min-width: 450px;
+    text-align: left;
+    border: unset;
+}
+.sb-business-img{
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    max-width: 350px;
+}
+.sb-originPhoto-lg{
+    width: 450px;
+    min-width: 450px;
+    max-width: 450px;
+}
+.spotbie-clickable-field{
+    cursor: pointer;
+}
+.spotbie-place-picker{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.spotbie-place{
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    width: 100%;
+    min-width: 100%;
+    background-color: rgba(0,0,0,.23);
+    padding: 10px;
+    cursor: pointer;
+}
+.spotbie-search-map-button{
+    position: relative;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    width: 35%;
+    min-width: 35%;
+    max-width: 35%;
+    color: white;
+    text-align: center;
+    cursor : pointer;
+    background-color: green;
+}
+.faCheck {
+    color: #01a79d;
+}
+.spotbie-search-map-input{
+    display: inline-block!important;
+}
+.sb-origin-address-input{
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.sb-search-icon{
+    display: inline-block!important;
+    max-width: 50px;
+    padding-top: 20px;
+    text-align: center;
+    padding: 0px !important;
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+    border-radius: 8px !important;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+}
+.spotbie-settings-table{
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    padding-top: 0px;
+    border-radius: 20px;
+    text-align: center;
+}
+.spotbie-place-result td{
+    padding: unset;
+}
+.faSearchLocation {
+  color: white;
+}
+
+.fa-map-marker-alt{
+  position: relative;
+  color: #ffc107;
+  font-size: 2rem;
+}
+
+#settings-map {
+  height: 100%;
+  min-height: 100%;
+}
+/**WIDTH MEDIA QUERIES */
+@media (max-width: 1300px) {
+}
+@media (max-width: 1200px) {
+}
+@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) and (max-height: 600px) {
+}
+@media (max-width: 960px) {
+}
+@media (max-width: 820px) and (max-height: 1180px){
+    .spotbie-settings-table {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .spotbie-settings-table{
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+        border-radius: 0;
+    }
+    .sb-originPhoto-sm{
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+    }
+    .sb-originPhoto-lg{
+        width: 94%;
+        min-width: 94%;
+        max-width: 94%;
+    }
+}
+@media (max-width: 700px) {
+  .spotbie-map{
+    width: 96%;
+    min-width: 96%;
+    max-width: 96%;
+  }
+}
+@media (max-width: 600px) {
+}
+@media (max-width: 560px) {
+    .sb-input{
+        min-width: 90%;
+    }
+    .spotbie-button{
+        font-size: .9rem !important;
+        max-width: 75%;
+        width: 75%;
+        min-width: 75%;
+    }
+    .spotbie-settings-table td{
+        padding-top: 7px !important;
+    }
+    .spotbie-settings-table td.deactivate-account{
+        padding-top: 30px !important;
+    }
+    .spotbie-save-settings-button {
+        margin-top: 0px;
+    }
+    .spotbie-map{
+        width: 96%;
+        min-width: 96%;
+        max-width: 96%;
+    }
+    .sb-business-image{
+        width: 90%;
+        max-width: 90%;
+        min-width: 90%;
+    }
+    .sb-origin-address-input{
+        max-width: 80%;
+        width: 80%;
+        min-width: 80%;
+    }
+    .sb-search-icon{
+        max-width: 15%;
+        width: 15%;
+        min-width: 15%;
+        padding: 8px 0!important;
+    }
+}
+@media (max-width: 460px) {
+}
+@media (max-width: 420px) {
+}
+@media (max-width: 360px) {
+}
+
+@media (max-width: 320px) {
+}
+@media (max-width: 220px) {
+}
+@media (max-width: 120px) {
+}

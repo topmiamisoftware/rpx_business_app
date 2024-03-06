@@ -12,6 +12,8 @@ import { HelperModule } from '../../../helpers/helper.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatIconModule} from "@angular/material/icon";
 import {IonicModule} from "@ionic/angular";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 export const options : Partial<IConfig> | (() => Partial<IConfig>) = null
 
@@ -19,21 +21,23 @@ export const options : Partial<IConfig> | (() => Partial<IConfig>) = null
   declarations: [
     SettingsComponent
   ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        HelperModule,
-        RouterModule,
-        MatChipsModule,
-        MatAutocompleteModule,
-        MatIconModule,
-        MatFormFieldModule,
-        NgxMaskDirective,
-        NgxMaskPipe,
-        IonicModule,
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    HelperModule,
+    RouterModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatIconModule,
+    MatFormFieldModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    IonicModule,
+    FontAwesomeModule,
+    MatSlideToggleModule,
+  ],
   exports: [
     SettingsComponent
   ],

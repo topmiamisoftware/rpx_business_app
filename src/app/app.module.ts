@@ -11,14 +11,19 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TokenInterceptor} from './helpers/token-interceptor/token-interceptor.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UserauthService} from './services/userauth.service';
-import {StoreModule} from '@ngrx/store';
-import {loyaltyPointsReducer} from './spotbie/spotbie-logged-in/loyalty-points/loyalty-points.reducer';
 import {RouteReuseStrategy} from '@angular/router';
-import {MyList} from './spotbie/spotbie-logged-in/my-list/my-list.component';
 import {SpotbiePipesModule} from "./spotbie-pipes/spotbie-pipes.module";
+import {NgxsModule, NoopNgxsExecutionStrategy} from "@ngxs/store";
+import {environment} from "../environments/environment";
+import {NgxsLoggerPluginModule} from "@ngxs/logger-plugin";
+import {NgxsDataPluginModule} from "@angular-ru/ngxs";
+import {NGXS_DATA_STORAGE_CONTAINER, NGXS_DATA_STORAGE_EXTENSION} from "@angular-ru/ngxs/storage";
+import {NgxsReduxDevtoolsPluginModule} from "@ngxs/devtools-plugin";
+import {BusinessLoyaltyPointsState} from './spotbie/spotbie-logged-in/state/business.lp.state';
+import {LoyaltyPointsState} from "./spotbie/spotbie-logged-in/state/lp.state";
 
 @NgModule({
-  declarations: [AppComponent, UrlSanitizerPipe, MyList],
+  declarations: [AppComponent, UrlSanitizerPipe],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -28,10 +33,19 @@ import {SpotbiePipesModule} from "./spotbie-pipes/spotbie-pipes.module";
     HelperModule,
     BrowserAnimationsModule,
     SpotbiePipesModule,
-    StoreModule.forRoot({
-      loyaltyPoints: loyaltyPointsReducer,
-    }),
     BrowserModule,
+    NgxsModule.forRoot([LoyaltyPointsState, BusinessLoyaltyPointsState], {
+      developmentMode: !environment.production,
+      executionStrategy: NoopNgxsExecutionStrategy,
+    }),
+    NgxsLoggerPluginModule.forRoot(),
+    NgxsDataPluginModule.forRoot([
+      NGXS_DATA_STORAGE_EXTENSION,
+      NGXS_DATA_STORAGE_CONTAINER,
+    ]),
+    NgxsReduxDevtoolsPluginModule.forRoot({
+      disabled: environment.production,
+    }),
     IonicModule.forRoot(),
   ],
   providers: [

@@ -1,0 +1,18 @@
+<div>
+  <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">CUSTOMER MANAGEMENT</h4>
+
+  <section>
+    <div class="example-button-row">
+      <button mat-button color="accent" (click)="openRecentGuests()">Recent Guests</button>
+      <button mat-button color="primary" (click)="openSmsHistory()">SMS History</button>
+    </div>
+  </section>
+
+  <div class="spotbie-button" (click)="openTextMessage()">SEND SMS</div>
+
+  <ng-container *ngIf="messageSent$ | async">
+    <p class="spotbie-text-gradient text-center mt-5">
+      Your message was sent successfully.
+    </p>
+  </ng-container>
+</div>

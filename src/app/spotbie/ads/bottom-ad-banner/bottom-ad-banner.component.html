@@ -30,7 +30,7 @@
 
         <span class='spotbie-text-gradient m-2 mt-0 mb-0' *ngIf="editMode">-</span>
         <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' *ngIf="editMode">
-             {{ (loyaltyPointBalance.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+             {{ (loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
         </span>
 
         <span class='spotbie-text-gradient m-2 mt-0 mb-0'>-</span>
@@ -47,7 +47,7 @@
         </span>
 
         <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;" *ngIf="editMode">
-             {{ (loyaltyPointBalance.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+             {{ (loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
         </span>
 
         <span class='spotbie-text-gradient sb-address text-uppercase'><i class='fas fa-map-marker-alt'></i> {{ business.address }}</span>

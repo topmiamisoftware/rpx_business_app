@@ -1,28 +1,25 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {handleError} from '../helpers/error-helper';
 import {User} from '../models/user';
 
 import * as spotbieGlobals from '../globals';
-import {AccountTypes} from "../helpers/enum/account-type.enum";
+import {AllowedAccountTypes} from "../helpers/enum/account-type.enum";
 
 const USER_API = spotbieGlobals.API + 'user';
-
 const BUSINESS_API = spotbieGlobals.API + 'business'
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserauthService {
-  userLogin: string;
-  userPassword: string;
   userRememberMe: string;
-  userRememberMeToken: string;
   userTimezone: string;
   route: string;
   userProfile: User;
+  userProfile$ = new BehaviorSubject<User>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -45,9 +42,9 @@ export class UserauthService {
     let apiUrl
 
     switch(businessInfo.accountType){
-      case AccountTypes.PlaceToEat:
-      case AccountTypes.Shopping:
-      case AccountTypes.Events:
+      case AllowedAccountTypes.PlaceToEat:
+      case AllowedAccountTypes.Shopping:
+      case AllowedAccountTypes.Events:
         apiUrl = `${BUSINESS_API}/verify`
         break
     }
@@ -67,7 +64,8 @@ export class UserauthService {
       line2: businessInfo.line2,
       postal_code: businessInfo.postal_code,
       state: businessInfo.state,
-      accountType: businessInfo.accountType
+      accountType: businessInfo.accountType,
+      is_food_truck: businessInfo.is_food_truck,
     }
 
     return this.http.post<any>(apiUrl, businessInfoObj)
@@ -80,9 +78,9 @@ export class UserauthService {
     let apiUrl
 
     switch(businessInfo.accountType){
-      case AccountTypes.PlaceToEat:
-      case AccountTypes.Shopping:
-      case AccountTypes.Events:
+      case AllowedAccountTypes.PlaceToEat:
+      case AllowedAccountTypes.Shopping:
+      case AllowedAccountTypes.Events:
         apiUrl = `${BUSINESS_API}/save-business`
         break
     }
@@ -101,7 +99,8 @@ export class UserauthService {
       line2: businessInfo.line2,
       postal_code: businessInfo.postal_code,
       state: businessInfo.state,
-      accountType: businessInfo.accountType
+      accountType: businessInfo.accountType,
+      is_food_truck: businessInfo.is_food_truck,
     }
 
     return this.http.post<any>(apiUrl, businessInfoObj)
@@ -145,6 +144,7 @@ export class UserauthService {
     return this.http.post<any>(getSettingsApi, null).pipe(
       tap(settings => {
         this.userProfile = settings;
+        this.userProfile$.next(this.userProfile);
       }),
       catchError(err => {
         throw err;
@@ -257,5 +257,26 @@ export class UserauthService {
     return this.http
       .post<any>(resetPasswordApi, passResetObj)
       .pipe(catchError(handleError('deactivateAccount')));
+  }
+
+  saveLocation(businessInfo: any): Observable<any> {
+    const apiUrl = `${BUSINESS_API}/save-location`;
+
+    const businessInfoObj = {
+      address: businessInfo.address,
+      photo: businessInfo.photo,
+      loc_x: businessInfo.loc_x,
+      loc_y: businessInfo.loc_y,
+      city: businessInfo.city,
+      country: businessInfo.country,
+      line1: businessInfo.line1,
+      line2: businessInfo.line2,
+      postal_code: businessInfo.postal_code,
+      state: businessInfo.state,
+    };
+
+    return this.http
+      .put<any>(apiUrl, businessInfoObj)
+      .pipe(catchError(handleError('saveLocation')));
   }
 }

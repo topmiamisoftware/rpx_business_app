@@ -10,13 +10,9 @@ import {
   ChangeDetectorRef
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { AccountTypes } from '../../../helpers/enum/account-type.enum'
-import { LoyaltyPointBalance } from '../../../models/loyalty-point-balance'
 import { Ad } from '../../../models/ad'
-import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service'
 import { AdCreatorComponent } from './ad-creator/ad-creator.component'
 import { AdsService } from '../../ads/ads.service';
-import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-ad-manager-menu',
@@ -33,20 +29,13 @@ export class AdManagerMenuComponent implements OnInit, OnChanges {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  eAllowedAccountTypes = AccountTypes
-  menuItemList: Array<any>
   itemCreator: boolean = false
-  userLoyaltyPoints: any
-  userResetBalance
-  userPointToDollarRatio
   adList: Array<Ad> = []
   ad: Ad
   qrCodeLink: string = null
   userHash: string = null
-  loyaltyPointsBalance: LoyaltyPointBalance
 
-  constructor(private loyaltyPointsService: LoyaltyPointsService,
-              private adCreatorService: AdsService,
+  constructor(private adCreatorService: AdsService,
               private changeDetectorRef: ChangeDetectorRef,
               private router: Router,
               route: ActivatedRoute) {
@@ -58,19 +47,6 @@ export class AdManagerMenuComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.changeDetectorRef.markForCheck();
-  }
-
-  getWindowClass(){
-    if(this.fullScreenWindow)
-      return 'spotbie-overlay-window';
-    else
-      return '';
-  }
-
-  getLoyaltyPointBalance(){
-    this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-      this.userLoyaltyPoints = loyaltyPointBalance
-    })
   }
 
   fetchAds(){
@@ -118,7 +94,6 @@ export class AdManagerMenuComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.getLoyaltyPointBalance();
     this.fetchAds();
   }
 }

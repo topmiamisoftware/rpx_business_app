@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AccountTypes} from '../../../../helpers/enum/account-type.enum';
+import {AllowedAccountTypes} from '../../../../helpers/enum/account-type.enum';
 import {InfoObjectType} from '../../../../helpers/enum/info-object-type.enum';
 import {getDistanceFromLatLngInMiles} from '../../../../helpers/measure-units.helper';
 import {Ad} from '../../../../models/ad';
@@ -14,7 +13,6 @@ import {
 } from '../../map_extras/map_extras';
 import {getRandomInt} from '../../../../helpers/numbers.helper';
 import {BehaviorSubject} from 'rxjs';
-import {BusinessMenuServiceService} from '../../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
 import {Preferences} from '@capacitor/preferences';
 import {AppLauncher} from '@capacitor/app-launcher';
 
@@ -52,17 +50,12 @@ export class NearbyFeaturedAdComponent implements OnInit {
   ad$: BehaviorSubject<Ad | null> = new BehaviorSubject<Ad>(null);
   link: string;
   displayAd: boolean = false;
-  whiteIconSvg = 'assets/images/home_imgs/spotbie-white-icon.svg';
   distance: number = 0;
   totalRewards: number = 0;
   categoriesListFriendly: string[] = [];
-  adIsOpen: boolean = false;
-  rewardMenuOpen: boolean = false;
   isMobile: boolean = false;
   currentCategoryList: Array<string> = [];
-  categoryListForUi: string = null;
   loyaltyPointBalance: any;
-  adTypeWithId: boolean = false;
   adList: Array<Ad> = [];
   genericAdImage: string = PLACE_TO_EAT_AD_IMAGE;
   business$ = new BehaviorSubject(null);
@@ -72,8 +65,6 @@ export class NearbyFeaturedAdComponent implements OnInit {
   constructor(
     private adsService: AdsService,
     private deviceDetectorService: DeviceDetectorService,
-    private router: Router,
-    private businessService: BusinessMenuServiceService
   ) {}
 
   async getNearByFeatured() {
@@ -147,13 +138,13 @@ export class NearbyFeaturedAdComponent implements OnInit {
 
       if (!this.editMode && business) {
         switch (business.user_type) {
-          case AccountTypes.PlaceToEat:
+          case AllowedAccountTypes.PlaceToEat:
             this.currentCategoryList = FOOD_CATEGORIES;
             break;
-          case AccountTypes.Events:
+          case AllowedAccountTypes.Events:
             this.currentCategoryList = EVENT_CATEGORIES;
             break;
-          case AccountTypes.Shopping:
+          case AllowedAccountTypes.Shopping:
             this.currentCategoryList = SHOPPING_CATEGORIES;
             break;
         }

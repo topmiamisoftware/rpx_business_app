@@ -26,7 +26,7 @@ import {HttpClient, HttpEventType} from '@angular/common/http';
 import {Observable} from 'rxjs/internal/Observable'
 import {LocationService} from '../../../services/location-service/location.service'
 import {environment} from '../../../../environments/environment'
-import {AccountTypes} from '../../../helpers/enum/account-type.enum'
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
 import {SpotbiePaymentsService} from '../../../services/spotbie-payments/spotbie-payments.service'
 import {BehaviorSubject, combineLatest, of} from "rxjs";
 import {Preferences} from "@capacitor/preferences";
@@ -35,6 +35,9 @@ import {Capacitor} from "@capacitor/core";
 import {Geolocation} from "@capacitor/geolocation";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {filter, tap} from "rxjs/operators";
+import {AlertDialogComponent} from "../../../helpers/alert/alert.component";
+import {MatDialog} from "@angular/material/dialog";
+import {faTruck} from "@fortawesome/free-solid-svg-icons";
 
 const PLACE_TO_EAT_API = spotbieGlobals.API + 'place-to-eat';
 const PLACE_TO_EAT_MEDIA_MAX_UPLOAD_SIZE = 25e+6;
@@ -71,6 +74,8 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   lat$ = new BehaviorSubject<number>(null);
   lng$= new BehaviorSubject<number>(null);
+
+  faFoodTruckIcon = faTruck;
 
   zoom: number = 18;
   fitBounds: boolean = false;
@@ -138,7 +143,9 @@ export class SettingsComponent implements OnInit, OnChanges {
               private locationService: LocationService,
               private injector: Injector,
               private changeDetectionRef: ChangeDetectorRef,
-              private paymentService: SpotbiePaymentsService) {
+              private paymentService: SpotbiePaymentsService,
+              public dialog: MatDialog
+  ) {
 
     combineLatest([this.lat$, this.lng$])
       .pipe(
@@ -177,6 +184,7 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   private populateSettings(settingsResponse: any) {
     if (settingsResponse.success) {
+      console.log('SETTINGS RESPONSE', settingsResponse);
       this.user = settingsResponse.user;
       this.user.spotbie_user = settingsResponse.spotbie_user;
       this.user.uuid = settingsResponse.user.hash;
@@ -185,27 +193,27 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.user.next_payment = settingsResponse.next_payment;
       this.userSubscriptionPlan = settingsResponse.userSubscriptionPlan;
 
-      if (this.user.spotbie_user.user_type === AccountTypes.Unset && !this.settingsFormInitiated) {
+      if (this.user.spotbie_user.user_type === AllowedAccountTypes.Unset && !this.settingsFormInitiated) {
         this.loadAccountTypes = true;
       }
 
       this.chosenAccountType = this.user.spotbie_user.user_type;
 
       switch (this.chosenAccountType) {
-        case AccountTypes.PlaceToEat:
+        case AllowedAccountTypes.PlaceToEat:
           this.accountTypeCategory = 'PLACE TO EAT';
           this.accountTypeCategoryFriendlyName = 'PLACE TO EAT';
           break;
-        case AccountTypes.Events:
+        case AllowedAccountTypes.Events:
           this.accountTypeCategory = 'EVENTS';
           this.accountTypeCategoryFriendlyName = 'EVENTS BUSINESS';
           break;
-        case AccountTypes.Shopping:
+        case AllowedAccountTypes.Shopping:
           this.accountTypeCategory = 'RETAIL STORE';
           this.accountTypeCategoryFriendlyName = 'RETAIL STORE';
           break;
-        case AccountTypes.Personal:
-        case AccountTypes.Unset:
+        case AllowedAccountTypes.Personal:
+        case AllowedAccountTypes.Unset:
           this.accountTypeCategory = 'PERSONAL';
           this.accountTypeCategoryFriendlyName = 'PERSONAL';
           break;
@@ -217,13 +225,14 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.settingsForm.get('spotbie_first_name').setValue(this.user.spotbie_user.first_name)
       this.settingsForm.get('spotbie_last_name').setValue(this.user.spotbie_user.last_name)
       this.settingsForm.get('spotbie_email').setValue(this.user.email)
-      this.settingsForm.get('spotbie_phone_number').setValue(this.user.spotbie_user.phone_number)
+      this.settingsForm.get('spotbie_phone_number')
+        .setValue(this.user.spotbie_user.phone_number?.replace('+1', ''));
       this.passwordForm.get('spotbie_password').setValue('userpassword')
       this.passwordForm.get('spotbie_confirm_password').setValue('123456789')
 
-      if ((this.chosenAccountType === AccountTypes.PlaceToEat ||
-          this.chosenAccountType === AccountTypes.Shopping ||
-          this.chosenAccountType === AccountTypes.Events)
+      if ((this.chosenAccountType === AllowedAccountTypes.PlaceToEat ||
+          this.chosenAccountType === AllowedAccountTypes.Shopping ||
+          this.chosenAccountType === AllowedAccountTypes.Events)
         && settingsResponse.business !== null) {
 
         this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory);
@@ -236,6 +245,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.user.business.address = settingsResponse.business.address;
         this.user.business.photo = settingsResponse.business.photo;
         this.user.business.categories = settingsResponse.business.categories;
+        this.user.business.is_food_truck = settingsResponse.business.is_food_truck;
 
         this.originPhoto = this.user.business.photo;
       }
@@ -270,6 +280,10 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
   }
 
+  closeAccountType() {
+    this.loadAccountTypes = false;
+  }
+
   get passKey() {
     return this.passKeyVerificationForm.get('passKey').value;
   }
@@ -297,6 +311,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       loc_x: this.lat$.getValue(),
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
+      is_food_truck: this.isFoodTruck,
     };
 
     this.userAuthService.saveBusiness(businessInfo).subscribe();
@@ -378,7 +393,8 @@ export class SettingsComponent implements OnInit, OnChanges {
       loc_x: this.lat$.getValue(),
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
-      passkey: this.passKey
+      passkey: this.passKey,
+      is_food_truck: this.isFoodTruck
     };
 
     this.userAuthService.verifyBusiness(businessInfo).subscribe(
@@ -388,6 +404,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   private claimThisBusinessCB(resp: any) {
+    console.log('THE RESPONSE', resp);
     if (resp.message === 'passkey_mismatch') {
       this.passKeyVerificationForm.get('passKey').setErrors({invalid: true});
     } else if (resp.message === 'success') {
@@ -871,22 +888,22 @@ export class SettingsComponent implements OnInit, OnChanges {
 
     switch (this.accountTypeCategory) {
       case 'PERSONAL':
-        this.chosenAccountType = AccountTypes.Personal
+        this.chosenAccountType = AllowedAccountTypes.Personal
         this.originPhoto = this.accountTypePhotos[0]
         this.accountTypeCategoryFriendlyName = 'PERSONAL'
         break
       case 'PLACE TO EAT':
-        this.chosenAccountType = AccountTypes.PlaceToEat
+        this.chosenAccountType = AllowedAccountTypes.PlaceToEat
         this.originPhoto = this.accountTypePhotos[1]
         this.accountTypeCategoryFriendlyName = 'PLACE TO EAT'
         break
       case 'EVENTS':
-        this.chosenAccountType = AccountTypes.Events
+        this.chosenAccountType = AllowedAccountTypes.Events
         this.originPhoto = this.accountTypePhotos[2]
         this.accountTypeCategoryFriendlyName = 'EVENTS BUSINESS'
         break
       case 'RETAIL STORE':
-        this.chosenAccountType = AccountTypes.Shopping;
+        this.chosenAccountType = AllowedAccountTypes.Shopping;
         this.originPhoto = this.accountTypePhotos[3];
         this.accountTypeCategoryFriendlyName = 'RETAIL STORE';
         break
@@ -895,16 +912,16 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory)
 
     switch (this.chosenAccountType) {
-      case AccountTypes.Personal:
+      case AllowedAccountTypes.Personal:
         this.initSettingsForm('personal')
         break
-      case AccountTypes.PlaceToEat:
+      case AllowedAccountTypes.PlaceToEat:
         this.initSettingsForm('place_to_eat')
         break
-      case AccountTypes.Events:
+      case AllowedAccountTypes.Events:
         this.initSettingsForm('events')
         break
-      case AccountTypes.Shopping:
+      case AllowedAccountTypes.Shopping:
         this.initSettingsForm('shopping')
         break
       default:
@@ -936,7 +953,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       let userType: any = (await Preferences.get({key: 'spotbie_userType'})).value;
       userType = parseInt(userType, 10);
 
-    if (userType !== AccountTypes.Personal) {
+    if (userType !== AllowedAccountTypes.Personal) {
       settingsFormInputObj.spotbie_acc_type = ['', accountTypeValidators]
     }
 
@@ -971,6 +988,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           originTitle: ['', originTitleValidators],
           originDescription: ['', originDescriptionValidators],
           spotbieOrigin: ['', originValidators],
+          isFoodTruck: [''],
           originCategories: ['']
         });
 
@@ -980,6 +998,9 @@ export class SettingsComponent implements OnInit, OnChanges {
           this.originPhoto = this.user.business.photo;
           this.businessSettingsForm.get('originDescription').setValue(this.user.business.description);
           this.businessSettingsForm.get('originTitle').setValue(this.user.business.name);
+          this.businessSettingsForm
+            .get('isFoodTruck')
+            .setValue(!!this.user.business.is_food_truck);
           this.activeBusinessCategories = this.user.business.categories.toString();
         } else {
           this.businessSettingsForm.get('originAddress').setValue('SEARCH FOR LOCATION');
@@ -1040,6 +1061,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   get originTitle() { return this.businessSettingsForm.get('originTitle').value }
   get originDescription() { return this.businessSettingsForm.get('originDescription').value }
   get originCategories() { return this.businessSettingsForm.get('originCategories').value}
+  get isFoodTruck() { return this.businessSettingsForm.get('isFoodTruck').value ?? false; }
   get i() { return this.businessSettingsForm.controls }
 
   saveSettings() {
@@ -1052,6 +1074,14 @@ export class SettingsComponent implements OnInit, OnChanges {
       return;
     }
 
+    if (this.spotbie_phone_number !== '') {
+      this.infoSms();
+    } else {
+      this.finishSaveSettings();
+    }
+  }
+
+  private finishSaveSettings() {
     this.user.username = this.username;
     this.user.email = this.email;
     this.user.spotbie_user.first_name = this.first_name;
@@ -1074,7 +1104,30 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.loading$.next(false);
         this.placeSettingsFormUp = false;
       }
-    })
+    });
+  }
+
+  infoSms() {
+    const d = this.dialog.open(AlertDialogComponent, {
+      data: {
+        alertText: `By providing your phone number in the settings form you are agreeing 
+                    to receive recurring promotional and personalized text messages (e.g. promotions going on at
+                    restaurants) from SpotBie Community Members at the phone number you are providing in this settings form.
+                    Consent is not a condition to use other features in the SpotBie Platform. Reply HELP for help and STOP
+                    to stop receiving text messages once you consent. Msg. frequency varies. Msg and data rates may apply.`,
+        link: 'https://spotbie.com/terms',
+        linkText: 'View Terms & Conditions'
+      },
+    });
+
+    d.afterClosed().subscribe((result: {continueWithAction: boolean}) => {
+      if (!result.continueWithAction) {
+        this.loading$.next(false);
+        return;
+      }
+
+      this.finishSaveSettings();
+    });
   }
 
   async saveSettingsCallback(resp: any) {
@@ -1221,7 +1274,6 @@ export class SettingsComponent implements OnInit, OnChanges {
     } catch (e) {
       console.log('YOUR ERROR', e, document.getElementById('settings-map') as HTMLElement, this.placeSettingsFormUp, this.businessSettingsForm);
     }
-
   }
 
   showMapError() {

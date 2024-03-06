@@ -36,9 +36,9 @@
     <div class="sb-dashboardWrapper" #adManagerAppAnchor>
       <app-ad-manager-menu [fullScreenWindow]="false" #adManagerApp></app-ad-manager-menu>
     </div>
-  </ng-container>
 
-  <!--    <div class="sb-dashboardWrapper" #customerAppAnchor *ngIf="!displayBusinessSetUp && businessFetched">
-        <app-customer-manager></app-customer-manager>
-      </div>-->
+    <div class="sb-dashboardWrapper" #customerAppAnchor *ngIf="canUseCustomerManager$ | async">
+      <app-customer-manager></app-customer-manager>
+    </div>
+  </ng-container>
 </div>

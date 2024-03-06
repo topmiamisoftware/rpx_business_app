@@ -12,7 +12,6 @@ import {
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms'
 import {Ad} from '../../../../models/ad'
 import {Business} from '../../../../models/business'
-import {LoyaltyPointsService} from '../../../../services/loyalty-points/loyalty-points.service'
 import {AdCreatorService} from '../../../../services/spotbie-logged-in/ad-manager-menu/ad-creator/ad-creator.service'
 import {BottomAdBannerComponent} from '../../../ads/bottom-ad-banner/bottom-ad-banner.component'
 import {HeaderAdBannerComponent} from '../../../ads/header-ad-banner/header-ad-banner.component'
@@ -22,7 +21,6 @@ import * as spotbieGlobals from '../../../../globals'
 import {Preferences} from "@capacitor/preferences";
 import {Camera, CameraResultType, GalleryPhoto, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
-import {PickedFile} from "@capawesome/capacitor-file-picker";
 import {BehaviorSubject} from "rxjs";
 
 const AD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}in-house/upload-media`
@@ -74,12 +72,8 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   constructor(private formBuilder: UntypedFormBuilder,
               private adCreatorService: AdCreatorService,
               private http: HttpClient,
-              private changeDetectionRef: ChangeDetectorRef,
-              private loyaltyPointsService: LoyaltyPointsService) {
-          this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-            this.loyaltyPointBalance = loyaltyPointBalance;
-          });
-  }
+              private changeDetectionRef: ChangeDetectorRef
+  ) {}
 
   ngOnChanges() {
      this.changeDetectionRef.markForCheck();

@@ -1,15 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { AccountTypes } from '../../../helpers/enum/account-type.enum';
 import { Business } from '../../../models/business';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
-import { DeviceDetectorService } from 'ngx-device-detector';
 import { Redeemable } from '../../../models/redeemable';
-import { RewardCreatorService } from '../../../services/spotbie-logged-in/business-menu/reward-creator/reward-creator.service';
 import * as spotbieGlobals from '../../../globals';
-import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
+import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
+import {LoyaltyPointsState} from "../state/lp.state";
 
 const QR_CODE_LOYALTY_POINTS_SCAN_BASE_URL = spotbieGlobals.API+'redeemable'
 
@@ -53,9 +51,9 @@ export class QrComponent implements OnInit {
 
   constructor(private userAuthService: UserauthService,
               private loyaltyPointsService: LoyaltyPointsService,
-              private deviceDetectorService: DeviceDetectorService,
               private formBuilder: UntypedFormBuilder,
-              private rewardService: RewardCreatorService) { }
+              private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
+              private loyaltyPointsState: LoyaltyPointsState) { }
 
   getWindowClass(){
     if(this.fullScreenWindow)
@@ -183,20 +181,8 @@ export class QrComponent implements OnInit {
   }
 
   async ngOnInit() {
-    let a = await Preferences.get({key: 'spotbie_userType'});
-    let accountType = parseInt(a.value, 10);
-
-    if (accountType === AccountTypes.Personal) {
-      this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-        this.userLoyaltyPoints$.next(loyaltyPointBalance);
-      });
-      this.startQrCodeScanner();
-    } else {
-      this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-        this.loyaltyPointBalance$.next(loyaltyPointBalance);
-      });
-      this.isBusiness$.next(true);
-      this.getQrCode();
-    }
+    this.loyaltyPointBalance$.next(this.businessLoyaltyPointsState.getState());
+    this.isBusiness$.next(true);
+    this.getQrCode();
   }
 }

@@ -292,10 +292,10 @@
                       <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Starter">
                         <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$159.99/monthly</span>
                         <ul>
-                          <li>Award Loyalty Points</li>
-                          <li>Upload Rewards</li>
-                          <li>Default Max Reward Rate</li>
+                          <li>Loyalty Program</li>
+                          <li>Local Exposure</li>
                           <li>Header Banner Ads</li>
+                          <li>Default Max Reward Rate</li>
                         </ul>
                       </div>
 
@@ -303,26 +303,31 @@
                         <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$259.99/monthly</span>
                         <ul>
                           <li>+Starter Package</li>
-                          <li>+Header, Footer, Nearby Featured Ads</li>
+                          <li>+Loyalty Tiers</li>
+                          <li>+Footer Banner Ads</li>
                           <li>+0.01% Max Reward Rate</li>
-                          <li>+Text Messaging</li>
+                          <li>+5,000 SMS & 5,000 e-mails</li>
+                          <li>+Feedback</li>
+                          <li>+Customer Insights</li>
                         </ul>
                       </div>
 
                       <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Ultimate">
-                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$399.99/monthly</span>
+                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">COMING SOON</span>
                         <ul>
                           <li>+Starter Package</li>
-                          <li>+Header, Footer, Nearby Featured Ads</li>
+                          <li>+Nearby Featured Ads</li>
                           <li>+0.02% Max Reward Rate</li>
-                          <li>+Customer Insights, Text Messaging, E-Mail, Push Notifications</li>
+                          <li>+10,000 SMS & 20,000 e-mails</li>
+                          <li>+Advanced Targeting & Insights</li>
+                          <li>+Automated Push Notifications</li>
                         </ul>
                       </div>
 
                       <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Legacy">
                         <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$99.99/monthly</span>
                         <ul>
-                          <li>LEGACY MEMBERSHIP (10,000 points)</li>
+                          <li>LEGACY MEMBERSHIP</li>
                         </ul>
                       </div>
                     </div>
@@ -334,12 +339,16 @@
                     <span class='sb-text-light-green-gradient' *ngIf="user.ends_at">YOU CANCELLED YOUR MEMBERSHIP</span>
                     <br/>
                     <span class='sb-text-light-green-gradient' *ngIf="user.ends_at">
-                                Last Day {{ user.ends_at | date }}
-                            </span>
+                        Last Day {{ user.ends_at | date }}
+                    </span>
 
                     <span class='sb-text-red-gradient text-uppercase cursor-pointer' *ngIf="!user.ends_at" (click)="cancelMembership()">
-                                CANCEL MEMBERSHIP
-                            </span>
+                        CANCEL MEMBERSHIP
+                    </span>
+
+                    <div class='mt-5 mb-5 cursor-pointer' (click)="closeAccountType()">
+                      <span class="spotbie-text-gradient">CLOSE</span>
+                    </div>
                   </div>
 
                   <!-- Membership is Expired Case -->
@@ -360,10 +369,10 @@
                           <div class="p2 text-start text-white" (click)="activateFullMembership(1)">
                             <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$159.99/monthly</span>
                             <ul>
-                              <li>Award Loyalty Points</li>
-                              <li>Upload Rewards</li>
+                              <li>Loyalty Program</li>
+                              <li>Local Exposure</li>
+                              <li>Header Banner Ads</li>
                               <li>Default Max Reward Rate</li>
-                              <li>+Header Banner Ads</li>
                             </ul>
                             <button class="spotbie-button">BUY</button>
                           </div>
@@ -372,20 +381,25 @@
                             <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$259.99/monthly</span>
                             <ul>
                               <li>+Starter Package</li>
-                              <li>+Header, Footer, Nearby<br/>Featured Ads</li>
+                              <li>+Loyalty Tiers</li>
+                              <li>+Footer Banner Ads</li>
                               <li>+0.01% Max Reward Rate</li>
-                              <li>+Text Messaging</li>
+                              <li>+5,000 SMS & 5,000 e-mails</li>
+                              <li>+Feedback</li>
+                              <li>+Customer Insights</li>
                             </ul>
                             <button class="spotbie-button">BUY</button>
                           </div>
 
                           <div class="p2 text-start text-white">
-                            <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">Coming Soon</span>
+                            <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">COMING SOON</span>
                             <ul>
                               <li>+Starter Package</li>
-                              <li>+Header, Footer, Nearby<br/>Featured Ads</li>
+                              <li>+Nearby Featured Ads</li>
                               <li>+0.02% Max Reward Rate</li>
-                              <li>+Customer Insights, Text Messaging,<br/>E-Mail, Push Notifications</li>
+                              <li>+10,000 SMS & 20,000 e-mails</li>
+                              <li>+Advanced Targeting & Insights</li>
+                              <li>+Automated Push Notifications</li>
                             </ul>
                             <!--               <button class="spotbie-button">BUY</button>-->
                           </div>
@@ -442,8 +456,7 @@
     </div>
 </div>
 
-<div class="spotbie-overlay-window"
-     *ngIf="displayLocationEnablingInstructions$ | async">
+<div class="spotbie-overlay-window" *ngIf="displayLocationEnablingInstructions$ | async">
 
   <i class="fas fa-map-marker-alt"></i>
 
@@ -637,6 +650,15 @@
                     <div class='spotbie-text-gradient mt-2 mb-2'>{{ originDescription.length }} / 350</div>
                 </td>
             </tr>
+            <ng-container *ngIf="accountTypeCategory === 'PLACE TO EAT'">
+              <tr>
+                <td style="color: white;">
+                  <fa-icon class="food-truck" [icon]="faFoodTruckIcon"></fa-icon>
+                  <mat-slide-toggle ngModel name="isFoodTruck" [style.color]="'#fff'"></mat-slide-toggle>
+                  Food Truck?
+                </td>
+              </tr>
+            </ng-container>
             <tr>
                 <div class='spotbie-button text-uppercase' (click)="startBusinessVerification()" *ngIf="locationFound">
                     Verify

@@ -1,27 +1,21 @@
 <app-loading-screen *ngIf="loading"></app-loading-screen>
 
-<div [ngClass]="getWindowClass()">
+<div [ngClass]="getWindowClass()" *ngIf="(loyaltyPointBalanceBusiness$ | async) as loyaltyPointBalanceBusiness;">
     <div>
         <h5 id="sp-lpTitle" class="spotbie-text-gradient text-center text-uppercase mt-4 mb-5">SPOTBIE LOYALTY POINTS</h5>
 
         <div class="spotbie-lpResetInfo spotbie-text-gradient text-uppercase mt-3 mb-3"
-              *ngIf="userType !== eAllowedAccountTypes.Personal &&
-                     loyaltyPointBalanceBusiness.end_of_month !== null &&
-                     loyaltyPointBalanceBusiness.balance !== null">
+              *ngIf="loyaltyPointBalanceBusiness.end_of_month && loyaltyPointBalanceBusiness.balance">
             POINTS RESET ON
         </div>
 
         <div class="spotbie-lpResetInfo spotbie-text-gradient text-uppercase"
-              *ngIf="userType !== eAllowedAccountTypes.Personal && loyaltyPointBalanceBusiness.end_of_month !== null">
+              *ngIf="loyaltyPointBalanceBusiness.end_of_month">
             {{ (loyaltyPointBalanceBusiness.end_of_month | date : 'mediumDate') || loyaltyPointBalanceBusiness.end_of_month }}
         </div>
 
         <p class="mt-4 mb-4" (click)="initBusinessLoyaltyPoints()">
-            <span [ngClass]="loyaltyPointsClass()" *ngIf="userType === eAllowedAccountTypes.Personal">
-                {{ loyaltyPointBalance | number:'1.0':'en-US' }}
-            </span>
-
-            <span [ngClass]="loyaltyPointsClass()" *ngIf="userType !== eAllowedAccountTypes.Personal">
+            <span [ngClass]="loyaltyPointsClass()">
                 {{ loyaltyPointBalanceBusiness.balance | number:'1.0':'en-US' }}
             </span>
 
@@ -30,22 +24,9 @@
                     #newBalanceLoyaltyPoints>+{{ newUserLoyaltyPoints | number:'1.1-2':'en-US' }}</span>
         </p>
 
-<!--        <div class='sb-text-light-green-gradient mt-2 mb-4'
-                *ngIf="userType !== eAllowedAccountTypes.Personal">
-                {{ loyaltyPointBalanceBusiness.reset_balance | number:'1.0':'en-US' }}
-        </div>-->
-
-<!--
-      <div style="cursor: pointer; display: inline-block;"
-           *ngIf="userType !== eAllowedAccountTypes.Personal"
-           (click)="manageLoyaltyTiers()">
-        <span class='spotbie-text-gradient'>MANAGE TIERS</span> <i class='fa fa-coins'></i>
-      </div>
--->
-
-      <div class='spotbie-text-gradient text-uppercase cursor-pointer' (click)="closeThis()" *ngIf="fullScreenWindow">
-          CLOSE
-      </div>
+        <div class='spotbie-text-gradient text-uppercase cursor-pointer' (click)="closeThis()" *ngIf="fullScreenWindow">
+            CLOSE
+        </div>
     </div>
 </div>
 

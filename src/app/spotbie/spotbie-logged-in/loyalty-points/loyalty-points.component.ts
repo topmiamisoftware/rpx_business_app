@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AccountTypes } from '../../../helpers/enum/account-type.enum';
 import { LoyaltyPointBalance } from '../../../models/loyalty-point-balance';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import {Preferences} from "@capacitor/preferences";
+import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-loyalty-points',
@@ -22,7 +23,6 @@ export class LoyaltyPointsComponent implements OnInit {
   @ViewChild('businessLoyaltyPointsInfo') businessLoyaltyPointsInfo;
   // @ViewChild('businessLoyaltyTierInfo') businessLoyaltyTierInfo;
 
-  eAllowedAccountTypes = AccountTypes;
   loading = false;
   userPointToDollarRatio: number | string = 0;
   businessLoyaltyPointsOpen = false;
@@ -39,11 +39,12 @@ export class LoyaltyPointsComponent implements OnInit {
   newUserLoyaltyPoints: number;
   userType: number = null;
   loyaltyPointBalance: any = 0;
-  loyaltyPointBalanceBusiness: any = new LoyaltyPointBalance();
+  loyaltyPointBalanceBusiness$ = new BehaviorSubject<LoyaltyPointBalance>(null);
 
   constructor(private loyaltyPointsService: LoyaltyPointsService,
               private formBuilder: UntypedFormBuilder,
               private router: Router,
+              private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
               route: ActivatedRoute){
       if(this.router.url.indexOf('scan') > -1) {
          this.qrCodeLink = route.snapshot.params.qrCode;
@@ -65,10 +66,7 @@ export class LoyaltyPointsComponent implements OnInit {
   }
 
   loyaltyPointsClass(){
-    if( this.userType !== AccountTypes.Personal)
-      return 'sb-loyalty-points cursor-pointer'
-    else
-      return 'sb-loyalty-points no-cursor'
+    return 'sb-loyalty-points cursor-pointer';
   }
 
   get businessLoyaltyPoints() {return this.businessLoyaltyPointsForm.get('businessLoyaltyPoints').value }
@@ -76,10 +74,6 @@ export class LoyaltyPointsComponent implements OnInit {
   get f() { return this.businessLoyaltyPointsForm.controls }
 
   initBusinessLoyaltyPoints() {
-    if(this.userType === AccountTypes.Personal){
-      this.openRedeemed.emit();
-      return;
-    }
     this.businessLoyaltyPointsOpen = true
 
     const coinValidators = [Validators.required];
@@ -90,8 +84,8 @@ export class LoyaltyPointsComponent implements OnInit {
       businessCoinPercentage: ['', businessCoinPercentageValidators],
     });
 
-    this.businessLoyaltyPointsForm.get('businessLoyaltyPoints').setValue(this.loyaltyPointBalanceBusiness.reset_balance);
-    this.businessLoyaltyPointsForm.get('businessCoinPercentage').setValue(this.loyaltyPointBalanceBusiness.loyalty_point_dollar_percent_value);
+    this.businessLoyaltyPointsForm.get('businessLoyaltyPoints').setValue(this.loyaltyPointBalanceBusiness$.getValue().reset_balance);
+    this.businessLoyaltyPointsForm.get('businessCoinPercentage').setValue(this.loyaltyPointBalanceBusiness$.getValue().loyalty_point_dollar_percent_value);
 
     this.calculateDollarValue();
 
@@ -135,21 +129,9 @@ export class LoyaltyPointsComponent implements OnInit {
     let accountType = await Preferences.get({key: 'spotbie_userType'});
     this.userType = parseInt(accountType.value, 10);
 
-    if(this.userType === AccountTypes.Personal){
-      this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-        this.loyaltyPointBalance = loyaltyPointBalance;
-      });
-    } else {
-      this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointBalance => {
-        this.loyaltyPointBalanceBusiness = loyaltyPointBalance;
-      });
-    }
+    this.loyaltyPointBalanceBusiness$.next(this.businessLoyaltyPointsState.getState());
 
     this.loading = false;
     this.getLoyaltyPointBalance();
-  }
-
-  bgStyle() {
-    return { background: 'linear-gradient(90deg,#35a99f,#64e56f)' }
   }
 }

@@ -1,0 +1,100 @@
+<div class="spotbie-overlay-window p-3" style="padding-right: .2em !important;" #foodTruckWindow>
+  <ng-container *ngIf="(locationSavedSuccessfully$ | async) === false else savedLocation">
+    <h4 class="spotbie-text-gradient">FOOD TRUCK LOCATION</h4>
+  </ng-container>
+
+  <ng-template #savedLocation>
+    <h4 class="spotbie-text-gradient">{{ locationSavedSuccessfullyMessage$ | async }} <fa-icon class="faCheck" [icon]="faCheckCircle" *ngIf="locationSavedSuccessfully$ | async"></fa-icon></h4>
+  </ng-template>
+
+  <ng-container *ngIf="(displayLocationEnablingInstructions$ | async) === true;">
+    <h2 class="spotbie-text-gradient text-uppercase mt-4" style="display: inline-block;">BONKERS!</h2>
+
+    <br/>
+    <i class="fas fa-map-marker-alt"></i>
+
+    <div class='spotbie-text-gradient mt-2'>LOCATION DISABLED</div>
+
+    <p class="sb-locationList text-center mt-3" (click)="openAppSettings()">
+      <span class="spotbie-text-gradient">OPEN SETTINGS</span>
+    </p>
+
+    <div class="spotbie-button" (click)="initSettingsForm()">
+      <span class="spotbie-text-gradient text-uppercase mt-5 cursor-pointer p-1">TRY LOCATION</span>
+    </div>
+  </ng-container>
+
+  <form [formGroup]="businessSettingsForm">
+    <table class='spotbie-settings-table' style="border-bottom: unset;">
+      <tr>
+        <td>
+          <div>
+            <div *ngIf="(businessFormSubmitted$ | async) && i.spotbieOrigin.errors"
+                 class="spotbie-input-info spotbie-text-gradient text-center spotbie-error">
+              <div *ngIf="i.spotbieOrigin.errors.required">
+                You must choose a place of origin!
+              </div>
+            </div>
+          </div>
+
+          <div class='spotbie-map'>
+            <div id='settings-map'
+                 *ngIf="map$ | async"
+                 [ngClass]="getMapClass()"></div>
+          </div>
+        </td>
+      </tr>
+
+      <tr *ngIf="(locationFound$ | async)">
+        <td>
+          <input class="sb-input spotbie-search-map-input sb-origin-address-input"
+                 (keydown)="searchMapsKeyDown($event)"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 spellcheck="off"
+                 type="text"
+                 formControlName="originAddress"
+                 maxlength="72"
+                 #addressSearch />
+
+          <div class='spotbie-button sb-search-icon' (click)="searchMaps()"><i class='fa fa-search'></i></div>
+
+          <input class="sb-input" type="hidden" formControlName="spotbieOrigin" />
+
+          <div class='spotbie-place-picker'>
+            <div class='spotbie-place' *ngFor="let prediction of (addressResults$ | async)"  (click)="focusPlace(prediction);">
+              <span class='spotbie-text-gradient'>{{ prediction.description }}</span>
+            </div>
+          </div>
+
+          <div class="mt-4 mb-4 spotbie-text-gradient">OR</div>
+
+          <div class="mt-4 mb-4 cursor-pointer" (click)="setAsCurrentLocation()">
+            <fa-icon class="faSearchLocation" [icon]="faSearchLocation"></fa-icon>
+            <span class="text-decoration-underline spotbie-text-gradient">
+                      SET AS CURRENT LOCATION
+                    </span>
+          </div>
+        </td>
+      </tr>
+
+      <div class='spotbie-input-info spotbie-text-gradient text-uppercase text-center mt-2 mb-3'
+           *ngIf='(locationFound$ | async)'>
+        {{ originTitle$ | async }}
+      </div>
+
+      <img class='sb-business-img' [ngClass]="getBusinessImgStyle()" *ngIf='locationFound$ | async' src="{{originPhoto$ | async}}" />
+
+      <div class='spotbie-input-info spotbie-text-gradient spotbie-place-address text-uppercase text-center mt-4 mb-3'
+           *ngIf='(locationFound$ | async) && (place$ | async)'>
+        {{ (place$ | async).formatted_address }}
+      </div>
+    </table>
+  </form>
+
+  <div class="spotbie-button" (click)="saveLocation()">SAVE LOCATION</div>
+
+  <div class="mt-4 mb-4 text-decoration-underline cursor-pointer" style="text-align: center; color: white;" (click)="close()">CLOSE</div>
+</div>
+
+<app-loading-screen *ngIf="loading$ | async"></app-loading-screen>

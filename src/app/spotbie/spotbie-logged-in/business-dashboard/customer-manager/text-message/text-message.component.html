@@ -1,0 +1,39 @@
+<div class="spotbie-overlay-window p-3">
+  <h1 class="spotbie-text-gradient">
+    MASS TXT MESSAGES
+  </h1>
+
+  <form [formGroup]="textMessageForm">
+    <p>What would you like to tell your recent guests? Message will be sent to recent guests that have opted in to sms and have a valid phone number.</p>
+    <p *ngIf="submitted && f.smsText.errors" class="spotbie-invalid-feedback text-uppercase spotbie-text-gradient spotbie-error">
+      <span *ngIf="f.smsText.errors.required">
+        Text message body is required.
+      </span>
+
+      <span *ngIf="f.smsText.errors.maxlength || f.smsText.errors.minlength">
+        Text messages must be between 120 and 320 characters long.
+      </span>
+    </p>
+    <mat-form-field>
+      <mat-label>Text Message</mat-label>
+      <textarea formControlName="smsText"
+                matInput
+                [style.background-color]="'transparent'"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="15"></textarea>
+    </mat-form-field>
+  </form>
+
+  <div>
+    <button mat-button
+            [style.color]="'white'"
+            [style.background-color]="'#332f3e'"
+            (click)="closeDialog()">Close</button>
+    <button mat-button
+            [style.color]="'white'"
+            [style.background-color]="'#332f3e'"
+            (click)="sendMessage()">Send</button>
+  </div>
+</div>

@@ -165,6 +165,8 @@ export class LogInComponent implements OnInit {
             .get('spotbieUsername')
             .setErrors({spotbie_account: true});
         } else if (loginStatus === 'wrong_account_type') {
+          this.spotbieSignUpIssues.nativeElement.innerHTML =
+            "<span class='spotbie-text-gradient spotbie-error'>LOG-IN WITH THE CLIENT APP.</span>";
           this.logInForm
             .get('spotbieUsername')
             .setErrors({wrong_account_type: true});

@@ -9,24 +9,26 @@ import {HelperModule} from '../../helpers/helper.module';
 import {MapModule} from '../map/map.module';
 import {SettingsModule} from './settings/settings.module';
 import {IonicModule} from '@ionic/angular';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 //import { EventMenuModule } from './event-menu/event-menu.module';
 
 @NgModule({
   declarations: [MenuLoggedInComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    SpotbiePipesModule,
-    RouterModule,
-    HelperModule,
-    MapModule,
-    SettingsModule,
-    RouterModule,
-    IonicModule.forRoot(),
-    //EventMenuModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        SpotbiePipesModule,
+        RouterModule,
+        HelperModule,
+        MapModule,
+        SettingsModule,
+        RouterModule,
+        IonicModule.forRoot(),
+        FontAwesomeModule,
+        //EventMenuModule
+    ],
   exports: [MenuLoggedInComponent],
 })
 export class MenuLoggedInModule {}

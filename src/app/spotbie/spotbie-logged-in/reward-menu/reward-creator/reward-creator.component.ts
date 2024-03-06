@@ -12,6 +12,9 @@ import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
 import {Camera, CameraResultType, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
+import {BusinessLoyaltyPointsState} from "../../state/business.lp.state";
+import {LoyaltyPointBalance} from "../../../../models/loyalty-point-balance";
+import { Immutable } from '@angular-ru/cdk/typings';
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -51,7 +54,7 @@ export class RewardCreatorComponent implements OnInit {
   rewardCreated$ = new BehaviorSubject<boolean>(false);
   rewardDeleted$ = new BehaviorSubject<boolean>(false);
   uploadMediaForm$ = new BehaviorSubject<boolean>(false);
-  loyaltyPointBalance$ = new BehaviorSubject<any>(null);
+  loyaltyPointBalance: Immutable<LoyaltyPointBalance>;
   qrCodeClaimReward = new BehaviorSubject<string>(QR_CODE_CALIM_REWARD_SCAN_BASE_URL);
   // existingTiers: Array<LoyaltyTier> = this.loyaltyPointsService.existingTiers;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
@@ -59,10 +62,9 @@ export class RewardCreatorComponent implements OnInit {
   constructor(private formBuilder: UntypedFormBuilder,
               private rewardCreatorService: RewardCreatorService,
               private http: HttpClient,
+              private loyaltyPointsState: BusinessLoyaltyPointsState,
               private loyaltyPointsService: LoyaltyPointsService) {
-                this.loyaltyPointsService.userLoyaltyPoints$.subscribe(loyaltyPointsBalance => {
-                    this.loyaltyPointBalance$.next(loyaltyPointsBalance);
-                  });
+                  this.loyaltyPointBalance = this.loyaltyPointsState.getState();
               }
 
   get rewardType() {return this.rewardCreatorForm.get('rewardType').value }
@@ -116,7 +118,7 @@ export class RewardCreatorComponent implements OnInit {
   }
 
   calculatePointValue(){
-    const pointPercentage = this.loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value;
+    const pointPercentage = this.loyaltyPointBalance.loyalty_point_dollar_percent_value;
     const itemPrice = this.rewardValue;
 
     if(pointPercentage === 0 || pointPercentage == null) {

@@ -1,0 +1,24 @@
+<h1 mat-dialog-title
+    [style.color]="'white'"
+    [style.background-color]="'#332f3e'"
+>{{ data.alertTitle }}</h1>
+<div mat-dialog-content
+     [style.color]="'white'"
+     [style.background-color]="'#332f3e'"
+>
+    <p [innerHTML]="data.alertText"></p>
+    <p *ngIf="data.link" (click)="openExternalTerms()"><span class='text-decoration-underline'>View {{ data.linkText }}</span></p>
+</div>
+<div mat-dialog-actions
+     [style.color]="'white'"
+     [style.background-color]="'#332f3e'"
+>
+  <button mat-button (click)="continueWithAction()"
+          [style.color]="'white'"
+          [style.background-color]="'#332f3e'"
+  >CONTINUE</button>
+  <button mat-button cdkFocusInitial (click)="cancelAction()"
+          [style.color]="'white'"
+          [style.background-color]="'#332f3e'"
+  >CANCEL</button>
+</div>

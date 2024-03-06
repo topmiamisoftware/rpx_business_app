@@ -18,8 +18,7 @@ import {BehaviorSubject} from 'rxjs';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Preferences} from '@capacitor/preferences';
 import {Share} from '@capacitor/share';
-import {SpotbieUser} from "../../../models/spotbieuser";
-import {AccountTypes} from "../../../helpers/enum/account-type.enum";
+import {AllowedAccountTypes} from "../../../helpers/enum/account-type.enum";
 
 const YELP_BUSINESS_DETAILS_API = 'https://api.yelp.com/v3/businesses/';
 
@@ -122,28 +121,28 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
 
       if (
         this.router.url.indexOf('place-to-eat') > -1 ||
-        infoObject.type_of_info_object_category === AccountTypes.PlaceToEat
+        infoObject.type_of_info_object_category === AllowedAccountTypes.PlaceToEat
       ) {
         infoObject.type_of_info_object = InfoObjectType.Yelp;
-        infoObject.type_of_info_object_category = AccountTypes.PlaceToEat;
+        infoObject.type_of_info_object_category = AllowedAccountTypes.PlaceToEat;
         this.infoObjectLink = `${environment.baseUrl}place-to-eat/${infoObject.alias}/${infoObject.id}`;
       }
 
       if (
         this.router.url.indexOf('shopping') > -1 ||
-        infoObject.type_of_info_object_category === AccountTypes.Shopping
+        infoObject.type_of_info_object_category === AllowedAccountTypes.Shopping
       ) {
         infoObject.type_of_info_object = InfoObjectType.Yelp;
-        infoObject.type_of_info_object_category = AccountTypes.Shopping;
+        infoObject.type_of_info_object_category = AllowedAccountTypes.Shopping;
         this.infoObjectLink = `${environment.baseUrl}shopping/${infoObject.alias}/${infoObject.id}`;
       }
 
       if (
         this.router.url.indexOf('events') > -1 ||
-        infoObject.type_of_info_object_category === AccountTypes.Events
+        infoObject.type_of_info_object_category === AllowedAccountTypes.Events
       ) {
         infoObject.type_of_info_object = InfoObjectType.TicketMaster;
-        infoObject.type_of_info_object_category = AccountTypes.Events;
+        infoObject.type_of_info_object_category = AllowedAccountTypes.Events;
         this.infoObjectLink = `${environment.baseUrl}event/${infoObject.alias}/${infoObject.id}`;
       }
 
@@ -393,24 +392,24 @@ export class InfoObjectComponent implements OnInit, AfterViewInit {
           this.rewardMenuUp$.next(true);
 
           if (
-            infoObject.user_type === AccountTypes.PlaceToEat ||
-            infoObject.user_type === AccountTypes.Shopping ||
-            infoObject.user_type === AccountTypes.Events
+            infoObject.user_type === AllowedAccountTypes.PlaceToEat ||
+            infoObject.user_type === AllowedAccountTypes.Shopping ||
+            infoObject.user_type === AllowedAccountTypes.Events
           ) {
             this.infoObjectLink = `${environment.baseUrl}community/${infoObject.qr_code_link}`;
             this.objectDisplayAddress$.next(infoObject.address);
             switch (infoObject.user_type) {
-              case AccountTypes.PlaceToEat:
+              case AllowedAccountTypes.PlaceToEat:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `Let's go eat at ${
                   infoObject.name
                 }. They are located at ${this.objectDisplayAddress$.getValue()}.`;
                 break;
-              case AccountTypes.Shopping:
+              case AllowedAccountTypes.Shopping:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `I really recommend you go shopping at ${infoObject.name}!`;
                 break;
-              case AccountTypes.Events:
+              case AllowedAccountTypes.Events:
                 this.infoObjectTitle = `${infoObject.name} - ${infoObject.cleanCategories} - ${infoObject.address}`;
                 this.infoObjectDescription = `Let's go to ${infoObject.name}!`;
                 break;
