@@ -9,12 +9,15 @@ import {
 import {environment} from '../../../../../environments/environment';
 import * as spotbieGlobals from '../../../../globals';
 import {Preferences} from "@capacitor/preferences";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable, map} from "rxjs";
 import {Camera, CameraResultType, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {BusinessLoyaltyPointsState} from "../../state/business.lp.state";
 import {LoyaltyPointBalance} from "../../../../models/loyalty-point-balance";
 import { Immutable } from '@angular-ru/cdk/typings';
+import { UserauthService } from '../../../../services/userauth.service';
+import { BusinessMembership } from '../../../../models/user';
+import { LoyaltyTier } from '../../../../models/loyalty-point-tier';
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -56,14 +59,27 @@ export class RewardCreatorComponent implements OnInit {
   uploadMediaForm$ = new BehaviorSubject<boolean>(false);
   loyaltyPointBalance: Immutable<LoyaltyPointBalance>;
   qrCodeClaimReward = new BehaviorSubject<string>(QR_CODE_CALIM_REWARD_SCAN_BASE_URL);
-  // existingTiers: Array<LoyaltyTier> = this.loyaltyPointsService.existingTiers;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
+  user$ = this.userAuthService.userProfile$;
+  rewardTier$: Observable<LoyaltyTier>;
+  dollarEntranceValue: number;
+  existingTiers$ = this.loyaltyPointsService.existingTiers$;
+  canUseTiers$ = this.user$.pipe(
+    map(
+      user =>
+        user.userSubscriptionPlan === BusinessMembership.Legacy ||
+        user.userSubscriptionPlan === BusinessMembership.Intermediate ||
+        user.userSubscriptionPlan === BusinessMembership.Ultimate
+    )
+  );
 
   constructor(private formBuilder: UntypedFormBuilder,
               private rewardCreatorService: RewardCreatorService,
               private http: HttpClient,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
-              private loyaltyPointsService: LoyaltyPointsService) {
+              private loyaltyPointsService: LoyaltyPointsService,
+              private userAuthService: UserauthService
+              ) {
                   this.loyaltyPointBalance = this.loyaltyPointsState.getState();
               }
 
@@ -73,6 +89,9 @@ export class RewardCreatorComponent implements OnInit {
   get rewardDescription() {return this.rewardCreatorForm.get('rewardDescription').value }
   // get tier() {return this.rewardCreatorForm.get('tier').value }
   get rewardImage() {return this.rewardCreatorForm.get('rewardImage').value }
+  get tier() {
+    return this.rewardCreatorForm.get('tier').value;
+  }
   get f() { return this.rewardCreatorForm.controls }
 
   initRewardForm(){
@@ -88,7 +107,7 @@ export class RewardCreatorComponent implements OnInit {
       rewardName: ['', rewardNameValidators],
       rewardDescription: ['', rewardDescriptionValidators],
       rewardImage: ['', rewardImageValidators],
-      // tier: ['', null],
+      tier: ['', null],
     });
 
     if(this.reward$.getValue()){
@@ -98,7 +117,7 @@ export class RewardCreatorComponent implements OnInit {
       this.rewardCreatorForm.get('rewardName').setValue(r.name);
       this.rewardCreatorForm.get('rewardDescription').setValue(r.description);
       this.rewardCreatorForm.get('rewardImage').setValue(r.images);
-      // this.rewardCreatorForm.get('tier').setValue(this.reward.tier_id);
+      this.rewardCreatorForm.get('tier').setValue(r.tier_id);
       this.rewardUploadImage$.next(r.images);
       this.setRewardLink();
       this.calculatePointValue();
@@ -140,9 +159,7 @@ export class RewardCreatorComponent implements OnInit {
     reward.images = this.rewardImage;
     reward.point_cost = this.rewardValue;
     reward.type = this.rewardType;
-    // reward.tier_id = this.tier
-
-    // console.log('the reward', reward);
+    reward.tier_id = this.tier
 
     if (!this.reward$.getValue()) {
       this.rewardCreatorService.saveReward(reward).subscribe(resp => {
@@ -302,7 +319,12 @@ export class RewardCreatorComponent implements OnInit {
     }
   }
 
+  rewardTierChange(event){
+    this.rewardCreatorForm.get('tier').setValue(event.detail.value);
+  }
+
   ngOnInit(): void {
     this.initRewardForm();
+    this.loyaltyPointsService.getExistingTiers().subscribe();
   }
 }

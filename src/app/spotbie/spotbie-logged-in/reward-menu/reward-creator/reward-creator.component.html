@@ -141,16 +141,39 @@
 
             <input type="hidden" formControlName="rewardImage" />
 
-<!--            <label class="spotbie-input-info spotbie-text-gradient mb-2">
-              Reward Tier
-            </label>
+          <ng-container *ngIf="(canUseTiers$ | async) === true">
+            <div class="mt-3 mb-3">
+              <label class="spotbie-input-info spotbie-text-gradient">
+                Reward Tier
+              </label>
 
-            <mat-form-field class="sb-input" style="padding-left: 0px;" appearance="fill">
-              <mat-label>Reward Tier</mat-label>
-              <mat-select formControlName="tier">
-                <mat-option *ngFor="let tier of existingTiers;" [value]="tier.id">{{tier.name}}</mat-option>
-              </mat-select>
-            </mat-form-field>-->
+              <ion-list class='sb-input mb-3'>
+                <ion-item>
+                  <ion-select aria-label="Reward Tier"
+                              placeholder="Reward Tier"
+                              interface="action-sheet"
+                              class="sb-select"
+                              toggleIcon="caret-down-sharp"
+                              (ionChange)="rewardTierChange($event)"
+                              [value]="tier">
+                    <ion-select-option [value]="null">None</ion-select-option>
+                    <ion-select-option *ngFor="let tier of (existingTiers$ | async); let i = index;" [value]="tier.id">
+                      {{tier.name}}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-list>
+
+              <p class="spotbie-text-gradient" *ngIf="(rewardTier$ | async)">
+                User must spend {{ dollarEntranceValue | number: '1.0':'en-US' }} to get into this tier.
+              </p>
+
+              <ng-container *ngIf="(existingTiers$ | async)?.length === 0">
+                <p class="text-warning">You haven't created any Loyalty Tiers.</p>
+                <p class="spotbie-text-gradient">Close the menu and tap on "Manage Tiers" to create Loyalty Tiers.</p>
+              </ng-container>
+            </div>
+          </ng-container>
         </form>
 
         <form *ngIf="rewardType === 0 || rewardType === 2">

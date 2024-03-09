@@ -1,4 +1,4 @@
-import {LoyaltyTier} from "./loyalty-point-tier.balance";
+import {LoyaltyTier} from "./loyalty-point-tier";
 
 export class Reward {
     id: number;

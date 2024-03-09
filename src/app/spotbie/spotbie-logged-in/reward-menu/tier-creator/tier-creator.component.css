@@ -1,0 +1,349 @@
+span.sb-loyalty-points{
+  font-size: 10rem !important;
+  color: #fff !important;
+  border-right: unset !important;
+}
+img.sb-loyalty-points{
+  width: 25px;
+  min-width: 25px;
+  max-width: 25px;
+  cursor: pointer;
+  vertical-align: unset;
+}
+h3{
+  color: white;
+}
+p{
+  position: relative;
+  margin: 0 auto;
+  max-width: 100%;
+}
+.sb-input{
+  text-align: center;
+  width: 450px;
+  min-width: 450px;
+}
+.spotbie-overlay-window{
+  display: flex!important;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  background: #332f3e;
+  text-align: center;
+  z-index: 97;
+}
+.sb-loyalty-points-wrapper{
+  position: relative;
+}
+.sb-budget-wrapper{
+  position: relative;
+}
+.fa-question-circle{
+  margin-right: 5px;
+}
+.sb-helpBlock{
+  position:relative;
+  margin: 0 auto;
+  max-width: 650px;
+}
+.sb-loyalty-points.sb-text-light-green-gradient{
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  letter-spacing: unset;
+  line-height: unset;
+}
+.sb-loyalty-points-new{
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+}
+.sb-added-loyalty-points{
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  font-size: 3.5rem;
+  line-height: 3.5rem;
+  z-index: 999;
+}
+.spotbie-howDoesItWork{
+  font-size: .8rem;
+}
+.sb-helpBlock{
+  font-size: .8rem;
+  margin-bottom: 30px;
+}
+.spotbie-lpResetInfo{
+  font-size: 1rem;
+}
+h5{
+  font-size: 1rem;
+}
+.spotbie-overlay-window{
+  width: 103%;
+  min-width: 103%;
+  max-width: 103%;
+}
+.fa-question-circle,
+.fa-refresh,
+.fa-coins{
+  color: white;
+  margin-left: 15px;
+  font-size: .8rem;
+}
+
+.spotbie-overlay-window{
+  z-index: 97;
+  background-color: #1c1924!important;
+  padding-top: 80px;
+}
+.sb-menuItemWrapper{
+  position: relative;
+  margin: 0 auto;
+  min-width: 900px;
+  width: 900px;
+  max-width: 900px;
+  display: block;
+  text-align: center;
+}
+.sb-addMenuItem{
+  position: relative;
+  width: 210px;
+  min-width: 210px;
+  max-width:210px;
+  height: 210px;
+  min-height: 210px;
+  max-height: 210px;
+  margin-right: 5px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='27' ry='27' stroke='white' stroke-width='3' stroke-dasharray='21%2c 12%2c 15' stroke-dashoffset='15' stroke-linecap='round'/%3e%3c/svg%3e");
+  border-radius: 27px;
+  display: inline-block;
+  cursor: pointer;
+}
+.sb-addMenuItem h6{
+  position: absolute;
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgb(0 0 0 / 69%);
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-transform: uppercase;
+}
+.sb-menuItem{
+  position: relative;
+  width: 215px;
+  min-width: 215px;
+  max-width:215px;
+  height: 215px;
+  min-height: 215px;
+  max-height: 215px;
+  margin-left: 5px;
+  margin-right: 5px;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border-radius: 27px;
+  display: inline-block;
+  align-content: center;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+  margin-top: 3px;
+}
+.sb-menuItemInner{
+  position: relative;
+  width: 215px;
+  min-width: 215px;
+  max-width:215px;
+  height: 215px;
+  min-height: 215px;
+  max-height: 215px;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  cursor: pointer;
+  margin-top: 3px;
+}
+.sb-menuItem h6{
+  position: absolute;
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgb(0 0 0 / 69%);
+  color: white;
+  padding: 5px;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: .7rem;
+  pointer-events: none;
+}
+.sb-titleGreen{
+  background: -webkit-linear-gradient(45deg,#0eb273, #2ddc5b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sb-discountTitle{
+  font-size: .5rem;
+  line-height: 0.6rem;
+  background: unset;
+  -webkit-text-fill-color: unset;
+  color: white;
+}
+
+@media (max-width: 1024px){
+  .sb-menuItemWrapper{
+    width: 96%;
+    min-width: 96%;
+    max-width: 96%;
+    text-align: center;
+  }
+  .sb-menuItemInner {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px){
+  .sb-menuItemInner{
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+  span.sb-loyalty-points{
+    font-size: 7rem !important;
+  }
+}
+
+@media (max-width: 650px){
+  .sb-helpBlock{
+    font-size: .7rem;
+    min-width: 92%;
+    width: 92%;
+    max-width: 92%;
+    margin-bottom: 60px;
+  }
+  .spotbie-redeemItem{
+    max-width: 94%;
+    min-width: 94%;
+    width: 94%;
+  }
+}
+@media (max-width: 460px) {
+  .spotbie-lpResetInfo{
+    font-size: .6rem;
+  }
+  .sb-input{
+    width: 94%;
+    min-width: 94%;
+    max-width: 94%;
+  }
+  .sb-budget-wrapper{
+    width: 91%;
+    min-width: 91%;
+    max-width: 91%;
+  }
+  h4{
+    font-size: 1rem;
+    padding: 0px;
+  }
+  .spotbie-input-info {
+    font-size: .8rem;
+  }
+  span.sb-loyalty-points{
+    font-size: 4rem !important;
+    margin-right: unset;
+  }
+  img.sb-loyalty-points{
+    display: none;
+  }
+  #sp-lpTitle{
+    margin-bottom: 0px !important;
+  }
+  .sb-menuItem {
+    width: 47%;
+    min-width: 47%;
+    max-width: 47%;
+  }
+  h4 {
+    font-size: 1rem;
+  }
+
+  #sp-loyaltyMenuTitle {
+    margin-bottom: 20px !important;
+  }
+
+  p {
+    font-size: .8rem;
+  }
+
+  .spotbie-loyaltyMenuDescription {
+    position: relative;
+    margin: 0 auto;
+    max-width: 94%;
+    width: 94%;
+  }
+
+  .sb-menuItemWrapper {
+    max-width: 98%;
+    width: 98%;
+    min-width: 98%;
+    text-align: center;
+  }
+
+  .sb-menuItem {
+    position: relative;
+    margin-right: 1%;
+    margin-left: 1%;
+    max-width: 46%;
+    width: 46%;
+    min-width: 46%;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    font-size: .8rem;
+    border-radius: 5px;
+
+  }
+
+  .sb-addMenuItem {
+    position: relative;
+    margin: 0 auto;
+    display: block;
+    border: unset;
+    background: unset;
+    margin-bottom: 10px;
+    max-width: 200px;
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    font-size: 1rem;
+    border-radius: 5px;
+  }
+
+  .sb-addMenuItem h6 {
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+
+  .sb-menuItemInner{
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+}
+

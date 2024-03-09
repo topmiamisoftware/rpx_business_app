@@ -7,12 +7,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HelperModule } from '../../../helpers/helper.module';
 import { QRCodeModule } from "angularx-qrcode";
 import {IonicModule} from "@ionic/angular";
+import {TierCreatorComponent} from "./tier-creator/tier-creator.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
     RewardMenuComponent,
     RewardComponent,
-    RewardCreatorComponent
+    RewardCreatorComponent,
+    TierCreatorComponent
   ],
   imports: [
     CommonModule,
@@ -21,6 +25,8 @@ import {IonicModule} from "@ionic/angular";
     QRCodeModule,
     HelperModule,
     IonicModule,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
   exports : [
     RewardMenuComponent

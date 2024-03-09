@@ -13,6 +13,8 @@ import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
 import {UserauthService} from "../../../services/userauth.service";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
+import {BusinessMembership} from "../../../models/user";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-reward-menu',
@@ -34,11 +36,8 @@ export class RewardMenuComponent implements OnInit {
   @Output() notEnoughLpEvt = new EventEmitter()
 
   eAllowedAccountTypes = AllowedAccountTypes
-  menuItemList$ =  new BehaviorSubject<Array<any>>([]);
   itemCreator$ = new BehaviorSubject<boolean>(false);
   rewardApp$ = new BehaviorSubject<boolean>(false);
-  userLoyaltyPoints
-  userResetBalance
   userPointToDollarRatio$ =  new BehaviorSubject<number>(null);
   rewards$ = new BehaviorSubject<Array<Reward>>([]);
   reward$ = new BehaviorSubject<Reward>(null);
@@ -47,6 +46,16 @@ export class RewardMenuComponent implements OnInit {
   loyaltyPointsBalance$ = new BehaviorSubject<any>(null);
   isLoggedIn$ = new BehaviorSubject<string>(null);
   showCreate$ = new BehaviorSubject<boolean>(false);
+  openTiers$ = new BehaviorSubject(false);
+  user$ = this.userService.userProfile$;
+  canUseTiers$ = this.user$.pipe(
+    map(
+      user =>
+        user.userSubscriptionPlan === BusinessMembership.Legacy ||
+        user.userSubscriptionPlan === BusinessMembership.Intermediate ||
+        user.userSubscriptionPlan === BusinessMembership.Ultimate
+    )
+  );
 
   constructor( private businessMenuService: BusinessMenuServiceService,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
@@ -56,6 +65,20 @@ export class RewardMenuComponent implements OnInit {
       if(this.router.url.indexOf('business-menu') > -1){
         this.qrCodeLink = route.snapshot.params.qrCode
       }
+  }
+
+  async ngOnInit() {
+    let userType = await Preferences.get({key: 'spotbie_userType'});
+    this.userType$.next(parseInt(userType.value, 10));
+
+    this.isLoggedIn$.next((await Preferences.get({key: 'spotbie_loggedIn'})).value);
+
+    if( this.userType$.getValue() !== this.eAllowedAccountTypes.Personal) {
+      this.getLoyaltyPointBalance();
+      this.fetchRewards();
+    } else {
+      this.fetchRewards(this.qrCodeLink);
+    }
   }
 
   getWindowClass(){
@@ -139,17 +162,7 @@ export class RewardMenuComponent implements OnInit {
       return { background: 'linear-gradient(90deg,#35a99f,#64e56f)' }
   }
 
-  async ngOnInit() {
-    let userType = await Preferences.get({key: 'spotbie_userType'});
-    this.userType$.next(parseInt(userType.value, 10));
-
-    this.isLoggedIn$.next((await Preferences.get({key: 'spotbie_loggedIn'})).value);
-
-    if( this.userType$.getValue() !== this.eAllowedAccountTypes.Personal) {
-      this.getLoyaltyPointBalance()
-      this.fetchRewards()
-    } else {
-      this.fetchRewards(this.qrCodeLink)
-    }
+  manageLoyaltyTiers() {
+    this.openTiers$.next(true);
   }
 }

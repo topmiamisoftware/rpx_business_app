@@ -13,9 +13,9 @@ export class User {
   updated_at: string;
   spotbie_user: SpotbieUser;
   business: Business;
-  lp_balance_list: LoyaltyPointBalance[];
   loyalty_point_balance: any;
   next_payment: string;
+  userSubscriptionPlan: BusinessMembership;
 }
 
 export enum BusinessMembership {
