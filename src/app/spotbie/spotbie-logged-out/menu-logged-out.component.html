@@ -11,21 +11,6 @@
           <ion-icon name="home" slot="start"></ion-icon>
           HOME
         </ion-item>
-
-        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(1)">
-          <ion-icon name="pizza" slot="start"></ion-icon>
-          PLACES TO EAT
-        </ion-item>
-
-        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(2)">
-          <ion-icon name="pricetags" slot="start"></ion-icon>
-          SHOPPING
-        </ion-item>
-
-        <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(3)">
-          <ion-icon name="glasses" slot="start"></ion-icon>
-          EVENTS
-        </ion-item>
       </ion-list>
   </ion-content>
 </ion-menu>
@@ -45,6 +30,5 @@
 
   <ion-content class="has-header text-center" color="light">
     <app-log-in *ngIf="logInWindow$ | async" #appLogin></app-log-in>
-    <app-map #appMap></app-map>
   </ion-content>
 </div>

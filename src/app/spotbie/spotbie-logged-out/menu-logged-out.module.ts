@@ -8,7 +8,6 @@ import {LogInComponent} from './log-in/log-in.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HelperModule} from '../../helpers/helper.module';
 import {IonicModule} from '@ionic/angular';
-import {MapModule} from '../map/map.module';
 
 @NgModule({
   declarations: [MenuLoggedOutComponent, LogInComponent],
@@ -21,7 +20,6 @@ import {MapModule} from '../map/map.module';
     HelperModule,
     FontAwesomeModule,
     IonicModule.forRoot(),
-    MapModule,
   ],
   exports: [MenuLoggedOutComponent],
 })

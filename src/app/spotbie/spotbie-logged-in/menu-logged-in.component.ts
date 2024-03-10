@@ -5,7 +5,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {UserauthService} from '../../services/userauth.service';
-import {MapComponent} from '../map/map.component';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {SettingsComponent} from './settings/settings.component';
 import {logOutCallback} from '../../helpers/logout-callback';
@@ -27,7 +26,6 @@ import {map, tap} from "rxjs/operators";
 })
 export class MenuLoggedInComponent implements AfterViewInit {
   // @ViewChild('spotbieMainMenu') spotbieMainMenu: ElementRef;
-  @ViewChild('spotbieMap') spotbieMap: MapComponent;
   @ViewChild('spotbieSettings') spotbieSettings: SettingsComponent;
 
   faFoodTruck = faTruck;
@@ -60,15 +58,10 @@ export class MenuLoggedInComponent implements AfterViewInit {
     this.isTablet = this.deviceService.isTablet();
   }
 
-  toggleLoyaltyPoints() {
-    this.spotbieMap.goToLp();
-  }
-
   spawnCategories(category: number): void {
     this.menuCtrl.close('logged-in-menu');
 
     this.slideMenu();
-    this.spotbieMap.spawnCategories(category);
   }
 
   home() {
@@ -77,9 +70,6 @@ export class MenuLoggedInComponent implements AfterViewInit {
     this.settingsWindow$.next(false);
     this.foodWindow.open = false;
     this.eventMenuOpen = false;
-
-    this.spotbieMap.openWelcome();
-    this.spotbieMap.closeCategories();
   }
 
   slideMenu() {

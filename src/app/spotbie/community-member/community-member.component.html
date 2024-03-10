@@ -1,9 +1,0 @@
-<app-info-object [info_object]="infoObject$ | async"
-                 [ad]="ad"
-                 [lat]="lat"
-                 [lng]="lng"
-                 [categories]="categories"
-                 [accountType]="(loadedBusiness$ | async).user_type"
-                 (closeWindow)="closeWindow()"
-                 *ngIf="infoObjectLoaded$ | async"
-                 [fullScreenMode]="fullScreenMode"></app-info-object>

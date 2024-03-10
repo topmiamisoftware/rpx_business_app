@@ -53,13 +53,3 @@
         <span class='spotbie-text-gradient sb-address text-uppercase'><i class='fas fa-map-marker-alt'></i> {{ business.address }}</span>
     </div>
 </div>
-
-<app-community-member [business]="business"
-                      [ad]="ad"
-                      [lat]="lat"
-                      [lng]="lng"
-                      [accountType]="accountType"
-                      [categories]="categories"
-                      [qrCodeLink]="business.qr_code_link"
-                      (closeWindowEvt)="closeRewardMenu()"
-                      *ngIf="communityMemberOpen"></app-community-member>

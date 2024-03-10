@@ -7,6 +7,7 @@ import { RewardMenuModule } from '../reward-menu/reward-menu.module';
 import { RouterModule } from '@angular/router';
 import { AdManagerModule } from '../ad-manager-menu/ad-manager-menu.module';
 import {CustomerManagerModule} from "./customer-manager/customer-manager.module";
+import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import {CustomerManagerModule} from "./customer-manager/customer-manager.module"
   ],
   imports: [
     CommonModule,
+    SpotbiePipesModule,
     LoyaltyPointsModule,
     RewardMenuModule,
     RouterModule,

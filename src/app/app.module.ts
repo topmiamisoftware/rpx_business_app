@@ -21,6 +21,7 @@ import {NGXS_DATA_STORAGE_CONTAINER, NGXS_DATA_STORAGE_EXTENSION} from "@angular
 import {NgxsReduxDevtoolsPluginModule} from "@ngxs/devtools-plugin";
 import {BusinessLoyaltyPointsState} from './spotbie/spotbie-logged-in/state/business.lp.state';
 import {LoyaltyPointsState} from "./spotbie/spotbie-logged-in/state/lp.state";
+import {GoogleMapsModule} from '@angular/google-maps';
 
 @NgModule({
   declarations: [AppComponent, UrlSanitizerPipe],
@@ -34,6 +35,7 @@ import {LoyaltyPointsState} from "./spotbie/spotbie-logged-in/state/lp.state";
     BrowserAnimationsModule,
     SpotbiePipesModule,
     BrowserModule,
+    GoogleMapsModule,
     NgxsModule.forRoot([LoyaltyPointsState, BusinessLoyaltyPointsState], {
       developmentMode: !environment.production,
       executionStrategy: NoopNgxsExecutionStrategy,

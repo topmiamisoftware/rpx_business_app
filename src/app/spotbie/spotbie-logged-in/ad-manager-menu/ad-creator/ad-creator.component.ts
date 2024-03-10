@@ -317,19 +317,19 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   }
 
    adFormatClass(){
-    switch(this.adType){
-      case 0:
-        return 'header-banner'
-      case 1:
-        return 'related-nearby-box'
-      case 2:
-        return 'footer-banner'
-    }
+      switch(this.adType){
+        case 0:
+          return 'header-banner'
+        case 1:
+          return 'related-nearby-box'
+        case 2:
+          return 'footer-banner'
+      }
   }
 
    activateAdMembership(){
-    window.open(`${AD_PAYMENT_URL}${this.ad.uuid}`, '_blank')
-  }
+      window.open(`${AD_PAYMENT_URL}${this.ad.uuid}`, '_blank')
+   }
 
   ngOnInit(): void {
     this.initAdForm()

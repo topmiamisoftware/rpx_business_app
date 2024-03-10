@@ -11,21 +11,6 @@
         HOME
       </ion-item>
 
-      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(1)">
-        <ion-icon name="pizza" slot="start"></ion-icon>
-        PLACES TO EAT
-      </ion-item>
-
-      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(2)">
-        <ion-icon name="pricetags" slot="start"></ion-icon>
-        SHOPPING
-      </ion-item>
-
-      <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="spawnCategories(3)">
-        <ion-icon name="glasses" slot="start"></ion-icon>
-        EVENTS
-      </ion-item>
-
       <ion-item class="ion-padding-bottom" color="primary" lines="full" (click)="openSettings()">
         <ion-icon name="cog" slot="start"></ion-icon>
         SETTINGS
@@ -59,8 +44,8 @@
   <!-- we neeed the main-ion-content class so that we can sett he background to transparent for the scanner -->
   <ion-content class="main-ion-content has-header">
     <!--<app-event-menu *ngIf="eventMenuOpen"></app-event-menu>-->
-    <app-map #spotbieMap *ngIf="mapApp$ | async" (openBusinessSettingsEvt)="openSettings()"></app-map>
-
     <app-settings *ngIf="settingsWindow$ | async" #spotbieSettings (closeWindowEvt)="closeSettings()"></app-settings>
+
+    <app-business-dashboard></app-business-dashboard>
   </ion-content>
 </div>

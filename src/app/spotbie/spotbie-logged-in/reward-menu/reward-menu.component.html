@@ -107,10 +107,3 @@
                     (closeRewardCreatorEvt)="closeRewardCreator()"
                     #rewardCreator
                     [reward]="(reward$ | async)"></app-reward-creator>
-
-<app-reward *ngIf="(rewardApp$ | async) === true"
-            #appRewardViewer
-            [reward]="(reward$ | async)"
-            [fullScreenMode]="rewardAppFullScreen"
-            [userPointToDollarRatio]="userPointToDollarRatio$ | async"
-            (closeWindowEvt)="closeReward()"></app-reward>

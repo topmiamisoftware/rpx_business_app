@@ -31,17 +31,13 @@ export class QrComponent implements OnInit {
   business = new Business()
   redeemable = new Redeemable()
   userHash$ =  new BehaviorSubject<string>(null);
-  qrType$ =  new BehaviorSubject<string>('url');
   isBusiness$ = new BehaviorSubject<boolean>(false);
-  userLoyaltyPoints$ = new BehaviorSubject<number>(0);
-  loyaltyPointWorth$ = new BehaviorSubject<number>(0);
   businessLoyaltyPointsForm: UntypedFormGroup
   businessLoyaltyPointsFormUp$ = new BehaviorSubject<boolean>(false);
   rewardPrompted$ = new BehaviorSubject<boolean>(false);
   rewardPrompt$ = new BehaviorSubject<boolean>(false);
   loyaltyPointReward$ = new BehaviorSubject<number>(null);
   loyaltyPointRewardDollarValue$ = new BehaviorSubject<number>(null);
-  qrCodeLink$ = new BehaviorSubject<string>(null);
   qrCodeLoyaltyPointsBaseUrl$= new BehaviorSubject<string>(QR_CODE_LOYALTY_POINTS_SCAN_BASE_URL);
   loyaltyPointBalance$ = new BehaviorSubject<any>(null);
   businessLoyaltyPointsSubmitted$ = new BehaviorSubject<boolean>(false);
@@ -167,17 +163,8 @@ export class QrComponent implements OnInit {
     this.businessLoyaltyPointsFormUp$.next(true);
   }
 
-  startQrCodeScanner(){
-    this.loyaltyPointsService.getLoyaltyPointBalance();
-    this.isBusiness$.next(false);
-  }
-
   closeQr(){
     this.rewardPrompted$.next(false);
-  }
-
-  closeQrUser(){
-    this.closeQrUserEvt.emit(null);
   }
 
   async ngOnInit() {

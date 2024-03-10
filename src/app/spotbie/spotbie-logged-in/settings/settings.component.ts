@@ -1,4 +1,3 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   ChangeDetectionStrategy, ChangeDetectorRef,
   Component,

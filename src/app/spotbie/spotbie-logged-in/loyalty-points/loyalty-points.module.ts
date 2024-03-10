@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {NgxMaskDirective, NgxMaskPipe, IConfig, provideNgxMask} from 'ngx-mask';
 import { HelperModule } from '../../../helpers/helper.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
 
 export const options : Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -16,6 +17,7 @@ export const options : Partial<IConfig> | (() => Partial<IConfig>) = null;
     CommonModule,
     MatDialogModule,
     ReactiveFormsModule,
+    SpotbiePipesModule,
     HelperModule,
     FormsModule,
     NgxMaskDirective,

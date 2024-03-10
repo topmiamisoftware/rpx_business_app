@@ -22,8 +22,6 @@ import {environment} from '../../../../environments/environment';
 import GeocoderResult = google.maps.GeocoderResult;
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {

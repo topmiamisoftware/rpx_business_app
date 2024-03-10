@@ -10,6 +10,7 @@ import {IonicModule} from "@ionic/angular";
 import {TierCreatorComponent} from "./tier-creator/tier-creator.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
+import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {MatSelectModule} from "@angular/material/select";
     ReactiveFormsModule,
     QRCodeModule,
     HelperModule,
+    SpotbiePipesModule,
     IonicModule,
     MatFormFieldModule,
     MatSelectModule,

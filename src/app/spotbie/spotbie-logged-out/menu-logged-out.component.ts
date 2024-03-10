@@ -7,7 +7,6 @@ import {
 import {MenuController} from '@ionic/angular';
 import {LogInComponent} from './log-in/log-in.component';
 import {BehaviorSubject} from 'rxjs';
-import {MapComponent} from '../map/map.component';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 
@@ -21,7 +20,6 @@ export class MenuLoggedOutComponent {
   @Output() openHome = new EventEmitter();
 
   @ViewChild('appLogin') appLogin: LogInComponent;
-  @ViewChild('appMap') appMap: MapComponent;
 
   logInWindow$ = new BehaviorSubject<boolean>(true);
   onForgotPassword$ = new BehaviorSubject<boolean>(false);
@@ -39,15 +37,11 @@ export class MenuLoggedOutComponent {
   spawnCategories(type: number): void {
     this.logInWindow$.next(false);
     this.menuCtrl.close('main-menu');
-    this.appMap.spawnCategories(type);
   }
 
   home() {
     this.menuCtrl.close('main-menu');
     this.logInWindow$.next(true);
-    this.appMap.map$.next(false);
-    this.appMap.searchResults$.next([]);
-    this.appMap.showSearchResults$.next(false);
 
     if (this.onForgotPassword$.getValue()) {
       this.router.navigate(['/home']);
