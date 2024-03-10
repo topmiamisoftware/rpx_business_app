@@ -26,14 +26,12 @@ export class TierCreatorComponent implements OnInit {
   loyaltyTier = new LoyaltyTier();
   tierDollarValueCalculated = false;
   dollarEntranceValue: number | string = 0;
-  openTiers = false;
   tierCreatorFormUp = false;
   updatingTier = false;
   creatingTier = false;
   businessLoyaltyTierForm: UntypedFormGroup;
   businessLoyaltyTierSubmitted = false;
   loading = false;
-
   existingTiers$ = this.loyaltyPointsService.existingTiers$;
 
   constructor(
@@ -74,10 +72,6 @@ export class TierCreatorComponent implements OnInit {
   }
   get g() {
     return this.businessLoyaltyTierForm.controls;
-  }
-
-  initLoyaltyTierList() {
-    this.openTiers = true;
   }
 
   initEditLoyaltyTier() {

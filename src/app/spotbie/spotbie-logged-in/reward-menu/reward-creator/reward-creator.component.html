@@ -165,7 +165,8 @@
               </ion-list>
 
               <p class="spotbie-text-gradient" *ngIf="(rewardTier$ | async)">
-                User must spend {{ dollarEntranceValue | number: '1.0':'en-US' }} to get into this tier.
+                Tier Entrance Dollar Value ${{ dollarEntranceValue | number: '1.2':'en-US' }},
+                Loyalty Points {{ lpEntranceValue | number: '1.0':'en-US' }}
               </p>
 
               <ng-container *ngIf="(existingTiers$ | async)?.length === 0">

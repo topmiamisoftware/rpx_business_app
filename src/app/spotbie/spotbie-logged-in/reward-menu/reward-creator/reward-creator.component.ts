@@ -9,7 +9,7 @@ import {
 import {environment} from '../../../../../environments/environment';
 import * as spotbieGlobals from '../../../../globals';
 import {Preferences} from "@capacitor/preferences";
-import {BehaviorSubject, Observable, map} from "rxjs";
+import {BehaviorSubject, Observable, map, take} from "rxjs";
 import {Camera, CameraResultType, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {BusinessLoyaltyPointsState} from "../../state/business.lp.state";
@@ -18,6 +18,7 @@ import { Immutable } from '@angular-ru/cdk/typings';
 import { UserauthService } from '../../../../services/userauth.service';
 import { BusinessMembership } from '../../../../models/user';
 import { LoyaltyTier } from '../../../../models/loyalty-point-tier';
+import {filter, tap} from "rxjs/operators";
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -61,8 +62,10 @@ export class RewardCreatorComponent implements OnInit {
   qrCodeClaimReward = new BehaviorSubject<string>(QR_CODE_CALIM_REWARD_SCAN_BASE_URL);
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
   user$ = this.userAuthService.userProfile$;
+  rewardTier: LoyaltyTier;
   rewardTier$: Observable<LoyaltyTier>;
   dollarEntranceValue: number;
+  lpEntranceValue: number;
   existingTiers$ = this.loyaltyPointsService.existingTiers$;
   canUseTiers$ = this.user$.pipe(
     map(
@@ -121,6 +124,7 @@ export class RewardCreatorComponent implements OnInit {
       this.rewardUploadImage$.next(r.images);
       this.setRewardLink();
       this.calculatePointValue();
+      this.setRewardTier();
     }
 
     this.rewardCreatorFormUp$.next(true);
@@ -321,6 +325,33 @@ export class RewardCreatorComponent implements OnInit {
 
   rewardTierChange(event){
     this.rewardCreatorForm.get('tier').setValue(event.detail.value);
+    this.setRewardTier();
+  }
+
+  calculateTierDollarValue() {
+    const tierEntranceValue: number = this.rewardTier.lp_entrance;
+    const pointPercentage: number =
+      this.userAuthService.userProfile.loyalty_point_balance
+        .loyalty_point_dollar_percent_value;
+
+    if (pointPercentage === 0) {
+      this.dollarEntranceValue = 0;
+      this.lpEntranceValue = 0;
+    } else {
+      this.dollarEntranceValue = tierEntranceValue * (pointPercentage / 100);
+      this.lpEntranceValue = tierEntranceValue;
+    }
+  }
+
+  setRewardTier() {
+    this.rewardTier$ = this.existingTiers$.pipe(
+      filter(tierList => !!tierList),
+      take(1),
+      map(tierList => tierList?.find(tier => tier.id === this?.tier)),
+      filter(tier => !!tier),
+      tap(tier => (this.rewardTier = tier)),
+      tap(_ => this.calculateTierDollarValue())
+    );
   }
 
   ngOnInit(): void {
