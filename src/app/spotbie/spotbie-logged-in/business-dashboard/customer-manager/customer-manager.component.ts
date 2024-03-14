@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {BehaviorSubject, tap} from 'rxjs';
 import {RecentGuestsDialogComponent} from './recent-guests/recent-guests-dialog.component';
 import {SmsHistoryDialogComponent} from './sms-history/sms-history-dialog.component';
+import {FeedbackComponent} from "./feedback/feedback.component";
 
 @Component({
   selector: 'app-customer-manager',
@@ -28,6 +29,12 @@ export class CustomerManagerComponent implements OnInit {
 
   openSmsHistory() {
     const dialogRef = this.dialog.open(SmsHistoryDialogComponent, {
+      width: '90%',
+    });
+  }
+
+  openFeedback() {
+    const dialogRef = this.dialog.open(FeedbackComponent, {
       width: '90%',
     });
   }

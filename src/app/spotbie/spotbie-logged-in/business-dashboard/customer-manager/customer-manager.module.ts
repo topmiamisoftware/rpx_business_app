@@ -9,6 +9,7 @@ import {NgxsModule} from '@ngxs/store';
 import {RecentGuestsEntitiesState} from './recent-guests/recent-guest.state';
 import {NgxsStoragePluginModule} from '@ngxs/storage-plugin';
 import {SmsGroupEntitiesState} from './sms-history/sms-group.state';
+import {FeedbackEntitiesState} from "./feedback/feedback.state";
 
 @NgModule({
   declarations: [CustomerManagerComponent],
@@ -18,7 +19,11 @@ import {SmsGroupEntitiesState} from './sms-history/sms-group.state';
     MatInputModule,
     MatButtonModule,
     FontAwesomeModule,
-    NgxsModule.forRoot([RecentGuestsEntitiesState, SmsGroupEntitiesState]),
+    NgxsModule.forRoot([
+      RecentGuestsEntitiesState,
+      SmsGroupEntitiesState,
+      FeedbackEntitiesState
+    ]),
     NgxsStoragePluginModule.forRoot(),
   ],
   exports: [CustomerManagerComponent],

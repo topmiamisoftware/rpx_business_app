@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {User} from '../../../../models/user';
 
 const CUSTOMER_MANAGER_API = `${spotbieGlobals.API}customer-manager`;
+const FEEDBACK_API = `${spotbieGlobals.API}feedback`;
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +39,13 @@ export class CustomerManagerService {
     return this.http
       .post<any>(api, {sms})
       .pipe(catchError(handleError('sendSms')));
+  }
+
+  getFeedbackList(): Observable<any> {
+    const api = `${FEEDBACK_API}/index`;
+
+    return this.http
+      .get<any>(api)
+      .pipe(catchError(handleError('getFeedbackList')));
   }
 }
