@@ -5,11 +5,14 @@
     <div class="example-button-row">
       <button mat-button color="accent" (click)="openRecentGuests()">Recent Guests</button>
       <button mat-button color="primary" (click)="openSmsHistory()">SMS History</button>
+      <button mat-button color="primary" (click)="openEmailHistory()">Email History</button>
       <button mat-button color="primary" (click)="openFeedback()">Feedback</button>
     </div>
   </section>
 
   <div class="spotbie-button" (click)="openTextMessage()">SEND SMS</div>
+
+  <div class="spotbie-button" (click)="openEmail()">SEND EMAIL</div>
 
   <ng-container *ngIf="messageSent$ | async">
     <p class="spotbie-text-gradient text-center mt-5">

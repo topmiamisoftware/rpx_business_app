@@ -6,6 +6,8 @@ import {BehaviorSubject, tap} from 'rxjs';
 import {RecentGuestsDialogComponent} from './recent-guests/recent-guests-dialog.component';
 import {SmsHistoryDialogComponent} from './sms-history/sms-history-dialog.component';
 import {FeedbackComponent} from "./feedback/feedback.component";
+import {EmailDialogComponent} from "./email/email.component";
+import {EmailHistoryDialogComponent} from "./email-history/email-history-dialog.component";
 
 @Component({
   selector: 'app-customer-manager',
@@ -33,6 +35,12 @@ export class CustomerManagerComponent implements OnInit {
     });
   }
 
+  openEmailHistory() {
+    const dialogRef = this.dialog.open(EmailHistoryDialogComponent, {
+      width: '90%',
+    });
+  }
+
   openFeedback() {
     const dialogRef = this.dialog.open(FeedbackComponent, {
       width: '90%',
@@ -54,6 +62,34 @@ export class CustomerManagerComponent implements OnInit {
   sendTextMessage(text: string) {
     this.customerManagementService
       .sendSms(text)
+      .pipe(
+        tap(resp => {
+          if (resp.success) {
+            this.messageSent$.next(true);
+            setTimeout(() => {
+              this.messageSent$.next(false);
+            }, 5000);
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  openEmail() {
+    const dialogRef = this.dialog.open(EmailDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      this.sendEmail(result.text);
+    });
+  }
+
+  sendEmail(text: string) {
+    this.customerManagementService
+      .sendEmail(text)
       .pipe(
         tap(resp => {
           if (resp.success) {

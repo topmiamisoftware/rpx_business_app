@@ -41,6 +41,22 @@ export class CustomerManagerService {
       .pipe(catchError(handleError('sendSms')));
   }
 
+  getEmailGroupList(): Observable<any> {
+    const api = `${CUSTOMER_MANAGER_API}/email-group-list`;
+
+    return this.http
+      .get<any>(api)
+      .pipe(catchError(handleError('getEmailGroupList')));
+  }
+
+  sendEmail(email_body: string): Observable<any> {
+    const api = `${CUSTOMER_MANAGER_API}/email`;
+
+    return this.http
+      .post<any>(api, {email_body})
+      .pipe(catchError(handleError('sendEmail')));
+  }
+
   getFeedbackList(): Observable<any> {
     const api = `${FEEDBACK_API}/index`;
 

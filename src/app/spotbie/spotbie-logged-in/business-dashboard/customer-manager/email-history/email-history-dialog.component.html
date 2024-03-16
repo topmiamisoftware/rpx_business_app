@@ -1,0 +1,52 @@
+<div class="spotbie-overlay-window p-3">
+  <h1 class="spotbie-text-gradient">EMAIL HISTORY</h1>
+
+  <p class="pt-3">
+    This is a list of mass email-messages you have sent lately.
+  </p>
+
+  <table mat-table
+         class="mat-elevation-z8"
+         [style.color]="'white'"
+         [style.background-color]="'#332f3e'"
+         [style.font-size]="'.8em'"
+         [dataSource]="(emailGroupList$ | async)"
+  >
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef>Recipients</th>
+      <td mat-cell *matCellDef="let emailGroup">{{ emailGroup.total }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total_sent">
+      <th mat-header-cell *matHeaderCellDef>Sent</th>
+      <td mat-cell *matCellDef="let emailGroup">{{ emailGroup.total_sent }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email_body">
+      <th mat-header-cell *matHeaderCellDef>Message</th>
+      <td mat-cell *matCellDef="let emailGroup">{{ emailGroup.email_body | truncateText: [60] }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="created_at">
+      <th mat-header-cell *matHeaderCellDef>Time Sent</th>
+      <td mat-cell *matCellDef="let emailGroup">{{ emailGroup.created_at | date : 'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="view_logs">
+      <th mat-header-cell *matHeaderCellDef>Error Logs</th>
+      <td mat-cell *matCellDef="let emailGroup" (click)="viewGroup(emailGroup)">
+        <span class="text-decoration-underline" style="cursor: pointer">View Logs</span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <div mat-dialog-actions
+       [style.color]="'white'"
+       [style.background-color]="'#332f3e'"
+  >
+    <button mat-button [style.color]="'white'" (click)="closeDialog()">Close</button>
+  </div>
+</div>

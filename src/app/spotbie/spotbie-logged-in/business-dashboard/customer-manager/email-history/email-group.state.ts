@@ -1,5 +1,5 @@
 import {NgxsDataEntityCollectionsRepository} from '@angular-ru/ngxs/repositories';
-import {SmsGroup} from '../models';
+import {EmailGroup} from '../models';
 import {DataAction, StateRepository} from '@angular-ru/ngxs/decorators';
 import {Injectable} from '@angular/core';
 import {State} from '@ngxs/store';
@@ -10,7 +10,7 @@ import {SortOrderType} from "@angular-ru/cdk/typings";
 
 @StateRepository()
 @State({
-  name: 'SmsGroup',
+  name: 'EmailGroup',
   defaults: {
     ...createEntityCollections(),
     pagedData: {
@@ -22,24 +22,24 @@ import {SortOrderType} from "@angular-ru/cdk/typings";
   },
 })
 @Injectable()
-export class SmsGroupEntitiesState extends NgxsDataEntityCollectionsRepository<SmsGroup> {
+export class EmailGroupEntitiesState extends NgxsDataEntityCollectionsRepository<EmailGroup> {
   constructor(private customerManagementService: CustomerManagerService) {
     super();
   }
 
   @DataAction({subscribeRequired: false})
-  getSmsGroupList() {
-    return this.customerManagementService.getSmsGroupList().pipe(
+  getEmailGroupList() {
+    return this.customerManagementService.getEmailGroupList().pipe(
       tap(
         (response: {
-          data: SmsGroup[];
+          data: EmailGroup[];
           current_page: number;
           last_page: number;
           per_page: number;
           total: number;
         }) => {
-          console.log('getSmsGroupList', response);
           this.upsertMany(response.data);
+
           this.patchState({
             ...this.ctx.getState(),
             pagedData: {
@@ -49,6 +49,7 @@ export class SmsGroupEntitiesState extends NgxsDataEntityCollectionsRepository<S
               total: response.total,
             },
           });
+
           this.sort({
             sortBy: 'id',
             sortByOrder: SortOrderType.DESC

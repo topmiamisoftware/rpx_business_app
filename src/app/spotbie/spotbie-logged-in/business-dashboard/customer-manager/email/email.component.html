@@ -1,0 +1,41 @@
+<div class="spotbie-overlay-window p-3">
+  <h1 class="spotbie-text-gradient">
+    MASS E-MAIL
+  </h1>
+
+  <form [formGroup]="emailForm">
+    <p>
+      What would you like to tell your recent guests? Email will be sent to recent guests that have visited your business.
+    </p>
+    <p *ngIf="submitted && f.emailBody.errors" class="spotbie-invalid-feedback text-uppercase spotbie-text-gradient spotbie-error">
+      <span *ngIf="f.emailBody.errors.required">
+        Email body is required.
+      </span>
+
+      <span *ngIf="f.emailBody.errors.maxlength || f.emailBody.errors.minlength">
+        Email must be between 200 and 1,200 characters long.
+      </span>
+    </p>
+    <mat-form-field>
+      <mat-label>Email Body</mat-label>
+      <textarea formControlName="emailBody"
+                matInput
+                [style.background-color]="'transparent'"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="15"></textarea>
+    </mat-form-field>
+  </form>
+
+  <div>
+    <button mat-button
+            [style.color]="'white'"
+            [style.background-color]="'#332f3e'"
+            (click)="closeDialog()">Close</button>
+    <button mat-button
+            [style.color]="'white'"
+            [style.background-color]="'#332f3e'"
+            (click)="sendMessage()">Send</button>
+  </div>
+</div>
