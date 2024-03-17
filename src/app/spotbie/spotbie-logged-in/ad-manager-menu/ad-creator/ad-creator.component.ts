@@ -6,7 +6,7 @@ import {
   EventEmitter,
   Input, OnChanges,
   OnInit,
-  Output, SimpleChanges,
+  Output,
   ViewChild
 } from '@angular/core'
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms'
@@ -16,7 +16,6 @@ import {AdCreatorService} from '../../../../services/spotbie-logged-in/ad-manage
 import {BottomAdBannerComponent} from '../../../ads/bottom-ad-banner/bottom-ad-banner.component'
 import {HeaderAdBannerComponent} from '../../../ads/header-ad-banner/header-ad-banner.component'
 import {NearbyFeaturedAdComponent} from '../../../ads/nearby-featured-ad/nearby-featured-ad.component'
-import {environment} from '../../../../../environments/environment'
 import * as spotbieGlobals from '../../../../globals'
 import {Preferences} from "@capacitor/preferences";
 import {Camera, CameraResultType, GalleryPhoto, Photo} from "@capacitor/camera";
@@ -25,7 +24,6 @@ import {BehaviorSubject} from "rxjs";
 
 const AD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}in-house/upload-media`
 const AD_MEDIA_MAX_UPLOAD_SIZE = 10e+6
-const AD_PAYMENT_URL = `${environment.baseUrl}make-payment/in-house/`
 
 @Component({
   selector: 'app-ad-creator',
@@ -51,22 +49,21 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   loading: boolean
   adCreatorForm: UntypedFormGroup
   adCreatorFormUp: boolean
-   adFormSubmitted: boolean
-   showErrors: boolean
-   adUploadImage: string = null
-   adUploadImageMobile: string = null
-   adMediaMessage: string = 'Upload Image'
-   adMediaUploadProgress: number = 0
-   adTypeList: Array<any> = [
-     { name: 'Header Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'header'},
-     { name: 'Featured Nearby Banner', dimensions: '600x600', enabled: false, type: 'featured'},
-     { name: 'Footer Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'footer'}
-   ];
-   adCreated: boolean
-   adDeleted: boolean
-   loyaltyPointBalance: any
-   selected: number = 0
-   business: Business = null;
+  adFormSubmitted: boolean
+  showErrors: boolean
+  adUploadImage: string = null
+  adUploadImageMobile: string = null
+  adMediaMessage: string = 'Upload Image'
+  adMediaUploadProgress: number = 0
+  adTypeList: Array<any> = [
+   { name: 'Header Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'header'},
+   { name: 'Featured Nearby Banner', dimensions: '600x600', enabled: false, type: 'featured'},
+   { name: 'Footer Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'footer'}
+  ];
+  adCreated: boolean
+  adDeleted: boolean
+  selected: number = 0
+  business: Business = null;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
 
   constructor(private formBuilder: UntypedFormBuilder,
@@ -79,6 +76,10 @@ export class AdCreatorComponent implements OnInit, OnChanges {
      this.changeDetectionRef.markForCheck();
   }
 
+  ngOnInit(): void {
+    this.initAdForm()
+  }
+
   get adType() {return this.adCreatorForm.get('adType').value };
   get adName() {return this.adCreatorForm.get('adName').value }
   get adDescription() {return this.adCreatorForm.get('adDescription').value }
@@ -86,7 +87,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
 
   get f() { return this.adCreatorForm.controls }
 
-   initAdForm(){
+  initAdForm(){
     const adTypeValidators = [Validators.required]
     const adNameValidators = [Validators.required, Validators.maxLength(50)]
     const adDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)]
@@ -120,7 +121,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     this.changeDetectionRef.detectChanges();
   }
 
-   saveAd(){
+  saveAd(){
     this.adFormSubmitted = true
     this.spbTopAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
@@ -132,29 +133,21 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     adObj.type = this.adType
 
     if(!this.ad){
-      this.adCreatorService.saveAd(adObj).subscribe(resp => {
-          this.saveAdCb(resp);
-        });
+      this.adCreatorService.saveAd(adObj).subscribe(resp => this.saveAdCb(resp));
     } else {
-      adObj.id = this.ad.id
-      this.adCreatorService.updateAd(adObj).subscribe(resp => {
-          this.saveAdCb(resp);
-        });
+      adObj.id = this.ad.id;
+      this.adCreatorService.updateAd(adObj).subscribe(resp => this.saveAdCb(resp));
     }
   }
 
-   saveAdCb(resp: any){
-    if(resp.success){
+  saveAdCb(resp: any){
+    if (resp.success) {
       this.adCreated = true;
-      const ad = resp.newAd;
-
-      setTimeout(() => {
-        this.closeAdCreatorAndRefetchAdList()
-      }, 1500)
+      setTimeout(() => this.closeAdCreatorAndRefetchAdList(), 1500)
     }
   }
 
-   startAdMediaUploader(type: string): void {
+  startAdMediaUploader(type: string): void {
     if (this.adType === '') {
       this.spbTopAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.adCreatorForm.get('adType').setErrors({ required: true });
@@ -162,7 +155,8 @@ export class AdCreatorComponent implements OnInit, OnChanges {
       return;
     }
 
-     Camera.checkPermissions().then((status) => {
+    Camera.checkPermissions().then((status) => {
+       console.log('CAMERA STATUS', status);
        if (status.photos === 'granted'){
          this.adMediaUploaders(type);
        } else {
@@ -174,7 +168,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
            }
          });
        }
-     });
+    });
   }
 
   convertToBlob(image: Photo) {
@@ -209,11 +203,10 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     return this.uploadMedia(result, type);
   }
 
-
   async uploadMedia(file: Photo, type: string): Promise<void> {
     this.loading = true;
 
-    const formData = new FormData()
+    const formData = new FormData();
 
     let fileToUpload;
     let uploadSize = 0;
@@ -270,7 +263,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     this.changeDetectionRef.detectChanges();
   }
 
-   adTypeChange(){
+  adTypeChange(){
     this.adCreatorForm.get('adType').setErrors(null);
     this.showErrors = false;
     if(this.adUploadImage) {
@@ -284,19 +277,19 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     this.changeDetectionRef.detectChanges();
   }
 
-   closeThis(){
+  closeThis(){
     this.closeThisEvt.emit();
   }
 
-   closeWindow(){
+  closeWindow(){
     this.closeWindowEvt.emit();
   }
 
-   closeAdCreatorAndRefetchAdList(){
+  closeAdCreatorAndRefetchAdList(){
     this.closeAdCreatorAndRefetchAdListEvt.emit();
   }
 
-   deleteMe(){
+  deleteMe(){
     const r = confirm('Are you sure you want to delete this Ad?');
 
     if(r){
@@ -314,24 +307,5 @@ export class AdCreatorComponent implements OnInit, OnChanges {
         this.closeAdCreatorAndRefetchAdList();
       }, 1500);
     }
-  }
-
-   adFormatClass(){
-      switch(this.adType){
-        case 0:
-          return 'header-banner'
-        case 1:
-          return 'related-nearby-box'
-        case 2:
-          return 'footer-banner'
-      }
-  }
-
-   activateAdMembership(){
-      window.open(`${AD_PAYMENT_URL}${this.ad.uuid}`, '_blank')
-   }
-
-  ngOnInit(): void {
-    this.initAdForm()
   }
 }

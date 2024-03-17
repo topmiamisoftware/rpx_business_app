@@ -10,7 +10,6 @@ import {UserauthService} from '../../../services/userauth.service';
 import {Router} from '@angular/router';
 import {MenuLoggedOutComponent} from '../menu-logged-out.component';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
-import {logOutCallback} from '../../../helpers/logout-callback';
 import {BehaviorSubject} from 'rxjs';
 import {LoadingController} from '@ionic/angular';
 import {filter} from 'rxjs/operators';
@@ -143,8 +142,8 @@ export class LogInComponent implements OnInit {
         });
       }
 
-      this.router.navigate(['/user-home']);
       this.loading$.next(false);
+      this.router.navigate(['/user-home']);
     } else {
       this.spotbieSignUpIssues.nativeElement.scrollIntoView({
         behavior: 'smooth',

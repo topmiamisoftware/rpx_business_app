@@ -15,16 +15,7 @@
     width: 450px;
     min-width: 450px;
 }
-.spotbie-textarea{
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    background: unset;
-    -webkit-text-fill-color: unset;
-    color: black;
-    background-color: #fff;
-    border-radius: 0px;
-}
+
 .spotbie-background-upload-input{
     display: none;
 }
@@ -77,8 +68,7 @@ h5{
     margin-left: 5px;
 }
 @media (max-width: 768px){
-    .spotbie-upload-new-background-holder,
-    .spotbie-textarea{
+    .spotbie-upload-new-background-holder{
         max-width: 450px;
         width: 450px;
         min-width: 450px;

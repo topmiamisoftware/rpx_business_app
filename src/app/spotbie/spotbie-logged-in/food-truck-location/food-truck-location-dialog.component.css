@@ -88,14 +88,11 @@ agm-map{
 .sb-search-icon{
     display: inline-block!important;
     max-width: 50px;
-    padding-top: 20px;
     text-align: center;
-    padding: 0px !important;
-    padding-top: 11px !important;
-    padding-bottom: 11px !important;
+    padding: 11px !important;
     border-radius: 8px !important;
-    border-top-left-radius: 0px !important;
-    border-bottom-left-radius: 0px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
 }
 .spotbie-settings-table{
     position: relative;

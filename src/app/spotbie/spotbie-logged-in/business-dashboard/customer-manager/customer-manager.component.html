@@ -1,18 +1,35 @@
 <div>
-  <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">CUSTOMER MANAGEMENT</h4>
+  <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-4">CUSTOMER MANAGEMENT</h4>
 
-  <section>
-    <div class="example-button-row">
-      <button mat-button color="accent" (click)="openRecentGuests()">Recent Guests</button>
-      <button mat-button color="primary" (click)="openSmsHistory()">SMS History</button>
-      <button mat-button color="primary" (click)="openEmailHistory()">Email History</button>
-      <button mat-button color="primary" (click)="openFeedback()">Feedback</button>
-    </div>
-  </section>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <button class="btn spotbie-button" (click)="openTextMessage()">SEND SMS</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button class="btn spotbie-button" (click)="openEmail()">SEND EMAIL</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <div class="spotbie-button" (click)="openTextMessage()">SEND SMS</div>
-
-  <div class="spotbie-button" (click)="openEmail()">SEND EMAIL</div>
+  <ion-grid class="mt-4">
+    <ion-row style="color: white">
+      <ion-col>
+        <span (click)="openRecentGuests()">Recent Guests</span>
+      </ion-col>
+      <ion-col>
+        <span (click)="openSmsHistory()">SMS History</span>
+      </ion-col>
+      <ion-col>
+        <span (click)="openEmailHistory()">Email History</span>
+      </ion-col>
+      <ion-col>
+        <span (click)="openFeedback()">Feedback</span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ng-container *ngIf="messageSent$ | async">
     <p class="spotbie-text-gradient text-center mt-5">

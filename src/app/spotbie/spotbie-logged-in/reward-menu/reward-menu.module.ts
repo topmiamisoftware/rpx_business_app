@@ -11,6 +11,7 @@ import {TierCreatorComponent} from "./tier-creator/tier-creator.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
+import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
 
 @NgModule({
   declarations: [
@@ -29,6 +30,8 @@ import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
     IonicModule,
     MatFormFieldModule,
     MatSelectModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
   exports : [
     RewardMenuComponent

@@ -11,6 +11,8 @@ import {BusinessLoyaltyPointsState} from '../../state/business.lp.state';
 import {LoyaltyPointBalance} from '../../../../models/loyalty-point-balance';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {UserauthService} from '../../../../services/userauth.service';
+import {BehaviorSubject} from "rxjs";
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-tier-creator',
@@ -19,6 +21,7 @@ import {UserauthService} from '../../../../services/userauth.service';
 })
 export class TierCreatorComponent implements OnInit {
   @ViewChild('businessLoyaltyTierInfo') businessLoyaltyTierInfo;
+  @ViewChild('tierCreator') tierCreator;
 
   @Output() closeTiers: EventEmitter<any> = new EventEmitter<null>(null);
 
@@ -26,38 +29,43 @@ export class TierCreatorComponent implements OnInit {
   loyaltyTier = new LoyaltyTier();
   tierDollarValueCalculated = false;
   dollarEntranceValue: number | string = 0;
-  tierCreatorFormUp = false;
-  updatingTier = false;
-  creatingTier = false;
+  tierCreatorFormUp$ = new BehaviorSubject<boolean>( false);
+  updatingTier$ = new BehaviorSubject<boolean>(false);
+  creatingTier$ = new BehaviorSubject<boolean>(false);
   businessLoyaltyTierForm: UntypedFormGroup;
   businessLoyaltyTierSubmitted = false;
-  loading = false;
+  loading$ = new BehaviorSubject(false);
   existingTiers$ = this.loyaltyPointsService.existingTiers$;
 
   constructor(
     private loyaltyPointsService: LoyaltyPointsService,
     private businessLoyaltyPointState: BusinessLoyaltyPointsState,
     private formBuilder: UntypedFormBuilder,
-    private userAuth: UserauthService
+    private userAuth: UserauthService,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
     this.loyaltyPointBalanceBusiness =
       this.businessLoyaltyPointState.getState();
     this.loyaltyPointsService.getExistingTiers().subscribe();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeTiers.emit(null);
+    });
   }
 
   newTier() {
     this.loyaltyTier = null;
-    this.updatingTier = false;
-    this.creatingTier = true;
+    this.updatingTier$.next(false);
+    this.creatingTier$.next(true);
     this.initNewLoyaltyTier();
   }
 
   editTier(tier: LoyaltyTier) {
     this.loyaltyTier = tier;
-    this.updatingTier = true;
-    this.creatingTier = false;
+    this.updatingTier$.next(true);
+    this.creatingTier$.next(false);
     this.initEditLoyaltyTier();
   }
 
@@ -97,8 +105,8 @@ export class TierCreatorComponent implements OnInit {
 
     this.calculateTierDollarValue();
 
-    this.tierCreatorFormUp = true;
-    this.loading = false;
+    this.tierCreatorFormUp$.next(true);
+    this.loading$.next(false);
   }
 
   initNewLoyaltyTier() {
@@ -112,16 +120,22 @@ export class TierCreatorComponent implements OnInit {
       tierEntranceValue: ['', tierEntranceValueValidators],
     });
 
-    this.tierCreatorFormUp = true;
-    this.loading = false;
+    this.tierCreatorFormUp$.next( true);
+    this.loading$.next( false);
+  }
+
+  closeTierCreator() {
+    this.tierCreatorFormUp$.next( false);
+    this.creatingTier$.next( false);
+    this.updatingTier$.next(false);
   }
 
   createLoyaltyPointsTier() {
-    this.loading = true;
+    this.loading$.next( true);
     this.businessLoyaltyTierSubmitted = true;
 
     if (this.businessLoyaltyTierForm.invalid) {
-      this.loading = false;
+      this.loading$.next( false);
       return;
     }
 
@@ -138,21 +152,20 @@ export class TierCreatorComponent implements OnInit {
   }
 
   createLpTierCB(resp: any) {
-    this.loading = false;
+    this.loading$.next( false);
     this.businessLoyaltyTierInfo.nativeElement.innerHTML =
       "Your loyalty tier was created successfully. <i class='fa fa-check sb-text-light-green-gradient'></i>";
 
-    setTimeout(() => {
-      location.reload();
-    }, 570);
+    this.closeTierCreator();
+    this.loyaltyPointsService.getExistingTiers().subscribe();
   }
 
   updateLoyaltyPointsTier() {
-    this.loading = true;
+    this.loading$.next(true);
     this.businessLoyaltyTierSubmitted = true;
 
     if (this.businessLoyaltyTierForm.invalid) {
-      this.loading = false;
+      this.loading$.next(false);
       return;
     }
 
@@ -170,13 +183,13 @@ export class TierCreatorComponent implements OnInit {
   }
 
   updateLpTierCB(resp: any) {
-    this.loading = false;
+    this.loading$.next( false);
+    this.tierCreator.nativeElement.scrollTo(0, 0);
     this.businessLoyaltyTierInfo.nativeElement.innerHTML =
       "Your loyalty tier was updated successfully. <i class='fa fa-check sb-text-light-green-gradient'></i>";
 
-    setTimeout(() => {
-      location.reload();
-    }, 570);
+    this.closeTierCreator();
+    this.loyaltyPointsService.getExistingTiers().subscribe();
   }
 
   deleteTier() {
@@ -186,18 +199,17 @@ export class TierCreatorComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.loading$.next(true);
 
     this.loyaltyPointsService
       .deleteTier(this.loyaltyTier.uuid)
       .subscribe(resp => {
-        this.loading = false;
+        this.loading$.next(false);
         this.businessLoyaltyTierInfo.nativeElement.innerHTML =
           "Your loyalty tier was deleted successfully. <i class='fa fa-check sb-text-light-green-gradient'></i>";
 
-        setTimeout(() => {
-          location.reload();
-        }, 570);
+        this.loyaltyPointsService.getExistingTiers().subscribe();
+        this.closeTierCreator();
       });
   }
 
@@ -221,7 +233,5 @@ export class TierCreatorComponent implements OnInit {
     this.tierDollarValueCalculated = true;
   }
 
-  bgStyle() {
-    return {background: 'linear-gradient(90deg,#35a99f,#64e56f)'};
-  }
+  protected readonly close = close;
 }

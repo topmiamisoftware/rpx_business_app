@@ -89,6 +89,8 @@
               </div>
             </div>
 
+            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">DESKTOP PREVIEW</h6>
+
             <ng-template #adMediaUploadInfoTemplate>
               <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-4 mb-2 cursor-pointer"
                    (click)="startAdMediaUploader('desktop')" #adMediaUploadInfo>
@@ -97,14 +99,29 @@
             </ng-template>
 
             <div (click)="startAdMediaUploader('desktop')" class='cursor-pointer mt-2 mb-2'>
-              <app-header-ad-banner #adApp class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true"></app-header-ad-banner>
-              <app-nearby-featured-ad #adApp class="pe-none" *ngIf="adType == 1" [ad]="ad" [business]="business" [editMode]="true"></app-nearby-featured-ad>
+              <app-header-ad-banner
+                #adApp
+                class="pe-none"
+                *ngIf="adType === 0"
+                [ad]="ad"
+                [business]="business"
+              ></app-header-ad-banner>
 
-              <div class='cursor-pointer mt-5 mb-2' *ngIf="adType == 2"></div>
-              <app-bottom-ad-banner #adApp class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true"></app-bottom-ad-banner>
+              <app-nearby-featured-ad #adApp
+                                      class="pe-none"
+                                      *ngIf="adType === 1"
+                                      [ad]="ad"
+                                      [business]="business"
+              ></app-nearby-featured-ad>
+
+              <div class='cursor-pointer mt-5 mb-2' *ngIf="adType === 2"></div>
+              <app-bottom-ad-banner #adApp
+                                    class="pe-none"
+                                    *ngIf="adType === 2"
+                                    [ad]="ad"
+                                    [business]="business"
+              ></app-bottom-ad-banner>
             </div>
-
-            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">DESKTOP PREVIEW</h6>
           </form>
 
           <form>
@@ -116,6 +133,8 @@
                 </div>
               </div>
 
+              <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">MOBILE PREVIEW</h6>
+
               <ng-template #adMediaMobileUploadInfoTemplate>
                 <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-5 mb-2 cursor-pointer"
                      (click)="startAdMediaUploader('mobile')" #adMediaUploadInfo>
@@ -125,11 +144,22 @@
             </ng-container>
 
             <div (click)="startAdMediaUploader('mobile')" class='spotbie-mobile-ad cursor-pointer mt-3 mb-2'>
-              <app-header-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 0" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-header-ad-banner>
-              <app-bottom-ad-banner #adAppMobile class="pe-none" *ngIf="adType == 2" [ad]="ad" [business]="business" [editMode]="true" [isMobile]="true"></app-bottom-ad-banner>
-            </div>
+              <app-header-ad-banner #adAppMobile
+                                    class="pe-none"
+                                    *ngIf="adType == 0"
+                                    [ad]="ad"
+                                    [business]="business"
+                                    [isMobile]="true"
+              ></app-header-ad-banner>
 
-            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">MOBILE PREVIEW</h6>
+              <app-bottom-ad-banner #adAppMobile
+                                    class="pe-none"
+                                    *ngIf="adType == 2"
+                                    [ad]="ad"
+                                    [business]="business"
+                                    [isMobile]="true"
+              ></app-bottom-ad-banner>
+            </div>
           </form>
         </ng-container>
 
@@ -138,18 +168,25 @@
             <span class="spotbie-text-gradient">PROMOTIONS ARE DISPLAYED TO LOCAL USERS WITHIN A 5 MILE RADIUS</span>
         </p>
 
-        <div class='spotbie-button text-uppercase mt-5' (click)="saveAd()">
-            <span class='spotbie-text-gradient'>SAVE</span>
-            <i class='fa fa-check'></i>
-        </div>
-
-        <div class='mt-5 mb-5 sb-deleteMe' *ngIf="ad" (click)="deleteMe()">
-            <span class="spotbie-text-gradient">DELETE </span><i class='fa fa-trash'></i>
-        </div>
-
-        <div class='mt-5 mb-5 cursor-pointer' (click)="closeThis()">
-            <span class="spotbie-text-gradient">CANCEL</span>
-        </div>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <button class='btn spotbie-button' (click)="saveAd()">
+                SAVE <i class='fa fa-check'></i>
+              </button>
+            </ion-col>
+            <ion-col>
+              <button class='btn spotbie-button' (click)="closeThis()">
+                CANCEL
+              </button>
+            </ion-col>
+            <ion-col *ngIf="ad">
+              <button class='btn spotbie-button spotbie-delete' (click)="deleteMe()">
+                DELETE <i class='fa fa-trash'></i>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
     </div>
 </div>
 

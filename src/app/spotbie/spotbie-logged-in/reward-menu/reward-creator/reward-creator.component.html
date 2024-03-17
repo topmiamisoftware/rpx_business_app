@@ -131,7 +131,7 @@
                 </label>
             </ng-template>
 
-            <textarea class='spotbie-textarea spotbie-text-gradient mb-2'
+            <textarea class='spotbie-textarea mb-2'
                         formControlName="rewardDescription"
                         maxlength="150"
                         placeholder="Reward Description"
@@ -164,7 +164,7 @@
                 </ion-item>
               </ion-list>
 
-              <p class="spotbie-text-gradient" *ngIf="(rewardTier$ | async)">
+              <p class="spotbie-text-gradient spotbie-input-info" *ngIf="(rewardTier$ | async)">
                 Tier Entrance Dollar Value <span class="sb-text-light-green-gradient">${{ dollarEntranceValue | number: '1.2':'en-US' }}</span><br/>
                 Loyalty Points <span class="sb-text-light-green-gradient">{{ lpEntranceValue | number: '1.0':'en-US' }}</span>
               </p>
@@ -205,27 +205,33 @@
             <ng-container *ngIf="($showDeniedMediaUploader | async) === true">
               <div class='spotbie-upload-new-background-holder'>
                 <div class='spotbie-click-or-drag-upload' (click)="openAppSettings()">
-                  <span>PHOTO LIBRARY DISABLED</span>
-                  <br/>
+                  <p>PHOTO LIBRARY DISABLED</p>
                   <i class="fas fa-camera-alt"></i>
-                  <span class="spotbie-text-gradient text-uppercase"> OPEN SETTINGS</span>
+                  <p class="spotbie-text-gradient text-uppercase"> OPEN SETTINGS</p>
                 </div>
               </div>
             </ng-container>
         </form>
 
-        <div class='spotbie-button text-uppercase mt-5' (click)="saveReward()">
-            <span class='spotbie-text-gradient'>SAVE</span>
-            <i class='fa fa-check'></i>
-        </div>
-
-        <div class='mt-5 mb-5 cursor-pointer' (click)="closeRewardCreator()">
-            <span class="spotbie-text-gradient">CANCEL</span>
-        </div>
-
-        <div class='mt-5 mb-5 sb-deleteMe' *ngIf="(reward$ | async)" (click)="deleteMe()">
-            <span class="spotbie-text-gradient">DELETE </span><i class='fa fa-trash'></i>
-        </div>
+        <ion-grid class="mt-5">
+          <ion-row>
+            <ion-col>
+              <button class='btn spotbie-button' (click)="saveReward()">
+                SAVE <i class='fa fa-check'></i>
+              </button>
+            </ion-col>
+            <ion-col>
+              <button class='btn spotbie-button' (click)="closeRewardCreator()">
+                CANCEL
+              </button>
+            </ion-col>
+            <ion-col *ngIf="(reward$ | async)">
+              <button class='btn spotbie-button spotbie-delete' (click)="deleteMe()">
+                DELETE <i class='fa fa-trash'></i>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
     </div>
 </div>
 

@@ -43,7 +43,10 @@
   </ion-header>
   <!-- we neeed the main-ion-content class so that we can sett he background to transparent for the scanner -->
   <ion-content class="main-ion-content has-header">
-    <!--<app-event-menu *ngIf="eventMenuOpen"></app-event-menu>-->
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
     <app-settings *ngIf="settingsWindow$ | async" #spotbieSettings (closeWindowEvt)="closeSettings()"></app-settings>
 
     <app-business-dashboard></app-business-dashboard>

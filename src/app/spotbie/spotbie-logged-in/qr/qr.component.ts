@@ -7,7 +7,7 @@ import { Redeemable } from '../../../models/redeemable';
 import * as spotbieGlobals from '../../../globals';
 import {BehaviorSubject} from "rxjs";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
-import {LoyaltyPointsState} from "../state/lp.state";
+import {Platform} from "@ionic/angular";
 
 const QR_CODE_LOYALTY_POINTS_SCAN_BASE_URL = spotbieGlobals.API+'redeemable'
 
@@ -20,8 +20,6 @@ const QR_CODE_LOYALTY_POINTS_SCAN_BASE_URL = spotbieGlobals.API+'redeemable'
   ]
 })
 export class QrComponent implements OnInit {
-
-  @Input() fullScreenWindow: boolean = false
 
   @Output() closeThisEvt = new EventEmitter()
   @Output() openUserLPBalanceEvt = new EventEmitter()
@@ -48,58 +46,28 @@ export class QrComponent implements OnInit {
   constructor(private userAuthService: UserauthService,
               private loyaltyPointsService: LoyaltyPointsService,
               private formBuilder: UntypedFormBuilder,
-              private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
-              private loyaltyPointsState: LoyaltyPointsState) { }
-
-  getWindowClass(){
-    if(this.fullScreenWindow)
-      return 'spotbie-overlay-window'
-    else
-      return ''
+              private platform: Platform,
+              private businessLoyaltyPointsState: BusinessLoyaltyPointsState) {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.rewardPrompt$.next(false);
+      this.rewardPrompted$.next(false);
+    });
   }
 
-  checkForSetLoyaltyPointSettings(){
-    const lp = this.loyaltyPointBalance$.getValue();
-    if( lp.balance === null ||
-        lp.balance === 0    ||
-        lp.balance === undefined )
-    {
-      // Open the users Loyalty Points Balance Window
-      this.openUserLPBalanceEvt.emit();
-
-      // Close the window if full-screened
-      if(this.fullScreenWindow) {
-        this.closeQr();
-      }
-
-      alert('First set a balance & dollar-to-loyalty point ratio.');
-      return false;
-    } else {
-      return true;
-    }
+  async ngOnInit() {
+    this.loyaltyPointBalance$.next(this.businessLoyaltyPointsState.getState());
+    this.isBusiness$.next(true);
+    this.getQrCode();
   }
 
   async startAwardProcess() {
-    const lp = this.loyaltyPointBalance$.getValue();
-
-    if (lp.balance === 0) {
-      this.notEnoughLpEvt.emit();
-      return;
-    }
-
     this.businessLoyaltyPointsSubmitted$.next(true);
 
     if (this.businessLoyaltyPointsForm.invalid) {
       return;
     }
 
-    const settingsCheck = await this.checkForSetLoyaltyPointSettings()
-
-    if (!settingsCheck) {
-      return;
-    } else {
-      this.createRedeemable();
-    }
+    this.createRedeemable();
   }
 
   createRedeemable(){
@@ -165,11 +133,5 @@ export class QrComponent implements OnInit {
 
   closeQr(){
     this.rewardPrompted$.next(false);
-  }
-
-  async ngOnInit() {
-    this.loyaltyPointBalance$.next(this.businessLoyaltyPointsState.getState());
-    this.isBusiness$.next(true);
-    this.getQrCode();
   }
 }

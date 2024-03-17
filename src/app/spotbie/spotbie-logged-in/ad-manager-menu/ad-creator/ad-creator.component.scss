@@ -75,16 +75,7 @@ ion-select::part(icon) {
   --border-color: 'none';
   --border-width: 0px;
 }
-.spotbie-textarea{
-    width: 900px;
-    min-width: 900px;
-    max-width: 900px;
-    background: unset;
-    -webkit-text-fill-color: unset;
-    color: black;
-    background-color: #fff;
-    border-radius: 0px;
-}
+
 .spotbie-background-upload-input{
     display: none;
 }
@@ -177,6 +168,7 @@ h5{
     color: white;
     margin-left: 5px;
 }
+
 @media (max-width: 900px){
     .header-banner{
         min-width: 100%;
@@ -196,8 +188,7 @@ h5{
     }
 }
 @media (max-width: 768px){
-    .spotbie-upload-new-background-holder,
-    .spotbie-textarea{
+    .spotbie-upload-new-background-holder{
         max-width: 450px;
         width: 450px;
         min-width: 450px;
@@ -224,7 +215,7 @@ h5{
         font-size: .8rem;
     }
     .spotbie-upload-new-background-holder{
-        border: 1px solid #eeeeee24;
+        border: 1px solid #eee;
     }
     .spotbie-click-or-drag-upload{
         padding-top: 15px;
@@ -237,11 +228,6 @@ h5{
     }
     .spotbie-r-success-title{
         font-size: 1rem;
-    }
-    .spotbie-textarea {
-        width: 92%;
-        min-width: 92%;
-        max-width: 92%;
     }
 }
 

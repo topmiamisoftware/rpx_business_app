@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import {catchError, tap} from 'rxjs/operators'
-import {BehaviorSubject, Observable} from 'rxjs'
+import {BehaviorSubject, Observable, take} from 'rxjs'
 import { handleError } from '../../helpers/error-helper'
 import { LoyaltyPointBalance } from '../../models/loyalty-point-balance'
 import * as spotbieGlobals from '../../globals'
@@ -42,6 +42,7 @@ export class LoyaltyPointsService {
     const apiUrl = `${LOYALTY_POINTS_TIER_API}/index`;
 
     return this.http.get<any>(apiUrl).pipe(
+      take(1),
       tap(existingTiers => this.existingTiers$.next(existingTiers.data)),
       catchError(handleError('existingTiers'))
     );

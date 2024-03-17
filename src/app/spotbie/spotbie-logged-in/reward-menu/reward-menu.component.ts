@@ -103,10 +103,6 @@ export class RewardMenuComponent implements OnInit {
   }
 
   private async fetchRewardsCb(resp){
-    if (resp.business.id === this.userService.userProfile.business.id) {
-      this.showCreate$.next(true);
-    }
-
     this.rewards$.next(resp.rewards);
 
     if(this.userType$.getValue() === this.eAllowedAccountTypes.Personal || this.isLoggedIn$.getValue() !== '1'){
@@ -159,7 +155,7 @@ export class RewardMenuComponent implements OnInit {
     if(reward.type === 0)
       return { background: 'url(' + reward.images + ')' }
     else
-      return { background: 'linear-gradient(90deg,#35a99f,#64e56f)' }
+      return { background: '#64e56f' }
   }
 
   manageLoyaltyTiers() {

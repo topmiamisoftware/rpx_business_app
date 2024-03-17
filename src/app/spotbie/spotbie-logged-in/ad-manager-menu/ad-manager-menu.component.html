@@ -1,8 +1,8 @@
 <div>
-    <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">IN-HOUSE</h4>
+    <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-4">IN-HOUSE</h4>
 
-    <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2 mb-3">
-        Local promotions that work and get your business exposure.
+    <p class="spotbie-loyaltyMenuDescription spotbie-input-info text-center mt-2 mb-3">
+        Local promotions show up on user's SpotBie Map.
     </p>
 
     <div class='sb-menuAdWrapper'>
@@ -10,15 +10,12 @@
                 *ngFor="let ad of adList"
                 [ngStyle]="adTileStyling(ad)"
                 (click)="openAd(ad)">
-            
             <h6>{{ ad.name }}</h6>
         </div>            
 
-        <div class='spotbie-button text-uppercase mt-5'
-                *ngIf="adList.length < 3"
-                (click)="addAd()">
+        <button class='btn spotbie-button text-uppercase mt-3' *ngIf="adList.length < 3" (click)="addAd()">
             NEW PROMOTION
-        </div>
+        </button>
     </div>
 
     <div class='spotbie-text-gradient text-uppercase' (click)="closeWindow()" *ngIf="fullScreenWindow">CLOSE</div>

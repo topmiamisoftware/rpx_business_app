@@ -19,6 +19,7 @@ import { UserauthService } from '../../../../services/userauth.service';
 import { BusinessMembership } from '../../../../models/user';
 import { LoyaltyTier } from '../../../../models/loyalty-point-tier';
 import {filter, tap} from "rxjs/operators";
+import {Platform} from "@ionic/angular";
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -81,9 +82,14 @@ export class RewardCreatorComponent implements OnInit {
               private http: HttpClient,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
               private loyaltyPointsService: LoyaltyPointsService,
-              private userAuthService: UserauthService
+              private userAuthService: UserauthService,
+              private platform: Platform
               ) {
                   this.loyaltyPointBalance = this.loyaltyPointsState.getState();
+
+                  this.platform.backButton.subscribeWithPriority(10, () => {
+                    this.closeRewardCreator();
+                  });
               }
 
   get rewardType() {return this.rewardCreatorForm.get('rewardType').value }

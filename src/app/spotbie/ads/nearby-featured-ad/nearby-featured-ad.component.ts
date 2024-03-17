@@ -3,16 +3,11 @@ import {
   Component,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit
 } from '@angular/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
-import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
-import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
 import {Ad} from '../../../models/ad';
 import {Business} from '../../../models/business';
-import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
 import {AdsService} from '../ads.service';
 import {Preferences} from "@capacitor/preferences";
 import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
@@ -23,14 +18,12 @@ const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_i
 const SHOPPING_AD_IMAGE = 'assets/images/def/shopping/featured_banner_in_house.jpg'
 const EVENTS_AD_IMAGE = 'assets/images/def/events/featured_banner_in_house.jpg'
 
-const FEATURED_BANNER_TIMER_INTERVAL = 16000
-
 @Component({
   selector: 'app-nearby-featured-ad',
   templateUrl: './nearby-featured-ad.component.html',
   styleUrls: ['./nearby-featured-ad.component.css'],
 })
-export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
+export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
 
   @Input() lat: number
   @Input() lng: number
@@ -45,16 +38,12 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
   displayAd: boolean = false
   distance: number = 0
   totalRewards: number = 0
-  categoriesListFriendly: string[] = []
   rewardMenuOpen: boolean = false
   isMobile: boolean = false
-  currentCategoryList: Array<string> = []
   loyaltyPointBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
-  adTypeWithId: boolean = false
   adList: Array<Ad> = []
   genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
   businessReady: boolean = false
-  switchAdInterval: any = false
 
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
@@ -66,6 +55,11 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(){
     this.changeDetection.markForCheck();
+  }
+
+  ngOnInit(): void {
+    this.isMobile = this.deviceDetectorService.isMobile();
+    this.getNearByFeatured();
   }
 
   async getNearByFeatured(){
@@ -139,80 +133,16 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
     if(resp.success){
       this.ad = resp.ad
       this.business = resp.business
-
       this.businessReady = true
-
-      if(!this.editMode && this.business != null){
-        switch(this.business.user_type){
-          case AllowedAccountTypes.PlaceToEat:
-            this.currentCategoryList = FOOD_CATEGORIES
-            break
-          case AllowedAccountTypes.Events:
-            this.currentCategoryList = EVENT_CATEGORIES
-            break
-          case AllowedAccountTypes.Shopping:
-            this.currentCategoryList = SHOPPING_CATEGORIES
-            break
-        }
-
-        this.categoriesListFriendly = []
-
-        this.business.is_community_member = true
-        this.business.type_of_info_object = InfoObjectType.SpotBieCommunity
-
-        this.currentCategoryList.reduce((previousValue: string, currentValue: string, currentIndex: number, array: string[]) => {
-          if(resp.business.categories.indexOf(currentIndex) > -1)
-            this.categoriesListFriendly.push(this.currentCategoryList[currentIndex])
-
-          return currentValue
-        })
-
-        this.distance = getDistanceFromLatLngInMiles(
-          this.business.loc_x, this.business.loc_y,
-          this.lat,
-          this.lng
-        )
-      } else {
-        this.distance = 5
-      }
+      this.distance = 5
 
       this.totalRewards = resp.totalRewards
       this.displayAd = true
 
       this.changeDetection.detectChanges();
-
-      if(!this.switchAdInterval){
-        this.switchAdInterval = setInterval( () => {
-          if(!this.editMode) {
-            this.getNearByFeatured()
-          }
-        }, FEATURED_BANNER_TIMER_INTERVAL)
-      }
     } else {
       console.log('getNearByFeaturedCallback', resp)
     }
-  }
-
-  getAdStyle(){
-    if(this.adTypeWithId) {
-      return {
-        position : 'relative',
-        margin : '0 auto',
-        right: '0'
-      }
-    }
-  }
-
-  closeRewardMenu(){
-    this.rewardMenuOpen = false
-  }
-
-  clickGoToSponsored(){
-    window.open('/business', '_blank')
-  }
-
-  switchAd(){
-    this.getNearByFeatured()
   }
 
   openAd(): void{
@@ -226,15 +156,5 @@ export class NearbyFeaturedAdComponent implements OnInit, OnDestroy, OnChanges {
       this.genericAdImage = image
     }
     this.changeDetection.detectChanges();
-  }
-
-  ngOnInit(): void {
-    this.isMobile = this.deviceDetectorService.isMobile();
-    this.getNearByFeatured();
-  }
-
-  ngOnDestroy(): void {
-    clearInterval(this.switchAdInterval)
-    this.switchAdInterval = false
   }
 }

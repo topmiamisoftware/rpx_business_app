@@ -15,16 +15,6 @@
     width: 450px;
     min-width: 450px;
 }
-.spotbie-textarea{
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    background: unset;
-    -webkit-text-fill-color: unset;
-    color: black;
-    background-color: #fff;
-    border-radius: 0px;
-}
 ion-item{
   background-color: white;
 }
@@ -98,7 +88,7 @@ ion-select::part(icon) {
     background-size: contain !important;
     cursor: pointer; 
     border-radius: 0px;
-    border: 1px solid #eeeeee70;
+    border: 1px solid rgba(0, 0, 0, 0.56);
 }
 .spotbie-click-or-drag-upload{
     position: absolute;
@@ -109,9 +99,10 @@ ion-select::part(icon) {
     width: 100%;
     min-width: 100%;
     text-align: center;
-    background-color: rgba(17, 15, 20, .82);
+    background-color: rgba(0, 0, 0, 0.66);
     font-size: 20px;
     letter-spacing: 4px;
+    color: white;
 }
 img.sb-loyalty-points{
     width: 15px;
@@ -133,12 +124,15 @@ h5{
     margin-left: 5px;
 }
 @media (max-width: 768px){
-    .spotbie-upload-new-background-holder,
-    .spotbie-textarea{
+    .spotbie-upload-new-background-holder{
         max-width: 450px;
         width: 450px;
         min-width: 450px;
     }
+  .sb-rewardCreatorWrapper {
+    max-width: 85%;
+    width: 85%;
+  }
 }
 @media (max-width: 600px){
     .sb-input,
@@ -175,9 +169,4 @@ h5{
     .spotbie-r-success-title{
         font-size: 1rem;
     }
-    .spotbie-textarea {
-        width: 92%;
-        min-width: 92%;
-        max-width: 92%;
-    } 
 }

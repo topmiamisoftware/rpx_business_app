@@ -285,7 +285,7 @@ img.sb-qr:hover{
     font-size: 20px;
 }
 .sb-iconInInputWrapper{
-    background: linear-gradient(45deg,#64e56f, #35a99f);
+    background-color: #26b070;
     vertical-align: middle;
     min-width: 50px;
     color: white;
@@ -306,10 +306,7 @@ img.sb-qr:hover{
     margin-bottom: 0px;
     max-width: 90%;
 }
-.spotbie-button{
-    margin-bottom: unset !important;
-    margin-top: 10px;
-}
+
 .spotbie-overlay-window{
     background-position: center;
     background-color: #32303e;

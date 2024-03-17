@@ -1,18 +1,14 @@
+<div>
+  <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-3">REWARD MENU</h4>
 
-
-<div *ngIf="(isLoggedIn$ | async) === '1' &&
-            (userType$ | async) !== eAllowedAccountTypes.Personal &&
-            (userType$ | async) !== eAllowedAccountTypes.Unset">
-  <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-5">REWARD MENU</h4>
-
-  <p class="spotbie-loyaltyMenuDescription spotbie-text-gradient text-center mt-2" *ngIf="(showCreate$ | async)">
+  <p class="spotbie-loyaltyMenuDescription spotbie-input-info text-center mb-3">
     Rewards that your business will offer to the SpotBie Community.
   </p>
 
   <div class='sb-menuItemWrapper'>
     <div class='sb-addMenuItem'
          (click)="addItem()"
-         *ngIf="((rewards$ | async) !== null) && ((rewards$ | async).length < 8) && (showCreate$ | async)">
+         *ngIf="(rewards$ | async)?.length < 8">
       <h6 class="spotbie-text-gradient">+ ADD REWARD</h6>
     </div>
 
@@ -53,8 +49,7 @@
 
     <ng-template #upgradeForTiers>
       <div style="cursor: pointer;"
-           class="mt-4"
-           *ngIf="(userType$ | async) !== eAllowedAccountTypes.Personal">
+           class="mt-4">
         <span class='spotbie-text-gradient'>Looking for Loyalty Tiers? </span>
         <i class='fa fa-coins'></i><br/>
         <span class="text-decoration-underline" style="color: white; font-size: .7em;">Upgrade to Intermediate.</span>
@@ -63,42 +58,6 @@
   </div>
 
   <div class='spotbie-text-gradient text-uppercase' (click)="closeWindow()" *ngIf="fullScreenMode">CLOSE</div>
-</div>
-
-<div *ngIf="((userType$ | async) === eAllowedAccountTypes.Personal || (isLoggedIn$ | async) !== '1')" [ngClass]="getWindowClass()">
-
-  <h5 class="spotbie-text-gradient text-center text-uppercase pt-2 mb-4">REWARD MENU</h5>
-
-  <p class="spotbie-text-gradient text-center mt-4 mb-4">
-    Pay with SpotBie Loyalty Points
-  </p>
-
-  <div class='sb-menuItemWrapper'>
-    <div class='sb-menuItem' *ngFor="let reward of (rewards$ | async)">
-      <div class='sb-menuItemInner'
-           [ngStyle]="rewardTileStyling(reward)"
-           (click)="openReward(reward)">
-      </div>
-
-      <h6 *ngIf="reward.type === 0 || reward.type === 2">
-          <span class="spotbie-text-gradient">
-              {{ reward.name }}
-          </span>
-      </h6>
-
-      <h6 *ngIf="reward.type === 1">
-          <span class='sb-text-light-green-gradient'>
-              {{  reward.point_cost * ((userPointToDollarRatio$ | async) / 100) | currency : 'USD' }}
-          </span>
-        <br/>
-        <span class='spotbie-text-gradient sb-discountTitle' style='font-size: .5rem;'>
-            DISCOUNT
-        </span>
-      </h6>
-    </div>
-  </div>
-
-  <div class='spotbie-text-gradient text-uppercase cursor-pointer mt-5' (click)="closeWindow()" *ngIf="fullScreenMode">CLOSE</div>
 </div>
 
 <app-reward-creator *ngIf="(itemCreator$ | async) === true"

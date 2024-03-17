@@ -30,14 +30,14 @@
         <td>
           <div>
             <div *ngIf="(businessFormSubmitted$ | async) && i.spotbieOrigin.errors"
-                 class="spotbie-input-info spotbie-text-gradient text-center spotbie-error">
+                 class="spotbie-input-info text-center spotbie-error">
               <div *ngIf="i.spotbieOrigin.errors.required">
                 You must choose a place of origin!
               </div>
             </div>
           </div>
 
-          <div class='spotbie-map'>
+          <div class='spotbie-map mb-4'>
             <div id='settings-map'
                  *ngIf="map$ | async"
                  [ngClass]="getMapClass()"></div>
@@ -92,7 +92,7 @@
     </table>
   </form>
 
-  <div class="spotbie-button" (click)="saveLocation()">SAVE LOCATION</div>
+  <button class="btn spotbie-button" (click)="saveLocation()">SAVE LOCATION</button>
 
   <div class="mt-4 mb-4 text-decoration-underline cursor-pointer" style="text-align: center; color: white;" (click)="close()">CLOSE</div>
 </div>

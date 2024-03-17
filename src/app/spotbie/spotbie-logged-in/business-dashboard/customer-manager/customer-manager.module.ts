@@ -11,23 +11,22 @@ import {NgxsStoragePluginModule} from '@ngxs/storage-plugin';
 import {SmsGroupEntitiesState} from './sms-history/sms-group.state';
 import {FeedbackEntitiesState} from "./feedback/feedback.state";
 import {EmailGroupEntitiesState} from "./email-history/email-group.state";
+import {IonicModule} from "@ionic/angular";
 
 @NgModule({
   declarations: [CustomerManagerComponent],
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    FontAwesomeModule,
-    NgxsModule.forRoot([
-      RecentGuestsEntitiesState,
-      SmsGroupEntitiesState,
-      FeedbackEntitiesState,
-      EmailGroupEntitiesState
-    ]),
-    NgxsStoragePluginModule.forRoot(),
-  ],
+    imports: [
+        CommonModule,
+        FontAwesomeModule,
+        NgxsModule.forRoot([
+            RecentGuestsEntitiesState,
+            SmsGroupEntitiesState,
+            FeedbackEntitiesState,
+            EmailGroupEntitiesState
+        ]),
+        NgxsStoragePluginModule.forRoot(),
+        IonicModule,
+    ],
   exports: [CustomerManagerComponent],
 })
 export class CustomerManagerModule {}

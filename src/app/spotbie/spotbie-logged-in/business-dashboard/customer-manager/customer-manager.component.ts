@@ -26,23 +26,23 @@ export class CustomerManagerComponent implements OnInit {
   ngOnInit(): void {}
 
   openRecentGuests() {
-    const dialogRef = this.dialog.open(RecentGuestsDialogComponent);
+    this.dialog.open(RecentGuestsDialogComponent);
   }
 
   openSmsHistory() {
-    const dialogRef = this.dialog.open(SmsHistoryDialogComponent, {
+    this.dialog.open(SmsHistoryDialogComponent, {
       width: '90%',
     });
   }
 
   openEmailHistory() {
-    const dialogRef = this.dialog.open(EmailHistoryDialogComponent, {
+    this.dialog.open(EmailHistoryDialogComponent, {
       width: '90%',
     });
   }
 
   openFeedback() {
-    const dialogRef = this.dialog.open(FeedbackComponent, {
+    this.dialog.open(FeedbackComponent, {
       width: '90%',
     });
   }

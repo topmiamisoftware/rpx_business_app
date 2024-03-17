@@ -83,18 +83,15 @@ export class ForgotPasswordComponent implements OnInit {
         this.emailOrPhError$.next(
           'You have sent too many password reset requests, please try again later.'
         );
-      } else if (httpResponse.status === 'social_account') {
-        this.emailOrPhError$.next('You signed up with social media.');
       } else {
         this.emailOrPhError$.next('E-mail address not found.');
       }
     } else {
-      this.emailOrPhError$.next('I e-mail address.');
+      this.emailOrPhError$.next('Invalid e-mail address.');
     }
 
     this.getLinkMessage.nativeElement.style.display = 'none';
-    this.getLinkMessage.nativeElement.className =
-      'spotbie-text-gradient spotbie-error spotbie-contact-me-info';
+    this.getLinkMessage.nativeElement.className = 'spotbie-error spotbie-contact-me-info';
     this.getLinkMessage.nativeElement.style.display = 'block';
 
     this.loading$.next(false);

@@ -154,6 +154,10 @@ export class FoodTruckLocationDialogComponent implements OnInit, AfterViewInit {
         this.locationSavedSuccessfully$.next(true);
         this.locationSavedSuccessfullyMessage$.next('LOCATION UPDATED SUCCESSFULLY');
         this.foodTruckWindow.nativeElement.scrollTo(0, 0);
+
+        setTimeout(() => {
+          this.close();
+        }, 1500);
       } else {
         this.locationSavedSuccessfully$.next(false);
         this.locationSavedSuccessfullyMessage$.next('There was a problem saving location. Try again.');
