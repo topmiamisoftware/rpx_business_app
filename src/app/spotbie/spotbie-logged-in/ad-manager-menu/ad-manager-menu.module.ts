@@ -7,21 +7,23 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AdsModule } from '../../ads/ads.module'
 import {IonicModule} from "@ionic/angular";
+import {HelperModule} from "../../../helpers/helper.module";
 
 @NgModule({
   declarations: [
     AdManagerMenuComponent,
     AdCreatorComponent
   ],
-    imports: [
-        CommonModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AdsModule,
-        IonicModule
-    ],
+  imports: [
+    CommonModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AdsModule,
+    IonicModule,
+    HelperModule
+  ],
   exports : [
     AdManagerMenuComponent
   ]

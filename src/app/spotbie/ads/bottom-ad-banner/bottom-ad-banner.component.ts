@@ -45,8 +45,8 @@ export class BottomAdBannerComponent implements OnInit, OnChanges, AfterViewInit
   @Input() categories: number
   @Input() eventsClassification: number = null
   @Input() isMobile: boolean = false
+  @Input() isDesktop: boolean = false
 
-  isDesktop: boolean = false
   link: string
   displayAd: boolean = false
   distance: number = 0
@@ -69,8 +69,6 @@ export class BottomAdBannerComponent implements OnInit, OnChanges, AfterViewInit
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.isDesktop = !this.isMobile;
-
     this.getBottomHeader();
   }
 
@@ -138,8 +136,8 @@ export class BottomAdBannerComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   getAdWrapperClass(){
-    if(!this.isMobile) return 'spotbie-ad-wrapper-header'
-    if(this.isMobile) return 'spotbie-ad-wrapper-header sb-mobileAdWrapper'
+    if(this.isDesktop) return 'spotbie-ad-wrapper-header';
+    if(this.isMobile) return 'spotbie-ad-wrapper-header sb-mobileAdWrapper';
   }
 
   async getBottomHeaderCb(resp: any){

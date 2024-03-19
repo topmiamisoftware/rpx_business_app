@@ -50,7 +50,7 @@ h5{
     font-size: 7rem;
 }
 .fa-check{
-    color: #2ddc5b;
+    color: white;
 }
 .sb-v-wrapper{
   flex-direction: column;
@@ -64,7 +64,7 @@ h5{
     margin-right: 10px;
 }
 .spotbie-button{
-  background-color: #676767 !important;
+  background-color: #4caf50 !important;
 }
 @media (max-width: 768px){
     .sb-readImage{

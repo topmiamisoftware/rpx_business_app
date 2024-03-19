@@ -29,9 +29,9 @@ export class AdManagerMenuComponent implements OnInit, OnChanges {
   @Output() closeWindowEvt = new EventEmitter()
   @Output() notEnoughLpEvt = new EventEmitter()
 
-  itemCreator: boolean = false
-  adList: Array<Ad> = []
-  ad: Ad
+  itemCreator: boolean = false;
+  adList: Array<Ad> = [];
+  ad: Ad;
   qrCodeLink: string = null
   userHash: string = null
 

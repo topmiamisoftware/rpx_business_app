@@ -1089,7 +1089,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.user.spotbie_user.user_type = this.chosenAccountType;
 
     this.userAuthService.saveSettings(this.user).subscribe({ next: (resp) => {
-        this.saveSettingsCallback(resp)
+        this.saveSettingsCallback(resp);
       },  error: (error: any) => {
         if (error.error.errors.email[0] === 'notUnique') {
           this.settingsForm.get('spotbie_email').setErrors({notUnique: true});
@@ -1144,7 +1144,6 @@ export class SettingsComponent implements OnInit, OnChanges {
 
       Preferences.set({key: 'spotbie_userLogin', value: resp.user.username});
       Preferences.set({key: 'spotbie_userType', value: resp.user.spotbie_user.user_type});
-
     } else {
       this.spotbieSettingsInfoText.nativeElement.innerHTML = `
                 <span class='spotbie-text-gradient spotbie-error'>
@@ -1203,7 +1202,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   closeWindow() {
-    window.location.reload()
+    this.closeWindowEvt.emit(null);
   }
 
   classificationSearch(): Observable<any> {

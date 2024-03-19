@@ -14,9 +14,10 @@ import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business
 import {BehaviorSubject} from "rxjs";
 import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
 
-const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
-const SHOPPING_AD_IMAGE = 'assets/images/def/shopping/featured_banner_in_house.jpg'
-const EVENTS_AD_IMAGE = 'assets/images/def/events/featured_banner_in_house.jpg'
+const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg';
+const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg';
+const SHOPPING_AD_IMAGE = 'assets/images/def/shopping/featured_banner_in_house.jpg';
+const EVENTS_AD_IMAGE = 'assets/images/def/events/featured_banner_in_house.jpg';
 
 @Component({
   selector: 'app-nearby-featured-ad',
@@ -30,20 +31,18 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
   @Input() business: Business = new Business()
   @Input() ad: Ad = null
   @Input() accountType: number = null
-  @Input() editMode: boolean = false
   @Input() categories: number
   @Input() eventsClassification: number = null
 
-  link: string
-  displayAd: boolean = false
-  distance: number = 0
-  totalRewards: number = 0
-  rewardMenuOpen: boolean = false
-  isMobile: boolean = false
+  link: string;
+  displayAd: boolean = false;
+  distance: number = 0;
+  totalRewards: number = 0;
   loyaltyPointBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
-  adList: Array<Ad> = []
-  genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
-  businessReady: boolean = false
+  adList: Array<Ad> = [];
+  genericAdImage: string = PLACE_TO_EAT_AD_IMAGE;
+  businessReady: boolean = false;
+  genericAdImageMobile: string = PLACE_TO_EAT_AD_IMAGE_MOBILE;
 
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
@@ -58,7 +57,6 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.isMobile = this.deviceDetectorService.isMobile();
     this.getNearByFeatured();
   }
 
@@ -74,43 +72,28 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
       return; // bounce this request
     }
 
-    if(this.editMode){
-      if (!this.ad) {
-        this.ad = new Ad();
-        this.ad.id = 2;
-        adId = this.ad.id;
-      } else {
-        adId = this.ad.id;
-      }
-
-      accountType = await Preferences.get({key: 'spotbie_userType'});
-      accountType = parseInt(accountType.value, 10);
-
-      switch(accountType){
-        case 1:
-          this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
-          break
-        case 2:
-          this.genericAdImage = SHOPPING_AD_IMAGE
-          break
-        case 3:
-          this.genericAdImage = EVENTS_AD_IMAGE
-          this.categories = this.eventsClassification
-          break
-      }
+    if (!this.ad) {
+      this.ad = new Ad();
+      this.ad.id = 2;
+      adId = this.ad.id;
     } else {
-      switch(this.accountType){
-        case 1:
-          this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
-          break
-        case 2:
-          this.genericAdImage = SHOPPING_AD_IMAGE
-          break
-        case 3:
-          this.genericAdImage = EVENTS_AD_IMAGE
-          this.categories = this.eventsClassification
-          break
-      }
+      adId = this.ad.id;
+    }
+
+    accountType = await Preferences.get({key: 'spotbie_userType'});
+    accountType = parseInt(accountType.value, 10);
+
+    switch(accountType){
+      case 1:
+        this.genericAdImage = PLACE_TO_EAT_AD_IMAGE
+        break
+      case 2:
+        this.genericAdImage = SHOPPING_AD_IMAGE
+        break
+      case 3:
+        this.genericAdImage = EVENTS_AD_IMAGE
+        this.categories = this.eventsClassification
+        break
     }
 
     const nearByFeaturedObj = {
@@ -131,30 +114,38 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
 
   async getNearByFeaturedCallback(resp: any){
     if(resp.success){
-      this.ad = resp.ad
-      this.business = resp.business
-      this.businessReady = true
-      this.distance = 5
+      this.ad = resp.ad;
+      this.business = resp.business;
+      this.businessReady = true;
+      this.distance = 5;
 
-      this.totalRewards = resp.totalRewards
-      this.displayAd = true
+      this.totalRewards = resp.totalRewards;
+      this.displayAd = true;
 
       this.changeDetection.detectChanges();
     } else {
-      console.log('getNearByFeaturedCallback', resp)
+      console.log('getNearByFeaturedCallback', resp);
     }
-  }
-
-  openAd(): void{
-    this.rewardMenuOpen = true;
-    // this.router.navigate([`/business-menu/${this.business.qr_code_link}`])
   }
 
   updateAdImage(image: string = ''){
     if(image !== ''){
-      this.ad.images = image
-      this.genericAdImage = image
+      this.ad.images_mobile = image;
+      this.ad.images = image;
+      this.genericAdImage = image;
     }
     this.changeDetection.detectChanges();
+  }
+
+  getAdWrapperClass(){
+    return 'spotbie-ad-wrapper-header sb-mobileAdWrapper'
+  }
+
+  getAdStyle(){
+    return {
+      position : 'relative',
+      margin : '0 auto',
+      right: '0'
+    };
   }
 }

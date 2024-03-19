@@ -157,7 +157,7 @@ export class UserauthService {
 
     let saveSettingsObj;
 
-    if (user.business === undefined) {
+    if (!user.business) {
       saveSettingsObj = {
         _method: 'PUT',
         username: user.username,

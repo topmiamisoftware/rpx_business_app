@@ -1,5 +1,5 @@
+<app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>
 <div class="spotbie-overlay-window">
-
     <div class='sb-closeButton' (click)="closeThis()">
       <i class="fa fa-times"></i>
     </div>
@@ -90,6 +90,7 @@
             </div>
 
             <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType !== 1">DESKTOP PREVIEW</h6>
+            <h6 class='sb-text-light-green-gradient' style="font-size: .8rem;" *ngIf="adType === 1">DESKTOP & MOBILE PREVIEW</h6>
 
             <ng-template #adMediaUploadInfoTemplate>
               <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-4 mb-2 cursor-pointer"
@@ -98,20 +99,22 @@
               </div>
             </ng-template>
 
-            <div (click)="startAdMediaUploader('desktop')" class='cursor-pointer mt-2 mb-2'>
+            <div (click)="startAdMediaUploader('desktop')" class='cursor-pointer mt-2 mb-2' [ngClass]="(adType === 1) ? 'spotbie-mobile-ad' : ''">
               <app-header-ad-banner
                 #adApp
                 class="pe-none"
                 *ngIf="adType === 0"
                 [ad]="ad"
                 [business]="business"
+                [isDesktop]="true"
               ></app-header-ad-banner>
 
-              <app-nearby-featured-ad #adApp
-                                      class="pe-none"
-                                      *ngIf="adType === 1"
-                                      [ad]="ad"
-                                      [business]="business"
+              <app-nearby-featured-ad
+                #adApp
+                class="pe-none"
+                *ngIf="adType === 1"
+                [ad]="ad"
+                [business]="business"
               ></app-nearby-featured-ad>
 
               <div class='cursor-pointer mt-5 mb-2' *ngIf="adType === 2"></div>
@@ -120,6 +123,7 @@
                                     *ngIf="adType === 2"
                                     [ad]="ad"
                                     [business]="business"
+                                    [isDesktop]="true"
               ></app-bottom-ad-banner>
             </div>
           </form>
@@ -164,20 +168,19 @@
         </ng-container>
 
         <p class="mt-4" style="font-size: .8rem;">
-            <i class="fa fa-map-marker-alt"></i>
-            <span class="spotbie-text-gradient">PROMOTIONS ARE DISPLAYED TO LOCAL USERS WITHIN A 5 MILE RADIUS</span>
+          <span class="spotbie-input-info">Promotions are displayed to local users within a 5 mile radius.</span>
         </p>
 
         <ion-grid>
           <ion-row>
             <ion-col>
-              <button class='btn spotbie-button' (click)="saveAd()">
-                SAVE <i class='fa fa-check'></i>
+              <button class='btn spotbie-button' (click)="closeThis()">
+                CANCEL
               </button>
             </ion-col>
             <ion-col>
-              <button class='btn spotbie-button' (click)="closeThis()">
-                CANCEL
+              <button class='btn spotbie-button' (click)="saveAd()">
+                SAVE <i class='fa fa-check'></i>
               </button>
             </ion-col>
             <ion-col *ngIf="ad">
@@ -190,26 +193,22 @@
     </div>
 </div>
 
-<div class='spotbie-overlay-window' *ngIf="adCreated">
+<div class='spotbie-overlay-window' *ngIf="(adCreated$ | async) === true">
     <div class='sb-v-wrapper' style="display: grid; align-content: center;">
         <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">UPLOAD SUCCESSFUL</h4>
 
         <div class="sb-verificationCheck sb-text-light-green-gradient mt-4 mb-4">
             <i class="fa fa-check"></i>
         </div>
-
-        <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">PAYMENT PENDING</h4>
     </div>
 </div>
 
-<div class='spotbie-overlay-window' *ngIf="adDeleted">
+<div class='spotbie-overlay-window' *ngIf="(adDeleted$ | async) === true">
     <div class='sb-v-wrapper' style="display: grid; align-content: center;">
         <h4 class="spotbie-text-gradient text-uppercase">AD WAS DELETED</h4>
 
         <div class="sb-verificationCheck sb-text-light-green-gradient mt-4 mb-4">
             <i class="fa fa-check"></i>
         </div>
-
-        <h4 class="spotbie-text-gradient text-uppercase">CONTINUE</h4>
     </div>
 </div>

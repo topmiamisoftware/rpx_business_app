@@ -1,23 +1,20 @@
-<div class='spotbie-ad-wrapper-header'
-    *ngIf="ad !== null"
-    (click)="openAd()">
+<div [ngClass]="getAdWrapperClass()"
+     *ngIf="displayAd"
+     [ngStyle]="getAdStyle()"
+>
+  <div class="spotbie-white-iconImg" [ngStyle]="{'background' : 'url(assets/images/qr/spotbie-white-icon.png)'}"></div>
 
-  <img class="spotbie-ad-image" src="{{ ad.images }}" *ngIf="!editMode && ad.id != 2" />
-  <img class="spotbie-ad-image" src="{{ genericAdImage }}" *ngIf="editMode && ad.id == 2" />
-  <img class="spotbie-ad-image" src="{{ ad.images }}" *ngIf="editMode && ad.id != 2" />
+  <img class="spotbie-ad-image 123" [src]="genericAdImageMobile | safe" *ngIf="ad.id === 2" />
+  <img class="spotbie-ad-image" [src]="ad.images_mobile | safe" *ngIf="ad.id !== 2" />
 
-  <div class='sb-ad-bottom' *ngIf="businessReady && business !== null">
+  <div class='sb-ad-bottom' *ngIf="businessReady">
     <span class='spotbie-text-gradient sb-sponsoredName text-uppercase'>{{ business.name }}</span>
     <span class='sb-text-light-green-gradient sb-totalRewards text-uppercase' style="font-size: 1rem;">{{ totalRewards }} REWARDS</span>
     <span class='spotbie-text-gradient sb-distanceMiles text-uppercase'>{{ distance | number:'1.1-2':'en-US' }} miles</span>
 
-    <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;" *ngIf="!editMode">
-            {{ (business.loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
-        </span>
-
-    <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;" *ngIf="editMode">
-             {{ (loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
-        </span>
+    <span class='sb-text-light-green-gradient sb-perDollar text-uppercase' style="font-size: 1rem;">
+       {{ (loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value / 100) | currency : 'USD' }} per dollar
+    </span>
 
     <span class='spotbie-text-gradient sb-address text-uppercase'><i class='fas fa-map-marker-alt'></i> {{ business.address }}</span>
   </div>

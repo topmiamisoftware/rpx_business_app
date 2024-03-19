@@ -78,7 +78,6 @@
   margin-bottom: 10px;
 }
 .sb-mobileAdWrapper .sb-distanceMiles{
-  display: block;
   margin-top: 10px;
 }
 .sb-mobileAdWrapper .sb-perDollar{
@@ -157,16 +156,12 @@
   .sb-distanceMiles,
   .sb-categoryList,
   .sb-address{
-    position: relative;
-    display: block;
     top: unset;
     right: unset;
     bottom: unset;
   }
   .sb-sponsored,
   .sb-sponsoredName{
-    position: relative;
-    display: block;
     top: unset;
     right: unset;
     left: unset;
@@ -182,11 +177,9 @@
     margin-bottom: 25px;
   }
   .sb-totalRewards{
-    display: block;
     margin-bottom: 10px;
   }
   .sb-distanceMiles{
-    display: block;
     margin-top: 10px;
   }
   .sb-perDollar{

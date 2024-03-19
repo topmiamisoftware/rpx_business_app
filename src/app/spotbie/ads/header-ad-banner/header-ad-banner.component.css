@@ -35,8 +35,9 @@
 .spotbie-ad-image{
   position: relative;
   margin: 0 auto;
+  width: auto;
   max-width: 100%;
-  max-height: 600px;
+  max-height: 370px;
   box-shadow: unset;
 }
 
@@ -78,7 +79,6 @@
   margin-bottom: 10px;
 }
 .sb-mobileAdWrapper .sb-distanceMiles{
-  display: block;
   margin-top: 10px;
 }
 .sb-mobileAdWrapper .sb-perDollar{
@@ -88,7 +88,7 @@
   position:relative;
   padding-top: 15px;
   padding-bottom: 15px;
-  bottom: unset !important;
+  top: unset !important;
   background-color: #1c1924!important;
 }
 
@@ -114,7 +114,7 @@
 }
 .sb-ad-bottom{
   position: absolute;
-  bottom: 0px;
+  top: -27px;
   left: 0;
   width: 100%;
   z-index: 2;
@@ -137,6 +137,16 @@
   }
 }
 @media (max-width: 768px) {
+  .sb-mobileAdWrapper .spotbie-ad-image,
+  .spotbie-ad-image{
+    position: relative;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    box-shadow: unset;
+    background-color: #26232e !important;
+    background-size: contain !important;
+  }
   .sb-categoryList{
     text-align: center;
   }
@@ -146,16 +156,12 @@
   .sb-distanceMiles,
   .sb-categoryList,
   .sb-address{
-    position: relative;
-    display: block;
     top: unset;
     right: unset;
     bottom: unset;
   }
   .sb-sponsored,
   .sb-sponsoredName{
-    position: relative;
-    display: block;
     top: unset;
     right: unset;
     left: unset;
@@ -171,11 +177,9 @@
     margin-bottom: 25px;
   }
   .sb-totalRewards{
-    display: block;
     margin-bottom: 10px;
   }
   .sb-distanceMiles{
-    display: block;
     margin-top: 10px;
   }
   .sb-perDollar{
@@ -185,20 +189,7 @@
   .sb-ad-top{
     position:relative;
     background-color: rgb(28 25 36) !important;
-    bottom: unset;
-  }
-}
-@media (max-width: 520px) {
-  .sb-mobileAdWrapper .spotbie-ad-image,
-  .spotbie-ad-image {
-    position: relative;
-    left: 0;
-    right: 0;
-    min-width: 100%;
-    max-width: 100%;
-    box-shadow: unset;
-    background-color: #26232e !important;
-    background-size: contain !important;
+    top: unset;
   }
 }
 @media (max-width: 420px) {

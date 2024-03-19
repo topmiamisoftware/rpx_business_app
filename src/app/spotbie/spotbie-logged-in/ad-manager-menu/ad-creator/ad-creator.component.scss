@@ -1,14 +1,16 @@
 .spotbie-overlay-window{
-    padding-bottom: 50px;
-    padding-top: 100px;
-    background-color: #1b1822 !important;
-    text-align: center;
-    background: url(/src/assets/images/home_imgs/spotbie-white-icon.svg);
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed;
-    z-index: 97 !important;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  min-width: 100%;
+  width: 100%;
+  background-color: #1b1822 !important;
+  text-align: center;
+  background: url(/src/assets/images/home_imgs/spotbie-white-icon.svg);
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed;
+  z-index: 97 !important;
 }
 .sb-adCreatorWrapper{
     position: relative;

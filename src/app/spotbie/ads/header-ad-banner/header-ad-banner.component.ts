@@ -24,8 +24,6 @@ const SHOPPING_AD_IMAGE_MOBILE = 'assets/images/def/shopping/featured_banner_in_
 const EVENTS_AD_IMAGE = 'assets/images/def/events/header_banner_in_house.jpg'
 const EVENTS_AD_IMAGE_MOBILE = 'assets/images/def/events/featured_banner_in_house.jpg'
 
-const HEADER_TIMER_INTERVAL = 16000
-
 @Component({
   selector: 'app-header-ad-banner',
   templateUrl: './header-ad-banner.component.html',
@@ -34,21 +32,21 @@ const HEADER_TIMER_INTERVAL = 16000
 })
 export class HeaderAdBannerComponent implements OnInit, AfterViewInit, OnChanges {
 
-  @Input() business: Business = new Business()
-  @Input() ad: Ad = null
-  @Input() accountType: number = null
-  @Input() categories: number
-  @Input() eventsClassification: number = null
-  @Input() isMobile: boolean = false
+  @Input() business: Business = new Business();
+  @Input() ad: Ad = null;
+  @Input() accountType: number = null;
+  @Input() categories: number;
+  @Input() eventsClassification: number = null;
+  @Input() isMobile: boolean = false;
+  @Input() isDesktop: boolean = false;
 
-  isDesktop: boolean = false
-  link: string
+  link: string;
   displayAd = false;
-  distance: number = 0
-  totalRewards: number = 0
+  distance: number = 0;
+  totalRewards: number = 0;
   loyaltyPointBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
-  genericAdImage: string = PLACE_TO_EAT_AD_IMAGE
-  genericAdImageMobile: string = PLACE_TO_EAT_AD_IMAGE_MOBILE
+  genericAdImage: string = PLACE_TO_EAT_AD_IMAGE;
+  genericAdImageMobile: string = PLACE_TO_EAT_AD_IMAGE_MOBILE;
 
   constructor(private adsService: AdsService,
               private changeDetectorRef: ChangeDetectorRef,
@@ -60,8 +58,6 @@ export class HeaderAdBannerComponent implements OnInit, AfterViewInit, OnChanges
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.isDesktop = !this.isMobile;
-
     this.getHeaderBanner();
   }
 
@@ -152,7 +148,7 @@ export class HeaderAdBannerComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   getAdWrapperClass(){
-    if(!this.isMobile) return 'spotbie-ad-wrapper-header'
+    if(this.isDesktop) return 'spotbie-ad-wrapper-header'
     if(this.isMobile) return 'spotbie-ad-wrapper-header sb-mobileAdWrapper'
   }
 }

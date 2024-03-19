@@ -33,36 +33,36 @@ const AD_MEDIA_MAX_UPLOAD_SIZE = 10e+6
 })
 export class AdCreatorComponent implements OnInit, OnChanges {
 
-  @Input() ad: Ad = null
+  @Input() ad: Ad = null;
 
-  @ViewChild('spbInputInfo') spbInputInfo
-  @ViewChild('adMediaInput') adMediaInput
-  @ViewChild('adMediaMobileInput') adMediaMobileInput
-  @ViewChild('spbTopAnchor') spbTopAnchor
-  @ViewChild('adApp') adApp: HeaderAdBannerComponent | BottomAdBannerComponent | NearbyFeaturedAdComponent
-  @ViewChild('adAppMobile') adAppMobile: HeaderAdBannerComponent | BottomAdBannerComponent
+  @ViewChild('spbInputInfo') spbInputInfo;
+  @ViewChild('adMediaInput') adMediaInput;
+  @ViewChild('adMediaMobileInput') adMediaMobileInput;
+  @ViewChild('spbTopAnchor') spbTopAnchor;
+  @ViewChild('adApp') adApp: HeaderAdBannerComponent | BottomAdBannerComponent | NearbyFeaturedAdComponent;
+  @ViewChild('adAppMobile') adAppMobile: HeaderAdBannerComponent | BottomAdBannerComponent;
 
-  @Output() closeWindowEvt = new EventEmitter()
-  @Output() closeThisEvt = new EventEmitter()
-  @Output() closeAdCreatorAndRefetchAdListEvt = new EventEmitter()
+  @Output() closeWindowEvt = new EventEmitter();
+  @Output() closeThisEvt = new EventEmitter();
+  @Output() closeAdCreatorAndRefetchAdListEvt = new EventEmitter();
 
-  loading: boolean
-  adCreatorForm: UntypedFormGroup
-  adCreatorFormUp: boolean
-  adFormSubmitted: boolean
-  showErrors: boolean
-  adUploadImage: string = null
-  adUploadImageMobile: string = null
-  adMediaMessage: string = 'Upload Image'
-  adMediaUploadProgress: number = 0
+  loading$ = new BehaviorSubject<boolean>(false);
+  adCreatorForm: UntypedFormGroup;
+  adCreatorFormUp: boolean;
+  adFormSubmitted: boolean;
+  showErrors: boolean;
+  adUploadImage: string = null;
+  adUploadImageMobile: string = null;
+  adMediaMessage: string = 'Upload Image';
+  adMediaUploadProgress: number = 0;
   adTypeList: Array<any> = [
    { name: 'Header Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'header'},
    { name: 'Featured Nearby Banner', dimensions: '600x600', enabled: false, type: 'featured'},
    { name: 'Footer Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'footer'}
   ];
-  adCreated: boolean
-  adDeleted: boolean
-  selected: number = 0
+  adCreated$ = new BehaviorSubject<boolean>(false);
+  adDeleted$ = new BehaviorSubject<boolean>(false);
+  selected: number = 0;
   business: Business = null;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
 
@@ -77,7 +77,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.initAdForm()
+    this.initAdForm();
   }
 
   get adType() {return this.adCreatorForm.get('adType').value };
@@ -88,10 +88,10 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   get f() { return this.adCreatorForm.controls }
 
   initAdForm(){
-    const adTypeValidators = [Validators.required]
-    const adNameValidators = [Validators.required, Validators.maxLength(50)]
-    const adDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)]
-    const adImageValidators = [Validators.required]
+    const adTypeValidators = [Validators.required];
+    const adNameValidators = [Validators.required, Validators.maxLength(50)];
+    const adDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)];
+    const adImageValidators = [Validators.required];
 
     this.adCreatorForm = this.formBuilder.group({
       adType: ['', adTypeValidators],
@@ -99,9 +99,9 @@ export class AdCreatorComponent implements OnInit, OnChanges {
       adDescription: ['', adDescriptionValidators],
       adImage: ['', adImageValidators],
       adImageMobile: ['']
-    })
+    });
 
-    if(this.ad){
+    if (this.ad) {
       this.adCreatorForm.get('adType').setValue(this.ad.type);
       this.adCreatorForm.get('adName').setValue(this.ad.name);
       this.adCreatorForm.get('adDescription').setValue(this.ad.description);
@@ -113,24 +113,25 @@ export class AdCreatorComponent implements OnInit, OnChanges {
 
       this.selected = this.ad.type;
     } else {
+      this.adCreatorForm.get('adType').setValue(0);
       this.selected = 0;
     }
 
     this.adCreatorFormUp = true;
-    this.loading = false;
+    this.loading$.next(false);
     this.changeDetectionRef.detectChanges();
   }
 
   saveAd(){
-    this.adFormSubmitted = true
-    this.spbTopAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    this.adFormSubmitted = true;
+    this.spbTopAnchor.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    const adObj = new Ad()
-    adObj.name = this.adName
-    adObj.description = this.adDescription
-    adObj.images = this.adUploadImage
-    adObj.images_mobile = this.adUploadImageMobile
-    adObj.type = this.adType
+    const adObj = new Ad();
+    adObj.name = this.adName;
+    adObj.description = this.adDescription;
+    adObj.images = this.adUploadImage;
+    adObj.images_mobile = this.adUploadImageMobile;
+    adObj.type = this.adType;
 
     if(!this.ad){
       this.adCreatorService.saveAd(adObj).subscribe(resp => this.saveAdCb(resp));
@@ -142,7 +143,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
 
   saveAdCb(resp: any){
     if (resp.success) {
-      this.adCreated = true;
+      this.adCreated$.next(true);
       setTimeout(() => this.closeAdCreatorAndRefetchAdList(), 1500)
     }
   }
@@ -156,18 +157,19 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     }
 
     Camera.checkPermissions().then((status) => {
-       console.log('CAMERA STATUS', status);
-       if (status.photos === 'granted'){
-         this.adMediaUploaders(type);
-       } else {
-         Camera.requestPermissions({permissions: ['photos']}).then(status => {
-           if (status.photos === 'granted') {
-             this.adMediaUploaders(type);
-           } else if (status.photos === 'denied') {
-             this.showDeniedMediaUploader();
-           }
-         });
-       }
+      this.loading$.next(true);
+
+      if (status.photos === 'granted'){
+        this.adMediaUploaders(type);
+      } else {
+        Camera.requestPermissions({permissions: ['photos']}).then(status => {
+          if (status.photos === 'granted') {
+           this.adMediaUploaders(type);
+          } else if (status.photos === 'denied') {
+           this.showDeniedMediaUploader();
+          }
+        });
+      }
     });
   }
 
@@ -198,14 +200,12 @@ export class AdCreatorComponent implements OnInit, OnChanges {
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.Base64
-    });
+    }).finally(() => this.loading$.next(false));
 
     return this.uploadMedia(result, type);
   }
 
   async uploadMedia(file: Photo, type: string): Promise<void> {
-    this.loading = true;
-
     const formData = new FormData();
 
     let fileToUpload;
@@ -216,7 +216,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
 
     if (uploadSize > AD_MEDIA_MAX_UPLOAD_SIZE) {
       this.adMediaMessage = 'Max upload size is 10MB.'
-      this.loading = false;
+      this.loading$.next(false);
       return;
     }
 
@@ -224,6 +224,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
     formData.append('image', this.convertToBlob(fileToUpload), fileName);
 
     const token = await Preferences.get({key: 'spotbiecom_session'});
+
     this.http.post(AD_MEDIA_UPLOAD_API_URL, formData,
         {
           reportProgress: true,
@@ -249,23 +250,30 @@ export class AdCreatorComponent implements OnInit, OnChanges {
         this.adCreatorForm.get('adImage').setValue(this.adUploadImage);
         this.adApp.updateAdImage(this.adUploadImage);
       }
+
       if (type === 'mobile' || this.adType === 1) {
         this.adUploadImageMobile = httpResponse.image;
         this.adCreatorForm.get('adImageMobile').setValue(this.adUploadImageMobile);
-        if (this.adAppMobile) {
+
+        if(this.adType === 1) {
+          console.log('HIIIII', this.adUploadImageMobile);
+          this.adApp.updateAdImage(this.adUploadImageMobile);
+        } else if (this.adAppMobile) {
           this.adAppMobile.updateAdImageMobile(this.adUploadImageMobile);
         }
       }
     } else {
       console.log('adMediaUploadFinished', httpResponse);
     }
-    this.loading = false;
+
+    this.loading$.next(false);
     this.changeDetectionRef.detectChanges();
   }
 
   adTypeChange(){
     this.adCreatorForm.get('adType').setErrors(null);
     this.showErrors = false;
+
     if(this.adUploadImage) {
       this.adApp.updateAdImage(this.adUploadImage);
     }
@@ -292,17 +300,14 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   deleteMe(){
     const r = confirm('Are you sure you want to delete this Ad?');
 
-    if(r){
-      this.adCreatorService.deleteMe(this.ad).subscribe(
-        resp => {
-          this.deleteMeCb(resp);
-        });
+    if (r) {
+      this.adCreatorService.deleteMe(this.ad).subscribe(resp => this.deleteMeCb(resp));
     }
   }
 
   private deleteMeCb(resp){
     if(resp.success) {
-      this.adDeleted = true;
+      this.adDeleted$.next(true);
       setTimeout(() => {
         this.closeAdCreatorAndRefetchAdList();
       }, 1500);

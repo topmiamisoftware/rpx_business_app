@@ -47,7 +47,10 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
-    <app-settings *ngIf="settingsWindow$ | async" #spotbieSettings (closeWindowEvt)="closeSettings()"></app-settings>
+    <app-settings *ngIf="settingsWindow$ | async"
+                  #spotbieSettings
+                  (closeWindowEvt)="closeSettings()"
+    ></app-settings>
 
     <app-business-dashboard></app-business-dashboard>
   </ion-content>

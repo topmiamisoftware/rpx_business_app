@@ -74,7 +74,7 @@ export class QrComponent implements OnInit {
     const percentValue: number = parseFloat(this.loyaltyPointBalance$.getValue().loyalty_point_dollar_percent_value.toString());
 
     this.loyaltyPointRewardDollarValue$.next(this.totalSpent * (percentValue / 100));
-    this.loyaltyPointReward$.next((this.loyaltyPointRewardDollarValue$.getValue() * 100));
+    this.loyaltyPointReward$.next((this.loyaltyPointRewardDollarValue$.getValue() * 100) / percentValue);
 
     this.rewardPrompt$.next(true);
   }
