@@ -21,7 +21,7 @@ export class LoyaltyPointsService {
   constructor(private http: HttpClient) {
   }
 
-  getLoyaltyPointBalance(): any {
+  getLoyaltyPointBalance(): Observable<any> {
     const apiUrl = `${LOYALTY_POINTS_API}/show`;
 
     return this.http

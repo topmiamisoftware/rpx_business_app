@@ -129,13 +129,18 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
   }
 
   updateAdImage(image: string = ''){
+    console.log('UPDATED ADD IAGGE', image);
     if(image !== ''){
       this.ad.images_mobile = image;
       this.ad.images = image;
       this.genericAdImage = image;
+      this.genericAdImageMobile = image;
     }
     this.changeDetection.detectChanges();
   }
+
+
+  updateAdImageMobile () {  }
 
   getAdWrapperClass(){
     return 'spotbie-ad-wrapper-header sb-mobileAdWrapper'

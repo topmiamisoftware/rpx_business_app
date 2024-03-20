@@ -268,11 +268,13 @@ export class AdCreatorComponent implements OnInit, OnChanges {
           this.adAppMobile.updateAdImageMobile(this.adUploadImageMobile);
         }
       }
+
+      this.loading$.next(false);
     } else {
       console.log('adMediaUploadFinished', httpResponse);
+      this.loading$.next(false);
     }
 
-    this.loading$.next(false);
     this.changeDetectionRef.detectChanges();
   }
 

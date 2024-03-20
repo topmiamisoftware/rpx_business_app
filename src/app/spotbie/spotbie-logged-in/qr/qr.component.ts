@@ -61,13 +61,16 @@ export class QrComponent implements OnInit {
   }
 
   async startAwardProcess() {
-    this.businessLoyaltyPointsSubmitted$.next(true);
+    this.businessLoyaltyPointsState.getBusinessLoyaltyPointBalance().subscribe(() => {
+      this.loyaltyPointBalance$.next(this.businessLoyaltyPointsState.getState());
+      this.businessLoyaltyPointsSubmitted$.next(true);
 
-    if (this.businessLoyaltyPointsForm.invalid) {
-      return;
-    }
+      if (this.businessLoyaltyPointsForm.invalid) {
+        return;
+      }
 
-    this.createRedeemable();
+      this.createRedeemable();
+    });
   }
 
   createRedeemable(){
