@@ -4,10 +4,11 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import {SpotbiePipesModule} from "../../../../../spotbie-pipes/spotbie-pipes.module";
 import {Observable} from "rxjs";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FeedbackEntitiesState} from "./feedback.state";
 import {Feedback} from "../../../../../models/feedback";
 import {Platform} from "@ionic/angular";
+import {AlertDialogComponent} from "../../../../../helpers/alert/alert.component";
 
 @Component({
   selector: 'app-feedback',
@@ -30,7 +31,8 @@ export class FeedbackComponent  implements OnInit {
     public dialogRef: MatDialogRef<FeedbackEntitiesState>,
     private feedbackState: FeedbackEntitiesState,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private platform: Platform
+    private platform: Platform,
+    private matDialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +47,12 @@ export class FeedbackComponent  implements OnInit {
     this.dialogRef.close(null);
   }
 
-  openEntireFeedback() {
-
+  openEntireFeedback(feedback: Feedback) {
+    this.matDialog.open(AlertDialogComponent, {
+      data: {
+        alertTitle: "Full Feedback Message",
+        alertText: feedback.feedback_text,
+      },
+    });
   }
 }

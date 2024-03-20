@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {
-  MAT_DIALOG_DATA,
+  MAT_DIALOG_DATA, MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {Observable} from 'rxjs';
@@ -11,6 +11,7 @@ import {SmsGroupEntitiesState} from './sms-group.state';
 import {MatTableModule} from '@angular/material/table';
 import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
 import {Platform} from "@ionic/angular";
+import {AlertDialogComponent} from "../../../../../helpers/alert/alert.component";
 
 @Component({
   selector: 'app-sms-history-dialog',
@@ -34,7 +35,8 @@ export class SmsHistoryDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<SmsHistoryDialogComponent>,
     private smsGroupEntitiesState: SmsGroupEntitiesState,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private platform: Platform
+    private platform: Platform,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +48,12 @@ export class SmsHistoryDialogComponent implements OnInit {
   }
 
   viewGroup(smsGroup: SmsGroup) {
-    console.log('SMS GROUP', smsGroup);
+    this.matDialog.open(AlertDialogComponent, {
+      data: {
+        alertTitle: "Full SMS Message",
+        alertText: smsGroup.body,
+      },
+    });
   }
 
   closeDialog() {

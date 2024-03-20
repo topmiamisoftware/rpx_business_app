@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {
-  MAT_DIALOG_DATA,
+  MAT_DIALOG_DATA, MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {Observable} from 'rxjs';
@@ -11,6 +11,7 @@ import {EmailGroupEntitiesState} from './email-group.state';
 import {MatTableModule} from '@angular/material/table';
 import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
 import {Platform} from "@ionic/angular";
+import {AlertDialogComponent} from "../../../../../helpers/alert/alert.component";
 
 @Component({
   selector: 'app-email-history-dialog',
@@ -35,6 +36,7 @@ export class EmailHistoryDialogComponent implements OnInit {
     private emailGroupEntitiesState: EmailGroupEntitiesState,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private platform: Platform,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +48,12 @@ export class EmailHistoryDialogComponent implements OnInit {
   }
 
   viewGroup(emailGroup: EmailGroup) {
-    console.log('EMAIL GROUP', emailGroup);
+    this.matDialog.open(AlertDialogComponent, {
+      data: {
+        alertTitle: "Full Email Message",
+        alertText: emailGroup.email_body,
+      },
+    });
   }
 
   closeDialog() {
