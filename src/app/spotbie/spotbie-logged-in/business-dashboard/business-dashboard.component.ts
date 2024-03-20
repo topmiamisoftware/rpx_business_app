@@ -13,12 +13,12 @@ import {BusinessMembership} from "../../../models/user";
 })
 export class BusinessDashboardComponent implements OnInit {
 
-  @Output() openBusinessSettingsEvt = new EventEmitter()
+  @Output() openBusinessSettingsEvt = new EventEmitter();
 
-  @ViewChild('rewardMenuApp') rewardMenuApp: RewardMenuComponent
-  @ViewChild('qrApp') qrApp: QrComponent
-  @ViewChild('qrCodeAppAnchor') qrCodeAppAnchor: ElementRef
-  @ViewChild('rewardMenuAppAnchor') rewardMenuAppAnchor: ElementRef
+  @ViewChild('rewardMenuApp') rewardMenuApp: RewardMenuComponent;
+  @ViewChild('qrApp') qrApp: QrComponent;
+  @ViewChild('qrCodeAppAnchor') qrCodeAppAnchor: ElementRef;
+  @ViewChild('rewardMenuAppAnchor') rewardMenuAppAnchor: ElementRef;
 
   displayBusinessSetUp$ = new BehaviorSubject<boolean>(false);
   businessFetched$ = new BehaviorSubject<boolean>(false);
@@ -33,6 +33,7 @@ export class BusinessDashboardComponent implements OnInit {
 
   checkIfBusinessIsSet(){
     this.userAuthServe.getSettings().subscribe(resp => {
+      console.log('THE BUSINESS', resp);
         if(!resp.business) {
           this.displayBusinessSetUp$.next(true);
         } else if(resp.is_subscribed === false) {

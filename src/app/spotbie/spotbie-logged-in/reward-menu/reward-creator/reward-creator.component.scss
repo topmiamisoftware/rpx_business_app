@@ -118,6 +118,13 @@ img.sb-loyalty-points:hover{
 h5{
     font-size: 1rem;
 }
+.sb-verificationCheck {
+  .fa-check{
+    color: #4caf50;
+    margin-left: unset;
+  }
+}
+
 .fa-check{
     background: unset !important;
     color: white;

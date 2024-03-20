@@ -1,75 +1,75 @@
 .spotbie-block{
-    position: relative;
-    margin: 0 auto;
-    width: 950px;
-    max-width: 950px;
-    margin-bottom: 20px;
+  position: relative;
+  margin: 0 auto;
+  width: 950px;
+  max-width: 950px;
+  margin-bottom: 20px;
 }
 .spotbie-info-text{
-    background-color: transparent;
+  background-color: transparent;
 }
 .deactivate-account{
-    cursor: pointer;
+  cursor: pointer;
 }
 .spotbie-overlay-window{
-    padding-bottom: 100px;
-    background: #332f3e;
-    background-attachment: fixed;
-    background-size: cover;
-    text-align: center;
-    z-index: 97;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+  padding-bottom: 100px;
+  background: #332f3e;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  z-index: 97;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 .fa-exclamation-triangle{
-    position: relative;
-    display: block;
-    margin: 0 auto;
-    font-size: 45px;
-    color: #ffc107;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  font-size: 45px;
+  color: #ffc107;
 }
 .spotbie-select-menu{
-    position: absolute;
-    padding-top: 100px;
-    overflow-y: scroll;
-    min-width: 100%;
-    width: 100%;
-    top: 0;
-    bottom: 0;
-    left: 0%;
-    right: 0;
+  position: absolute;
+  padding-top: 100px;
+  overflow-y: scroll;
+  min-width: 100%;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .spotbie-settings-table{
-    position: relative;
-    margin: 0 auto;
-    width: 950px;
-    min-width: 950px;
-    max-width: 950px;
-    padding: 20px;
-    border-radius: 20px;
+  position: relative;
+  margin: 0 auto;
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  border-radius: 20px;
 }
 .spotbie-place-result td{
-    padding: unset;
+  padding: unset;
 }
 .spotbie-button{
-    cursor: pointer;
-    background-color: transparent;
-    margin-top: 20px;
-    min-width: unset;
+  cursor: pointer;
+  background-color: transparent;
+  margin-top: 20px;
+  min-width: unset;
 }
 .spotbie-button-mini {
-    margin-top: 20px;
-    font-size: 18px;
-    background-color: rgba(0,0,0,.23);
-    max-width: 350px;
-    min-width: 250px;
-    width: 250px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+  margin-top: 20px;
+  font-size: 18px;
+  background-color: rgba(0,0,0,.23);
+  max-width: 350px;
+  min-width: 250px;
+  width: 250px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .sb-closeButton{
-    z-index: 98;
+  z-index: 98;
 }
 .spotbie-agm-map.sb-map-results-open{
   height: 60vh;
@@ -77,17 +77,17 @@
   min-height: 60vh;
 }
 .spotbie-save-settings-button{
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .spotbie-toggle{
-    width: 350px;
-    min-width: 350px;
-    max-width: 350px;
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
 }
 .spotbie-toggle, .spotbie-toggle td{
-    padding-top: unset;
-    padding-bottom: unset;
-    margin-bottom: unset;
+  padding-top: unset;
+  padding-bottom: unset;
+  margin-bottom: unset;
 }
 .spotbie-toggle-info-text{
     padding-top: 10px;
@@ -123,9 +123,9 @@
 .spotbie-map{
     position: relative;
     margin: 0 auto;
-    width: 650px;
-    min-width: 650px;
-    max-width: 650px;
+    width: 90%;
+    min-width: 90%;
+    max-width: 90%;
     background-color: #353535;
 }
 .agm-map-container-inner{
@@ -238,16 +238,13 @@ textarea{
     border-bottom-left-radius: 8px;
 }
 .sb-search-icon{
-    display: inline-block!important;
-    max-width: 50px;
-    padding-top: 20px;
-    text-align: center;
-    padding: 0px !important;
-    padding-top: 11px !important;
-    padding-bottom: 11px !important;
-    border-radius: 8px !important;
-    border-top-left-radius: 0px !important;
-    border-bottom-left-radius: 0px !important;
+  display: inline-block!important;
+  max-width: 50px;
+  text-align: center;
+  padding: 11px !important;
+  border-radius: 8px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 .calendly-inline-widget{
     min-width: 90vw;
@@ -351,11 +348,9 @@ h6{
 ion-item, ion-list{
   background: white;
 }
-
 .item-native {
   background: white;
 }
-
 ion-select {
   --placeholder-color: #332f3e;
   --placeholder-opacity: 1;
@@ -367,39 +362,32 @@ ion-select {
   padding-bottom: 0;
   background-color: white;
 }
-
 ion-select::part(placeholder),
 ion-select::part(text) {
   flex: 0 0 auto;
   background-color: white;
 }
-
 ion-select::part(placeholder)::first-letter {
   font-size: 1rem;
   background-color: white;
 }
-
 ion-select::part(text) {
   color: #332f3e;
   background-color: white;
 }
-
 ion-select::part(icon) {
   color: #332f3e;
   opacity: 1;
   background-color: white;
 }
-
 .action-sheet-group.sc-ion-action-sheet-ios {
   background-color: white !important;
 }
-
 .sb-select, ion-item{
   --background: 'white';
   --border-color: 'none';
   --border-width: 0px;
 }
-
 .food-truck{
   margin-right: .5em;
 }
@@ -423,7 +411,6 @@ ion-select::part(icon) {
     padding-right: 1%;
     border-radius: 0;
   }
-
   .spotbie-price-box{
     display: flex!important;
     justify-content: center!important;
@@ -438,14 +425,12 @@ ion-select::part(icon) {
     min-width: 360px;
     max-width: 360px;
   }
-
   .spotbie-price-box .spotbie-button{
     font-size: .9rem !important;
     max-width: 75%;
     width: 75%;
     min-width: 75%;
   }
-
   h6{
     font-size: 1.3rem;
     margin-top: 15px;
@@ -466,14 +451,12 @@ ion-select::part(icon) {
     min-width: 360px;
     max-width: 360px;
   }
-
   .spotbie-price-box .spotbie-button{
     font-size: .9rem !important;
     max-width: 75%;
     width: 75%;
     min-width: 75%;
   }
-
   h6{
     font-size: 1.3rem;
     margin-top: 15px;
@@ -498,32 +481,32 @@ ion-select::part(icon) {
 }
 @media (max-width: 768px) {
     .spotbie-block{
-        margin: 0 auto;
-        margin-bottom: 30px;
-        width: 98%;
-        min-width: 98%;
-        max-width: 98%;
-        padding-left: 1%;
-        padding-right: 1%;
-        border-radius: 0;
+      margin: 0 auto;
+      margin-bottom: 30px;
+      width: 98%;
+      min-width: 98%;
+      max-width: 98%;
+      padding-left: 1%;
+      padding-right: 1%;
+      border-radius: 0;
     }
     .spotbie-settings-table{
-        width: 100%;
-        min-width: 100%;
-        max-width: 100%;
-        padding-left: 0%;
-        padding-right: 0%;
-        border-radius: 0;
+      width: 90%;
+      min-width: 90%;
+      max-width: 90%;
+      padding-left: 0%;
+      padding-right: 0%;
+      border-radius: 0;
     }
     .sb-originPhoto-sm{
-        width: 150px;
-        min-width: 150px;
-        max-width: 150px;
+      width: 150px;
+      min-width: 150px;
+      max-width: 150px;
     }
     .sb-originPhoto-lg{
-        width: 94%;
-        min-width: 94%;
-        max-width: 94%;
+      width: 94%;
+      min-width: 94%;
+      max-width: 94%;
     }
 }
 @media (max-width: 700px) {

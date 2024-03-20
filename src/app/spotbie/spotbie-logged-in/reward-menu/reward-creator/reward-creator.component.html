@@ -88,7 +88,7 @@
                 {{ (businessPointsDollarValue$ | async) | number }} LOYALTY POINT VALUE
             </h6>
 
-            <div *ngIf="((rewardFormSubmitted$ | async) === true && f.rewardName.errors) else rewardNameNormalTemplate"
+            <div *ngIf="((rewardFormSubmitted$ | async) === true && f.rewardName.errors) else rewardNameNormalTemplate;"
                     class="spotbie-input-info spotbie-text-gradient spotbie-error mt-4 mb-2">
                 <div *ngIf="f.rewardName.errors.required">
                     Enter reward name.

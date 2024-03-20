@@ -21,6 +21,7 @@ import {Preferences} from "@capacitor/preferences";
 import {Camera, CameraResultType, GalleryPhoto, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {BehaviorSubject} from "rxjs";
+import {Platform} from "@ionic/angular";
 
 const AD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}in-house/upload-media`
 const AD_MEDIA_MAX_UPLOAD_SIZE = 10e+6
@@ -69,11 +70,16 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   constructor(private formBuilder: UntypedFormBuilder,
               private adCreatorService: AdCreatorService,
               private http: HttpClient,
-              private changeDetectionRef: ChangeDetectorRef
+              private changeDetectionRef: ChangeDetectorRef,
+              private platform: Platform,
   ) {}
 
   ngOnChanges() {
-     this.changeDetectionRef.markForCheck();
+    this.changeDetectionRef.markForCheck();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeThis();
+    });
   }
 
   ngOnInit(): void {

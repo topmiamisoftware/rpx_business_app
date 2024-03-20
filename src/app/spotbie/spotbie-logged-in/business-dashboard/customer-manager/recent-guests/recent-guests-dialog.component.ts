@@ -3,7 +3,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {RecentGuestsEntitiesState} from './recent-guest.state';
@@ -11,6 +10,7 @@ import {Observable} from 'rxjs';
 import {RecentGuest} from '../models';
 import {MatTableModule} from '@angular/material/table';
 import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-recent-guests-dialog',
@@ -32,13 +32,17 @@ export class RecentGuestsDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<RecentGuestsDialogComponent>,
-    private matDialog: MatDialog,
     private recentGuestsState: RecentGuestsEntitiesState,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform,
   ) {}
 
   ngOnInit(): void {
     this.recentGuestsState.getRecentGuestList().subscribe();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeDialog();
+    });
   }
 
   closeDialog() {

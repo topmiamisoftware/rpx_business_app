@@ -4,9 +4,10 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import {SpotbiePipesModule} from "../../../../../spotbie-pipes/spotbie-pipes.module";
 import {Observable} from "rxjs";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FeedbackEntitiesState} from "./feedback.state";
 import {Feedback} from "../../../../../models/feedback";
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-feedback',
@@ -27,13 +28,17 @@ export class FeedbackComponent  implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<FeedbackEntitiesState>,
-    private matDialog: MatDialog,
     private feedbackState: FeedbackEntitiesState,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform
   ) { }
 
   ngOnInit(): void {
     this.feedbackState.getFeedbackList().subscribe();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeDialog();
+    });
   }
 
   closeDialog() {

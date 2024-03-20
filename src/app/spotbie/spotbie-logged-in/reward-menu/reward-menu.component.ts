@@ -1,14 +1,13 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core'
-import {ActivatedRoute, Router} from '@angular/router'
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
-import {Business} from '../../../models/business'
-import {Reward} from '../../../models/reward'
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
+import {Business} from '../../../models/business';
+import {Reward} from '../../../models/reward';
 import {
   BusinessMenuServiceService
-} from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service'
-import {RewardCreatorComponent} from './reward-creator/reward-creator.component'
-import {RewardComponent} from './reward/reward.component'
-import {environment} from '../../../../environments/environment'
+} from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
+import {RewardCreatorComponent} from './reward-creator/reward-creator.component';
+import {RewardComponent} from './reward/reward.component';
 import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
 import {UserauthService} from "../../../services/userauth.service";
@@ -37,7 +36,6 @@ export class RewardMenuComponent implements OnInit {
 
   eAllowedAccountTypes = AllowedAccountTypes
   itemCreator$ = new BehaviorSubject<boolean>(false);
-  rewardApp$ = new BehaviorSubject<boolean>(false);
   userPointToDollarRatio$ =  new BehaviorSubject<number>(null);
   rewards$ = new BehaviorSubject<Array<Reward>>([]);
   reward$ = new BehaviorSubject<Reward>(null);
@@ -45,7 +43,6 @@ export class RewardMenuComponent implements OnInit {
   business$= new BehaviorSubject<Business>(new Business());
   loyaltyPointsBalance$ = new BehaviorSubject<any>(null);
   isLoggedIn$ = new BehaviorSubject<string>(null);
-  showCreate$ = new BehaviorSubject<boolean>(false);
   openTiers$ = new BehaviorSubject(false);
   user$ = this.userService.userProfile$;
   canUseTiers$ = this.user$.pipe(
@@ -81,13 +78,6 @@ export class RewardMenuComponent implements OnInit {
     }
   }
 
-  getWindowClass(){
-    if(this.fullScreenMode)
-      return 'spotbie-overlay-window'
-    else
-      return ''
-  }
-
   getLoyaltyPointBalance(){
     this.loyaltyPointsBalance$.next(this.loyaltyPointsState.getState());
   }
@@ -112,28 +102,11 @@ export class RewardMenuComponent implements OnInit {
   }
 
   addItem(){
-    if(this.loyaltyPointsBalance$.getValue().balance === 0){
-      this.notEnoughLpEvt.emit();
-      this.closeWindow();
-      return;
-    }
-
     this.itemCreator$.next(!this.itemCreator$.getValue());
   }
 
   closeWindow(){
     this.closeWindowEvt.emit();
-  }
-
-  openReward(reward: Reward){
-    this.reward$.next(reward);
-    this.reward$.getValue().link = `${environment.baseUrl}business-menu/${this.qrCodeLink}/${this.reward$.getValue().uuid}`
-    this.rewardApp$.next(true);
-  }
-
-  closeReward(){
-    this.reward$.next(null);
-    this.rewardApp$.next(false);
   }
 
   editReward(reward: Reward){

@@ -35,6 +35,7 @@ import {filter, tap} from "rxjs/operators";
 import {Capacitor} from "@capacitor/core";
 import {Geolocation} from "@capacitor/geolocation";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
+import {Platform} from "@ionic/angular";
 
 const MAX_DISTANCE = 80467;
 
@@ -97,7 +98,8 @@ export class FoodTruckLocationDialogComponent implements OnInit, AfterViewInit {
     private ngZone: NgZone,
     private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<FoodTruckLocationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform
   ) {
     this.user = this.userService.userProfile;
     this.originTitle$.next(this.userService.userProfile.business.name);
@@ -123,6 +125,10 @@ export class FoodTruckLocationDialogComponent implements OnInit, AfterViewInit {
           this.loading$.next(false);
         })
       ).subscribe();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.close();
+    });
   }
 
   ngAfterViewInit() {

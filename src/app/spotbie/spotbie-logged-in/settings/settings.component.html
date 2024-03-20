@@ -93,11 +93,8 @@
                         <input class="sb-input"
                                 formControlName="spotbie_email"
                                 type="text" value="email"
-                                maxlength="135" *ngIf="!isSocialAccount" />
+                                maxlength="135" />
 
-                        <input class="sb-input"
-                                formControlName="spotbie_email" type="text" readonly
-                                value="email" maxlength="135" *ngIf="isSocialAccount" />
                     </td>
                 </tr>
                 <tr>
@@ -134,13 +131,7 @@
                                 readonly="readonly" />
                     </td>
                 </tr>
-<!--                <tr *ngIf="chosenAccountType != 4" (click)="changeAccType()">
-                    <td>
-                        <div class="spotbie-input-info text-center spotbie-text-gradient cursor-pointer mt-2 mb-2">
-                            MANAGE MEMBERSHIP
-                        </div>
-                    </td>
-                </tr>-->
+
                 <tr>
                     <td>
                         <button class='btn spotbie-button mb-5' (click)="saveSettings()">
@@ -252,16 +243,6 @@
         </form>
     </div>
 
-    <div class='spotbie-block'>
-        <table class="spotbie-settings-table" id="spotbie-deactivate-table" *ngIf="settingsFormInitiated">
-            <tr>
-                <td class='spotbie-text-gradient text-uppercase deactivate-account pt-4 pb-4' (click)="startDeactivateAccount()">
-                    Deactivate Account
-                </td>
-            </tr>
-        </table>
-    </div>
-
     <div class='mt-5 mb-5 cursor-pointer' (click)="closeWindow()">
         <span class="spotbie-text-gradient">CLOSE</span>
     </div>
@@ -288,50 +269,6 @@
                   <div class="mt-4 mb-4" style="font-size: .8rem;" *ngIf="userIsSubscribed else membershipExpired">
                     <span class='sb-text-light-green-gradient' *ngIf="!user.ends_at">MEMBERSHIP IS ACTIVE</span>
 
-                    <div class="mt-4 mb-4 spotbie-price-box" style="font-size: .8rem;">
-                      <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Starter">
-                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$159.99/monthly</span>
-                        <ul>
-                          <li>Loyalty Program</li>
-                          <li>Local Exposure</li>
-                          <li>Header Banner Ads</li>
-                          <li>Default Max Reward Rate</li>
-                        </ul>
-                      </div>
-
-                      <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Intermediate">
-                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$259.99/monthly</span>
-                        <ul>
-                          <li>+Starter Package</li>
-                          <li>+Loyalty Tiers</li>
-                          <li>+Footer Banner Ads</li>
-                          <li>+0.01% Max Reward Rate</li>
-                          <li>+5,000 SMS & 5,000 e-mails</li>
-                          <li>+Feedback</li>
-                          <li>+Customer Insights</li>
-                        </ul>
-                      </div>
-
-                      <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Ultimate">
-                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">COMING SOON</span>
-                        <ul>
-                          <li>+Starter Package</li>
-                          <li>+Nearby Featured Ads</li>
-                          <li>+0.02% Max Reward Rate</li>
-                          <li>+10,000 SMS & 20,000 e-mails</li>
-                          <li>+Advanced Targeting & Insights</li>
-                          <li>+Automated Push Notifications</li>
-                        </ul>
-                      </div>
-
-                      <div class="p2 text-start text-white" *ngIf="userSubscriptionPlan === _businessMembership.Legacy">
-                        <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$99.99/monthly</span>
-                        <ul>
-                          <li>LEGACY MEMBERSHIP</li>
-                        </ul>
-                      </div>
-                    </div>
-
                     <div class='spotbie-text-gradient text-uppercase mt-2 mb-4' *ngIf="!user.ends_at" style="font-size: .8rem;">
                       NEXT PAYMENT {{ user.next_payment | date:'mediumDate' }}
                     </div>
@@ -340,10 +277,6 @@
                     <br/>
                     <span class='sb-text-light-green-gradient' *ngIf="user.ends_at">
                         Last Day {{ user.ends_at | date }}
-                    </span>
-
-                    <span class='sb-text-red-gradient text-uppercase cursor-pointer' *ngIf="!user.ends_at" (click)="cancelMembership()">
-                        CANCEL MEMBERSHIP
                     </span>
 
                     <div class='mt-5 mb-5 cursor-pointer' (click)="closeAccountType()">
@@ -362,97 +295,17 @@
                         <h5 class="spotbie-text-gradient">
                           YOUR MEMBERSHIP IS EXPIRED
                         </h5>
-
-                        <h6 class="mt-4 text-white sb-text-light-green-gradient">PICK YOUR PLAN</h6>
-
-                        <div class="mt-4 spotbie-price-box" style="font-size: .8rem;">
-                          <div class="p2 text-start text-white" (click)="activateFullMembership(1)">
-                            <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$159.99/monthly</span>
-                            <ul>
-                              <li>Loyalty Program</li>
-                              <li>Local Exposure</li>
-                              <li>Header Banner Ads</li>
-                              <li>Default Max Reward Rate</li>
-                            </ul>
-                            <button class="spotbie-button">BUY</button>
-                          </div>
-
-                          <div class="p2 text-start text-white" (click)="activateFullMembership(2)">
-                            <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">$259.99/monthly</span>
-                            <ul>
-                              <li>+Starter Package</li>
-                              <li>+Loyalty Tiers</li>
-                              <li>+Footer Banner Ads</li>
-                              <li>+0.01% Max Reward Rate</li>
-                              <li>+5,000 SMS & 5,000 e-mails</li>
-                              <li>+Feedback</li>
-                              <li>+Customer Insights</li>
-                            </ul>
-                            <button class="spotbie-button">BUY</button>
-                          </div>
-
-                          <div class="p2 text-start text-white">
-                            <span style="font-size: 1.2rem;" class="sb-text-light-green-gradient">COMING SOON</span>
-                            <ul>
-                              <li>+Starter Package</li>
-                              <li>+Nearby Featured Ads</li>
-                              <li>+0.02% Max Reward Rate</li>
-                              <li>+10,000 SMS & 20,000 e-mails</li>
-                              <li>+Advanced Targeting & Insights</li>
-                              <li>+Automated Push Notifications</li>
-                            </ul>
-                            <!--               <button class="spotbie-button">BUY</button>-->
-                          </div>
-                        </div>
+                        <p class="spotbie-text-gradient" style="font-size: .8rem;">
+                          Please visit https://spotbie.com to renew. <br/>
+                          You can also call <br/>
+                          <span class="sb-text-light-green-gradient">+1 (786) 600-5946</span><br/>
+                          for an in-person agent.
+                        </p>
                       </div>
                     </ng-container>
                   </ng-template>
             </div>
         </div>
-    </div>
-</div>
-
-<div class='spotbie-overlay-window d-flex flex-column
-            align-content-center justify-content-center align-items-center' *ngIf="accountDeactivation && !isSocialAccount">
-    <h5 class="spotbie-text-gradient">DEACTIVATE ACCOUNT</h5>
-
-    <form [formGroup]="deactivationForm">
-        <div class="spotbie-toast-input-box">
-            <div *ngIf="deactivationSubmitted && h.spotbie_deactivation_password.errors else spotbie_deactivate_normal" class="spotbie-input-info  spotbie-text-gradient spotbie-error">
-                <div *ngIf="h.spotbie_deactivation_password.errors.required">
-                    Please enter your current password.
-                </div>
-            </div>
-
-            <ng-template #spotbie_deactivate_normal>
-                <div class="spotbie-toast-info spotbie-text-gradient spotbie-deactivation-info" #spotbie_deactivation_info>
-                    Enter your password to deactivate your account.
-                </div>
-            </ng-template>
-
-            <input class="sb-input" type="password" formControlName="spotbie_deactivation_password" autocomplete="false">
-
-            <div class="spotbie-button spotbie-button-mini text-uppercase" (click)="deactivateAccount()">
-                Deactivate
-            </div>
-
-            <div class="spotbie-text-gradient text-center text-uppercase mt-4" (click)="cancelDeactivateAccount()">
-                CANCEL
-            </div>
-        </div>
-    </form>
-</div>
-
-<div class='spotbie-overlay-window d-flex flex-column
-            align-content-center justify-content-center align-items-center' *ngIf="accountDeactivation && isSocialAccount">
-    <h5 class="spotbie-text-gradient">DEACTIVATE ACCOUNT</h5>
-
-    <div class="spotbie-button spotbie-button-mini text-uppercase" (click)="deactivateAccount()">
-        Deactivate
-    </div>
-
-    <div class="spotbie-text-gradient text-center text-uppercase mt-4" (click)="cancelDeactivateAccount()">
-        CANCEL
     </div>
 </div>
 
@@ -476,7 +329,7 @@
 <div class='spotbie-overlay-window' *ngIf="placeSettingsFormUp">
     <form [formGroup]="businessSettingsForm">
         <table class='spotbie-settings-table' style="border-bottom: unset;">
-            <tr *ngIf="accountTypeCategory !== 'PERSONAL'">
+            <tr>
                 <td>
                     <div>
                         <div *ngIf="placeFormSubmitted && i.spotbieOrigin.errors else spotbie_origin_normal"
@@ -561,8 +414,7 @@
                     <span class="spotbie-text-gradient text-uppercase">tap or drag to upload</span>
                 </div>
             </div>-->
-
-            <tr *ngIf="accountTypeCategory !== 'PERSONAL' && locationFound">
+            <tr *ngIf="locationFound">
                 <td>
                     <div *ngIf="placeFormSubmitted && i.originTitle.errors else originTitleNormal"
                             class="spotbie-input-info spotbie-text-gradient text-center spotbie-error mt-4 mb-2">
@@ -584,8 +436,7 @@
                     <input class='sb-input text-uppercase' type='text' placeholder='Place Title' formControlName="originTitle"/>
                 </td>
             </tr>
-
-            <tr *ngIf="accountTypeCategory !== 'PERSONAL' && locationFound">
+            <tr *ngIf="locationFound">
                 <div *ngIf="placeFormSubmitted && i.originCategories.errors else originCategoriesNormal"
                      class="spotbie-input-info spotbie-text-gradient text-center spotbie-error mt-4 mb-2">
                   <div *ngIf="i.originCategories.errors.required">
@@ -617,9 +468,8 @@
                   </ion-item>
                 </ion-list>
             </tr>
-
-            <tr *ngIf="accountTypeCategory !== 'PERSONAL' && locationFound">
-                <td style="padding-top: 0px; padding-bottom: 0px;">
+            <tr *ngIf="locationFound">
+                <td style="padding-top: 0; padding-bottom: 0;">
                     <div *ngIf="placeFormSubmitted && i.originDescription.errors else spotbie_origin_description_normal"
                             class="spotbie-input-info mb-3 spotbie-text-gradient text-center spotbie-error">
                         <div *ngIf="i.originDescription.errors.required">
@@ -660,14 +510,17 @@
               </tr>
             </ng-container>
             <tr>
-                <div class='spotbie-button text-uppercase' (click)="startBusinessVerification()" *ngIf="locationFound">
-                    Verify
-                </div>
+                <button class='btn spotbie-button text-uppercase'
+                     (click)="startBusinessVerification()"
+                     *ngIf="locationFound"
+                >Verify</button>
             </tr>
             <tr>
                 <div class='spotbie-text-gradient text-center text-uppercase mt-4 mb-5'
                         *ngIf="(loading$ | async) === false"
-                        style="cursor: pointer;" (click)="cancelPlaceSettings()">CANCEL</div>
+                        style="cursor: pointer;"
+                     (click)="cancelPlaceSettings()"
+                >CANCEL</div>
             </tr>
         </table>
     </form>
@@ -714,7 +567,6 @@
                         Please enter your passkey.
                     </div>
                 </ng-template>
-
                 <tr>
                     <td>
                         <input class='sb-input text-center'
@@ -723,36 +575,29 @@
                                formControlName="passKey" />
                     </td>
                 </tr>
-
                 <tr>
                     <td>
                         <div class='spotbie-text-gradient sb-helpDemoText text-center text-uppercase mt-4'>
                             Don't have one?<br/>
-                            <span class='sb-text-light-green-gradient cursor-pointer' (click)="calendly()">Book a free demo with today.</span>
+                            <span class='sb-text-light-green-gradient cursor-pointer'>
+                              Give us a call.<br/>
+                              +1 (786) 600-5946
+                            </span>
                         </div>
                     </td>
                 </tr>
-
                 <tr>
                     <td>
-                        <div class='spotbie-button text-uppercase mt-4 mb-4' (click)="claimThisBusiness()" *ngIf="locationFound">
+                        <button class='btn spotbie-button mt-4 mb-4'
+                                (click)="claimThisBusiness()"
+                                *ngIf="locationFound">
                             FINISH
-                        </div>
+                        </button>
                         <div class='spotbie-text-gradient text-center text-uppercase'
                              style="cursor: pointer;" (click)="closePassKey()">CANCEL</div>
                     </td>
                 </tr>
             </table>
         </form>
-    </div>
-</div>
-
-<div class='spotbie-overlay-window' style="z-index: 99;" *ngIf="calendlyUp">
-    <div class='sb-v-wrapper' style="display: grid; align-content: center;">
-        <!-- Calendly inline widget begin -->
-        <div id="calendlyEl" class="calendly-inline-widget"></div>
-        <!-- Calendly inline widget end -->
-
-        <div class='spotbie-text-gradient text-center text-uppercase mt-4'  style="cursor: pointer;" (click)="calendly()">CLOSE</div>
     </div>
 </div>

@@ -3,7 +3,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {
   MAT_DIALOG_DATA,
-  MatDialog, MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {Observable} from 'rxjs';
@@ -11,6 +10,7 @@ import {SmsGroup} from '../models';
 import {SmsGroupEntitiesState} from './sms-group.state';
 import {MatTableModule} from '@angular/material/table';
 import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-sms-history-dialog',
@@ -28,18 +28,21 @@ export class SmsHistoryDialogComponent implements OnInit {
     'total_sent',
     'body',
     'created_at',
-    'view_logs',
   ];
 
   constructor(
     public dialogRef: MatDialogRef<SmsHistoryDialogComponent>,
-    private matDialog: MatDialog,
     private smsGroupEntitiesState: SmsGroupEntitiesState,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
     this.smsGroupEntitiesState.getSmsGroupList();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeDialog();
+    });
   }
 
   viewGroup(smsGroup: SmsGroup) {

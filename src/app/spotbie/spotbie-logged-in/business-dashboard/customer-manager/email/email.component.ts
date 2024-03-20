@@ -16,6 +16,7 @@ import {
 } from '@angular/material/dialog';
 import {NgIf} from '@angular/common';
 import {AlertDialogComponent} from '../../../../../helpers/alert/alert.component';
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-alert',
@@ -41,11 +42,16 @@ export class EmailDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EmailDialogComponent>,
     private formBuilder: UntypedFormBuilder,
     private matDialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
     this.initiateForm();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeDialog();
+    });
   }
 
   get f() {

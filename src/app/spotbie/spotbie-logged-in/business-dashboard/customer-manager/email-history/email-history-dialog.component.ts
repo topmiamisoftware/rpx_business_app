@@ -3,8 +3,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {Observable} from 'rxjs';
@@ -12,7 +10,7 @@ import {EmailGroup} from '../models';
 import {EmailGroupEntitiesState} from './email-group.state';
 import {MatTableModule} from '@angular/material/table';
 import {SpotbiePipesModule} from '../../../../../spotbie-pipes/spotbie-pipes.module';
-import {SortOrderType} from "@angular-ru/cdk/typings";
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-email-history-dialog',
@@ -30,18 +28,21 @@ export class EmailHistoryDialogComponent implements OnInit {
     'total_sent',
     'email_body',
     'created_at',
-    'view_logs',
   ];
 
   constructor(
     public dialogRef: MatDialogRef<EmailHistoryDialogComponent>,
-    private matDialog: MatDialog,
     private emailGroupEntitiesState: EmailGroupEntitiesState,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private platform: Platform,
   ) {}
 
   ngOnInit(): void {
     this.emailGroupEntitiesState.getEmailGroupList();
+
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.closeDialog();
+    });
   }
 
   viewGroup(emailGroup: EmailGroup) {

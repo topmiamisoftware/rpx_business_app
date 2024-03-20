@@ -32,7 +32,6 @@ export class BusinessLoyaltyPointsState extends NgxsDataRepository<LoyaltyPointB
     return this.loyaltyPointsService.getLoyaltyPointBalance().pipe(
       tap(
         (response: {success: boolean; loyalty_points: LoyaltyPointBalance}) => {
-          console.log('GET RESPONSE BUSINESS', response);
           this.setState(response.loyalty_points);
         }
       )

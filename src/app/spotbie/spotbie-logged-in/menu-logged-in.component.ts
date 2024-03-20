@@ -25,7 +25,6 @@ import {Router} from "@angular/router";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuLoggedInComponent implements AfterViewInit {
-  // @ViewChild('spotbieMainMenu') spotbieMainMenu: ElementRef;
   @ViewChild('spotbieSettings') spotbieSettings: SettingsComponent;
 
   faFoodTruck = faTruck;
@@ -86,13 +85,10 @@ export class MenuLoggedInComponent implements AfterViewInit {
     }
 
     this.settingsWindow$.next(true);
-  }
 
-  handleRefresh(event) {
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      event.target.complete();
-      this.router.navigate(['/user-home']);
-    });
+    setTimeout(() => {
+      this.spotbieSettings.changeAccType();
+    }, 500);
   }
 
   closeSettings() {
@@ -118,6 +114,8 @@ export class MenuLoggedInComponent implements AfterViewInit {
       height: '100vh',
       width: '100%',
       autoFocus: false,
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
     });
   }
 }

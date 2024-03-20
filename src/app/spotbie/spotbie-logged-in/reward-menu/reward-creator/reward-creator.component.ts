@@ -9,7 +9,7 @@ import {
 import {environment} from '../../../../../environments/environment';
 import * as spotbieGlobals from '../../../../globals';
 import {Preferences} from "@capacitor/preferences";
-import {BehaviorSubject, Observable, map, take} from "rxjs";
+import {BehaviorSubject, Observable, map, take, combineLatest} from "rxjs";
 import {Camera, CameraResultType, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {BusinessLoyaltyPointsState} from "../../state/business.lp.state";
@@ -18,8 +18,8 @@ import { Immutable } from '@angular-ru/cdk/typings';
 import { UserauthService } from '../../../../services/userauth.service';
 import { BusinessMembership } from '../../../../models/user';
 import { LoyaltyTier } from '../../../../models/loyalty-point-tier';
-import {filter, tap} from "rxjs/operators";
 import {Platform} from "@ionic/angular";
+import {filter, tap} from "rxjs/operators";
 
 const REWARD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}reward/upload-media`
 const REWARD_MEDIA_MAX_UPLOAD_SIZE = 25e+6
@@ -85,11 +85,21 @@ export class RewardCreatorComponent implements OnInit {
               private userAuthService: UserauthService,
               private platform: Platform
               ) {
-                  this.loyaltyPointBalance = this.loyaltyPointsState.getState();
+                combineLatest([
+                  this.loyaltyPointsState.getBusinessLoyaltyPointBalance(),
+                  this.loyaltyPointsService.getExistingTiers(),
+                ]).pipe(
+                  filter(([_a, _b]) => _a && _b),
+                  take(1)
+                ).subscribe(() => {
+                      this.loyaltyPointBalance = this.loyaltyPointsState.getState();
+                      this.calculatePointValue();
+                      this.calculateTierDollarValue();
+                    });
 
-                  this.platform.backButton.subscribeWithPriority(10, () => {
-                    this.closeRewardCreator();
-                  });
+                this.platform.backButton.subscribeWithPriority(10, () => {
+                  this.closeRewardCreator();
+                });
               }
 
   get rewardType() {return this.rewardCreatorForm.get('rewardType').value }
@@ -129,7 +139,6 @@ export class RewardCreatorComponent implements OnInit {
       this.rewardCreatorForm.get('tier').setValue(r.tier_id);
       this.rewardUploadImage$.next(r.images);
       this.setRewardLink();
-      this.calculatePointValue();
       this.setRewardTier();
     }
 
@@ -336,9 +345,7 @@ export class RewardCreatorComponent implements OnInit {
 
   calculateTierDollarValue() {
     const tierEntranceValue: number = this.rewardTier.lp_entrance;
-    const pointPercentage: number =
-      this.userAuthService.userProfile.loyalty_point_balance
-        .loyalty_point_dollar_percent_value;
+    const pointPercentage: number = this.loyaltyPointsState.snapshot.loyalty_point_dollar_percent_value;
 
     if (pointPercentage === 0) {
       this.dollarEntranceValue = 0;

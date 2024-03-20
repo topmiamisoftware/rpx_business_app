@@ -18,7 +18,6 @@ import {MustMatch} from '../../../helpers/must-match.validator'
 import {ValidateUsername} from '../../../helpers/username.validator'
 import {ValidatePersonName} from '../../../helpers/name.validator'
 import {UserauthService} from '../../../services/userauth.service'
-import * as calendly from '../../../helpers/calendly/calendlyHelper'
 import * as map_extras from '../../../spotbie/map/map_extras/map_extras'
 import {Business} from '../../../models/business'
 import {HttpClient, HttpEventType} from '@angular/common/http';
@@ -26,7 +25,6 @@ import {Observable} from 'rxjs/internal/Observable'
 import {LocationService} from '../../../services/location-service/location.service'
 import {environment} from '../../../../environments/environment'
 import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum'
-import {SpotbiePaymentsService} from '../../../services/spotbie-payments/spotbie-payments.service'
 import {BehaviorSubject, combineLatest, of} from "rxjs";
 import {Preferences} from "@capacitor/preferences";
 import GeocoderResult = google.maps.GeocoderResult;
@@ -55,7 +53,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   @ViewChild('spotbieSettingsInfoText') spotbieSettingsInfoText: ElementRef
   @ViewChild('spotbie_password_change_info_text') spotbiePasswordInfoText: ElementRef
   @ViewChild('current_password_info') spotbieCurrentPasswordInfoText: ElementRef
-  @ViewChild('spotbie_deactivation_info') spotbieAccountDeactivationInfo
   @ViewChild('addressSearch') addressSearch
   @ViewChild('userAccountTypeNormalScroll') userAccountTypeNormalScroll
 
@@ -77,16 +74,12 @@ export class SettingsComponent implements OnInit, OnChanges {
   faFoodTruckIcon = faTruck;
 
   zoom: number = 18;
-  fitBounds: boolean = false;
   locationFound = false;
   settingsForm: UntypedFormGroup;
   businessSettingsForm: UntypedFormGroup;
   originPhoto: string = '../../assets/images/home_imgs/find-places-to-eat.svg';
   passwordForm: UntypedFormGroup;
   savePasswordShow: boolean = false;
-  deactivationForm: UntypedFormGroup;
-  accountDeactivation: boolean = false;
-  deactivationSubmitted: boolean = false;
   loading$ = new BehaviorSubject<boolean>(false);
   accountTypePhotos = [
     '../../assets/images/home_imgs/find-users.svg',
@@ -103,7 +96,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   selected: number;
   userIsSubscribed: boolean = false;
   userSubscriptionPlan: BusinessMembership;
-  _businessMembership = BusinessMembership;
   submitted: boolean = false;
   placeFormSubmitted: boolean = false;
   geoCoder: any;
@@ -120,7 +112,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   businessVerified: boolean = false;
   placeToEatMediaMessage: string;
   placeToEatMediaUploadProgress: number = 0
-  calendlyUp: boolean = false;
   businessCategoryList: Array<string> = [];
   activeBusinessCategories: string;
   city: string = null;
@@ -129,7 +120,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   line2: string = null;
   postalCode: string = null;
   state: string = null;
-  isSocialAccount: boolean = false;
   map$ = new BehaviorSubject<boolean>(true);
   displayLocationEnablingInstructions$ = new BehaviorSubject<boolean>(false);
 
@@ -142,7 +132,6 @@ export class SettingsComponent implements OnInit, OnChanges {
               private locationService: LocationService,
               private injector: Injector,
               private changeDetectionRef: ChangeDetectorRef,
-              private paymentService: SpotbiePaymentsService,
               public dialog: MatDialog
   ) {
 
@@ -167,6 +156,11 @@ export class SettingsComponent implements OnInit, OnChanges {
           this.loading$.next(false);
         })
       ).subscribe();
+  }
+
+  ngOnInit(): void {
+    this.loading$.next(true);
+    this.initSettingsForm('personal');
   }
 
   ngOnChanges() {
@@ -266,19 +260,6 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.placeSettingsFormUp = false;
   }
 
-  cancelMembership() {
-    const r = confirm(`
-            Are you sure you want to delete your subscription? All yours IN-HOUSE Promotions will also be deleted.
-        `);
-
-    if (r) {
-      this.paymentService.cancelBusinessMembership().subscribe(
-        resp => {
-          window.location.reload();
-        });
-    }
-  }
-
   closeAccountType() {
     this.loadAccountTypes = false;
   }
@@ -333,38 +314,9 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.changeDetectionRef.detectChanges();
   }
 
-  activateFullMembership(ca: number) {
-    switch (ca) {
-      case 2:
-        window.open(`${environment.baseUrl}make-payment/business-membership-1/${this.user.uuid}`, '_blank');
-        break;
-      case 3:
-        window.open(`${environment.baseUrl}make-payment/business-membership-2/${this.user.uuid}`, '_blank');
-        break;
-      case 1:
-        window.open(`${environment.baseUrl}make-payment/business-membership/${this.user.uuid}`, '_blank');
-        break;
-    }
-  }
-
   closePassKey() {
     this.passKeyVerificationForm = null;
     this.passKeyVerificationFormUp = false;
-    this.changeDetectionRef.detectChanges();
-  }
-
-  calendly(): void {
-    this.loading$.next(true);
-    this.calendlyUp = !this.calendlyUp;
-
-    if (this.calendlyUp) {
-      calendly.spawnCalendly(this.originTitle, this.originAddress, () => {
-        this.loading$.next(false);
-      });
-    } else {
-      this.loading$.next(false);
-    }
-
     this.changeDetectionRef.detectChanges();
   }
 
@@ -403,7 +355,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   private claimThisBusinessCB(resp: any) {
-    console.log('THE RESPONSE', resp);
     if (resp.message === 'passkey_mismatch') {
       this.passKeyVerificationForm.get('passKey').setErrors({invalid: true});
     } else if (resp.message === 'success') {
@@ -414,28 +365,16 @@ export class SettingsComponent implements OnInit, OnChanges {
       Preferences.set({ key: 'spotbie_userType', value: this.chosenAccountType.toString()});
       this.businessVerified = true;
 
+      this.userAuthService.getSettings();
+
       setTimeout(() => {
-        window.location.reload();
-      }, 500);
+        this.closeWindow();
+      }, 1500);
     }
 
     this.loading$.next(false);
 
     this.changeDetectionRef.detectChanges();
-  }
-
-  claimWithGoogle() {
-    const businessInfo = {
-      accountType: this.chosenAccountType
-    }
-
-    this.userAuthService.verifyBusiness(businessInfo).subscribe((resp) => {
-        this.claimThisBusinessCB(resp);
-      });
-  }
-
-  openWindow(window: any) {
-    window.open = true;
   }
 
   searchMapsKeyDown(evt) {
@@ -735,13 +674,6 @@ export class SettingsComponent implements OnInit, OnChanges {
       optionAndroid: AndroidSettings.Location,
       optionIOS: IOSSettings.LocationServices,
     });
-  }
-
-  markerDragEnd($event) {
-    console.log($event)
-    this.lat$.next($event.coords.lat);
-    this.lng$.next($event.coords.lng);
-    this.getAddress(this.lat$.getValue(), this.lng$.getValue());
   }
 
   getAddressCompoenent(results, field){
@@ -1052,9 +984,6 @@ export class SettingsComponent implements OnInit, OnChanges {
   get current_password() { return this.passwordForm.get('spotbie_current_password').value }
   get g() { return this.passwordForm.controls }
 
-  get deactivationPassword() { return this.deactivationForm.get('spotbie_deactivation_password').value}
-  get h() { return this.deactivationForm.controls }
-
   get originAddress() { return this.businessSettingsForm.get('originAddress').value }
   get spotbieOrigin() { return this.businessSettingsForm.get('spotbieOrigin').value }
   get originTitle() { return this.businessSettingsForm.get('originTitle').value }
@@ -1153,54 +1082,6 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
   }
 
-  cancelDeactivateAccount() {
-    this.accountDeactivation = false;
-  }
-
-  async startDeactivateAccount() {
-    this.accountDeactivation = true;
-
-    const deactivationPasswordValidator = [Validators.required];
-
-    this.deactivationForm = this.formBuilder.group({
-      spotbie_deactivation_password: ['', deactivationPasswordValidator],
-    });
-
-    this.deactivationForm.get('spotbie_deactivation_password').setValue('123456789');
-  }
-
-  deactivateAccount() {
-    const r = confirm('Are you sure you want to deactivate your account?')
-
-    if (!r) return
-    if (this.loading$.getValue()) return
-
-    this.loading$.next(true);
-
-    let deactivationPassword = null;
-
-    if (!this.isSocialAccount) {
-      if (this.deactivationForm.invalid) {
-        this.spotbieAccountDeactivationInfo.nativeElement.scrollIntoView({behavior: 'smooth', block: 'start'})
-        return
-      }
-      deactivationPassword = this.deactivationPassword
-    }
-
-    this.userAuthService.deactivateAccount(deactivationPassword, this.isSocialAccount).subscribe(
-      resp => {
-        this.deactivateCallback(resp)
-      })
-  }
-
-  private deactivateCallback(resp: any) {
-    this.loading$.next(false);
-    if (resp.success) {
-    } else {
-      console.log('deactivateCallback', resp)
-    }
-  }
-
   closeWindow() {
     this.closeWindowEvt.emit(null);
   }
@@ -1294,10 +1175,5 @@ export class SettingsComponent implements OnInit, OnChanges {
       streetViewControl: false,
       mapId: environment.mapId,
     };
-  }
-
-  ngOnInit(): void {
-    this.loading$.next(true);
-    this.initSettingsForm('personal');
   }
 }

@@ -26,29 +26,41 @@ export class CustomerManagerComponent implements OnInit {
   ngOnInit(): void {}
 
   openRecentGuests() {
-    this.dialog.open(RecentGuestsDialogComponent);
+    this.dialog.open(RecentGuestsDialogComponent, {
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
+    });
   }
 
   openSmsHistory() {
     this.dialog.open(SmsHistoryDialogComponent, {
       width: '90%',
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
     });
   }
 
   openEmailHistory() {
     this.dialog.open(EmailHistoryDialogComponent, {
       width: '90%',
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
     });
   }
 
   openFeedback() {
     this.dialog.open(FeedbackComponent, {
       width: '90%',
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
     });
   }
 
   openTextMessage() {
-    const dialogRef = this.dialog.open(TextMessageDialogComponent);
+    const dialogRef = this.dialog.open(TextMessageDialogComponent, {
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (!result) {
@@ -76,7 +88,10 @@ export class CustomerManagerComponent implements OnInit {
   }
 
   openEmail() {
-    const dialogRef = this.dialog.open(EmailDialogComponent);
+    const dialogRef = this.dialog.open(EmailDialogComponent, {
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (!result) {
