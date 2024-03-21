@@ -4,15 +4,10 @@ import {
   Component,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
-import {AllowedAccountTypes} from '../../../helpers/enum/account-type.enum';
-import {InfoObjectType} from '../../../helpers/enum/info-object-type.enum';
-import {getDistanceFromLatLngInMiles} from '../../../helpers/measure-units.helper';
 import {Ad} from '../../../models/ad';
 import {Business} from '../../../models/business';
-import {EVENT_CATEGORIES, FOOD_CATEGORIES, SHOPPING_CATEGORIES} from '../../map/map_extras/map_extras';
 import {AdsService} from '../ads.service';
 import {Preferences} from "@capacitor/preferences";
 import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
@@ -27,8 +22,6 @@ const SHOPPING_AD_IMAGE_MOBILE = 'assets/images/def/shopping/featured_banner_in_
 
 const EVENTS_AD_IMAGE = 'assets/images/def/events/footer_banner_in_house.jpg'
 const EVENTS_AD_IMAGE_MOBILE = 'assets/images/def/events/featured_banner_in_house.jpg'
-
-const BOTTOM_BANNER_TIMER_INTERVAL = 16000
 
 @Component({
   selector: 'app-bottom-ad-banner',

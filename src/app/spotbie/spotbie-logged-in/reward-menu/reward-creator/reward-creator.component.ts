@@ -60,7 +60,7 @@ export class RewardCreatorComponent implements OnInit {
   rewardDeleted$ = new BehaviorSubject<boolean>(false);
   uploadMediaForm$ = new BehaviorSubject<boolean>(false);
   loyaltyPointBalance: Immutable<LoyaltyPointBalance>;
-  qrCodeClaimReward = new BehaviorSubject<string>(QR_CODE_CALIM_REWARD_SCAN_BASE_URL);
+  qrCodeClaimReward = QR_CODE_CALIM_REWARD_SCAN_BASE_URL;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
   user$ = this.userAuthService.userProfile$;
   rewardTier: LoyaltyTier;
