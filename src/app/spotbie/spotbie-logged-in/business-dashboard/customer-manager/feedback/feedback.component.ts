@@ -17,7 +17,7 @@ import {AlertDialogComponent} from "../../../../../helpers/alert/alert.component
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatTableModule, SpotbiePipesModule],
 })
-export class FeedbackComponent  implements OnInit {
+export class FeedbackComponent implements OnInit {
   feedbackList$: Observable<Feedback[]> =
     this.feedbackState.feedbackList$;
 

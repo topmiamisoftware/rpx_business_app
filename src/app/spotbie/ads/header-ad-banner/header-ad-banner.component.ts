@@ -14,6 +14,7 @@ import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
 import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
 import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
+import {UserauthService} from "../../../services/userauth.service";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/header_banner_in_house.jpg'
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
@@ -50,7 +51,8 @@ export class HeaderAdBannerComponent implements OnInit, AfterViewInit, OnChanges
 
   constructor(private adsService: AdsService,
               private changeDetectorRef: ChangeDetectorRef,
-              private loyaltyPointsState: BusinessLoyaltyPointsState
+              private loyaltyPointsState: BusinessLoyaltyPointsState,
+              private userService: UserauthService,
   ) {
     this.loyaltyPointBalance$.next(this.loyaltyPointsState.getState());
   }
@@ -111,7 +113,7 @@ export class HeaderAdBannerComponent implements OnInit, AfterViewInit, OnChanges
   async getHeaderBannerAdCallback(resp: any){
     if(resp.success) {
       this.ad = resp.ad;
-      this.business = resp.business;
+      this.business = this.userService.userProfile$.getValue().business;
 
       this.displayAd = true;
       this.totalRewards = resp.totalRewards;

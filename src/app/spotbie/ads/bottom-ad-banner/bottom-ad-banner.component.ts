@@ -13,6 +13,7 @@ import {Preferences} from "@capacitor/preferences";
 import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
 import {BehaviorSubject} from "rxjs";
 import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
+import {UserauthService} from "../../../services/userauth.service";
 
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/footer_banner_in_house.jpg'
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg'
@@ -50,7 +51,8 @@ export class BottomAdBannerComponent implements OnInit, OnChanges, AfterViewInit
 
   constructor(private adsService: AdsService,
               private changeDetectorRef: ChangeDetectorRef,
-              private loyaltyPointState: BusinessLoyaltyPointsState
+              private loyaltyPointState: BusinessLoyaltyPointsState,
+              private userService: UserauthService,
   ) {
     this.loyaltyPointBalance$.next(this.loyaltyPointState.getState());
   }
@@ -136,7 +138,7 @@ export class BottomAdBannerComponent implements OnInit, OnChanges, AfterViewInit
   async getBottomHeaderCb(resp: any){
     if(resp.success) {
       this.ad = resp.ad;
-      this.business = resp.business;
+      this.business = this.userService.userProfile$.getValue().business;
 
       this.totalRewards = resp.totalRewards;
       this.displayAd = true;

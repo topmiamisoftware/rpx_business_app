@@ -13,6 +13,7 @@ import {Preferences} from "@capacitor/preferences";
 import {BusinessLoyaltyPointsState} from "../../spotbie-logged-in/state/business.lp.state";
 import {BehaviorSubject} from "rxjs";
 import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
+import {UserauthService} from "../../../services/userauth.service";
 
 const PLACE_TO_EAT_AD_IMAGE_MOBILE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg';
 const PLACE_TO_EAT_AD_IMAGE = 'assets/images/def/places-to-eat/featured_banner_in_house.jpg';
@@ -47,7 +48,8 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
   constructor(private adsService: AdsService,
               private deviceDetectorService: DeviceDetectorService,
               private changeDetection: ChangeDetectorRef,
-              private businessLoyaltyState: BusinessLoyaltyPointsState
+              private businessLoyaltyState: BusinessLoyaltyPointsState,
+              private userService: UserauthService,
   ) {
     this.loyaltyPointBalance$.next(this.businessLoyaltyState.getState());
   }
@@ -115,7 +117,7 @@ export class NearbyFeaturedAdComponent implements OnInit, OnChanges {
   async getNearByFeaturedCallback(resp: any){
     if(resp.success){
       this.ad = resp.ad;
-      this.business = resp.business;
+      this.business = this.userService.userProfile$.getValue().business;
       this.businessReady = true;
       this.distance = 5;
 

@@ -262,7 +262,6 @@ export class AdCreatorComponent implements OnInit, OnChanges {
         this.adCreatorForm.get('adImageMobile').setValue(this.adUploadImageMobile);
 
         if(this.adType === 1) {
-          console.log('HIIIII', this.adUploadImageMobile);
           this.adApp.updateAdImage(this.adUploadImageMobile);
         } else if (this.adAppMobile) {
           this.adAppMobile.updateAdImageMobile(this.adUploadImageMobile);
