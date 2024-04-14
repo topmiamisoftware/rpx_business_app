@@ -62,20 +62,11 @@ export class RewardCreatorComponent implements OnInit {
   loyaltyPointBalance: Immutable<LoyaltyPointBalance>;
   qrCodeClaimReward = QR_CODE_CALIM_REWARD_SCAN_BASE_URL;
   $showDeniedMediaUploader = new BehaviorSubject<boolean>(false);
-  user$ = this.userAuthService.userProfile$;
   rewardTier: LoyaltyTier;
   rewardTier$: Observable<LoyaltyTier>;
   dollarEntranceValue: number;
   lpEntranceValue: number;
   existingTiers$ = this.loyaltyPointsService.existingTiers$;
-  canUseTiers$ = this.user$.pipe(
-    map(
-      user =>
-        user.userSubscriptionPlan === BusinessMembership.Legacy ||
-        user.userSubscriptionPlan === BusinessMembership.Intermediate ||
-        user.userSubscriptionPlan === BusinessMembership.Ultimate
-    )
-  );
 
   constructor(private formBuilder: UntypedFormBuilder,
               private rewardCreatorService: RewardCreatorService,

@@ -142,7 +142,6 @@
 
             <input type="hidden" formControlName="rewardImage" />
 
-          <ng-container *ngIf="(canUseTiers$ | async) === true">
             <div class="mt-3 mb-3">
               <label class="spotbie-input-info spotbie-text-gradient">
                 Reward Tier
@@ -175,7 +174,6 @@
                 <p class="spotbie-text-gradient">Close the menu and tap on "Manage Tiers" to create Loyalty Tiers.</p>
               </ng-container>
             </div>
-          </ng-container>
         </form>
 
         <form *ngIf="rewardType === 0 || rewardType === 2">
