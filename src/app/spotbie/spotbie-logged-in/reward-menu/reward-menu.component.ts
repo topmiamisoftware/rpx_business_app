@@ -44,15 +44,6 @@ export class RewardMenuComponent implements OnInit {
   loyaltyPointsBalance$ = new BehaviorSubject<any>(null);
   isLoggedIn$ = new BehaviorSubject<string>(null);
   openTiers$ = new BehaviorSubject(false);
-  user$ = this.userService.userProfile$;
-  canUseTiers$ = this.user$.pipe(
-    map(
-      user =>
-        user.userSubscriptionPlan === BusinessMembership.Legacy ||
-        user.userSubscriptionPlan === BusinessMembership.Intermediate ||
-        user.userSubscriptionPlan === BusinessMembership.Ultimate
-    )
-  );
 
   constructor( private businessMenuService: BusinessMenuServiceService,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
