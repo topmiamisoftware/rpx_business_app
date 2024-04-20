@@ -22,9 +22,19 @@ import {Camera, CameraResultType, GalleryPhoto, Photo} from "@capacitor/camera";
 import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-settings";
 import {BehaviorSubject} from "rxjs";
 import {Platform} from "@ionic/angular";
+import { UserauthService } from '../../../../services/userauth.service'
+import {BusinessMembership} from "../../../../models/user";
 
 const AD_MEDIA_UPLOAD_API_URL = `${spotbieGlobals.API}in-house/upload-media`
 const AD_MEDIA_MAX_UPLOAD_SIZE = 10e+6
+
+interface InHouse {
+  name: string;
+  dimensions: string;
+  dimensionsMobile?: string;
+  enabled: boolean;
+  type: 'header' | 'featured' | 'footer';
+}
 
 @Component({
   selector: 'app-ad-creator',
@@ -56,7 +66,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
   adUploadImageMobile: string = null;
   adMediaMessage: string = 'Upload Image';
   adMediaUploadProgress: number = 0;
-  adTypeList: Array<any> = [
+  adTypeList: InHouse[] = [
    { name: 'Header Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'header'},
    { name: 'Featured Nearby Banner', dimensions: '600x600', enabled: false, type: 'featured'},
    { name: 'Footer Banner', dimensions: '1200x370', dimensionsMobile: '600x600', enabled: false, type: 'footer'}
@@ -72,7 +82,37 @@ export class AdCreatorComponent implements OnInit, OnChanges {
               private http: HttpClient,
               private changeDetectionRef: ChangeDetectorRef,
               private platform: Platform,
-  ) {}
+              userAuthService: UserauthService
+  ) {
+    // Enable the in-house ad depending on the BusinessMembership type.
+    const enabledInHouse: Array<InHouse> = [];
+    this.adTypeList.forEach(inHouse => {
+      if (
+        inHouse.type === 'footer' &&
+        userAuthService.userProfile.userSubscriptionPlan ===
+        BusinessMembership.Starter
+      ) {
+        inHouse.enabled = true;
+        enabledInHouse.push(inHouse);
+      }
+
+      if (
+        (inHouse.type === 'footer' ||
+          inHouse.type === 'featured' ||
+          inHouse.type === 'header') &&
+        (userAuthService.userProfile.userSubscriptionPlan ===
+          BusinessMembership.Intermediate ||
+          userAuthService.userProfile.userSubscriptionPlan ===
+          BusinessMembership.Ultimate ||
+          userAuthService.userProfile.userSubscriptionPlan ===
+          BusinessMembership.Legacy)
+      ) {
+        inHouse.enabled = true;
+        enabledInHouse.push(inHouse);
+      }
+    });
+    this.adTypeList = enabledInHouse;
+  }
 
   ngOnChanges() {
     this.changeDetectionRef.markForCheck();
