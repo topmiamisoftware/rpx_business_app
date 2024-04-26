@@ -1002,7 +1002,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (this.spotbie_phone_number !== '') {
+    if (this.spotbie_phone_number !== '' && this.spotbie_phone_number) {
       this.infoSms();
     } else {
       this.finishSaveSettings();
