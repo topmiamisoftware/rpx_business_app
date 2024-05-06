@@ -27,6 +27,10 @@ export class SmsGroupEntitiesState extends NgxsDataEntityCollectionsRepository<S
     super();
   }
 
+  ngxsOnInit() {
+    this.reset();
+  }
+
   @DataAction({subscribeRequired: false})
   getSmsGroupList() {
     return this.customerManagementService.getSmsGroupList().pipe(

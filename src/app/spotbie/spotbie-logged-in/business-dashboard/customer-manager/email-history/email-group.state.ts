@@ -27,6 +27,10 @@ export class EmailGroupEntitiesState extends NgxsDataEntityCollectionsRepository
     super();
   }
 
+  ngxsOnInit() {
+    this.reset();
+  }
+
   @DataAction({subscribeRequired: false})
   getEmailGroupList() {
     return this.customerManagementService.getEmailGroupList().pipe(

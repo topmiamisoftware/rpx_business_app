@@ -26,6 +26,10 @@ export class FeedbackEntitiesState extends NgxsDataEntityCollectionsRepository<F
     super();
   }
 
+  ngxsOnInit() {
+    this.reset();
+  }
+
   @Computed()
   get feedbackList$(): Observable<Feedback[]> {
     return this.entitiesArray$;
