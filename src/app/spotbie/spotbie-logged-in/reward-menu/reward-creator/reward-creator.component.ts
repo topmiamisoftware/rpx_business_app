@@ -335,16 +335,7 @@ export class RewardCreatorComponent implements OnInit {
   }
 
   calculateTierDollarValue() {
-    const tierEntranceValue: number = this.rewardTier.lp_entrance;
-    const pointPercentage: number = this.loyaltyPointsState.snapshot.loyalty_point_dollar_percent_value;
-
-    if (pointPercentage === 0) {
-      this.dollarEntranceValue = 0;
-      this.lpEntranceValue = 0;
-    } else {
-      this.dollarEntranceValue = tierEntranceValue * (pointPercentage / 100);
-      this.lpEntranceValue = tierEntranceValue;
-    }
+    this.dollarEntranceValue = this.rewardTier.lp_entrance;
   }
 
   setRewardTier() {

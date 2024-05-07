@@ -166,7 +166,6 @@
 
               <p class="spotbie-text-gradient spotbie-input-info" *ngIf="(rewardTier$ | async)">
                 Tier Entrance Dollar Value <span class="sb-text-light-green-gradient">${{ dollarEntranceValue | number: '1.2':'en-US' }}</span><br/>
-                Loyalty Points <span class="sb-text-light-green-gradient">{{ lpEntranceValue | number: '1.0':'en-US' }}</span>
               </p>
 
               <ng-container *ngIf="(existingTiers$ | async)?.length === 0">

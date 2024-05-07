@@ -215,21 +215,7 @@ export class TierCreatorComponent implements OnInit {
 
   calculateTierDollarValue() {
     this.tierDollarValueCalculated = false;
-
-    const tierEntranceValue: number = this.tierEntranceValue;
-    const pointPercentage: number =
-      this.userAuth.userProfile.loyalty_point_balance
-        .loyalty_point_dollar_percent_value;
-
-    if (pointPercentage === 0) {
-      this.dollarEntranceValue = 0;
-    } else {
-      this.dollarEntranceValue = (
-        tierEntranceValue *
-        (pointPercentage / 100)
-      ).toFixed(2);
-    }
-
+    this.dollarEntranceValue = this.tierEntranceValue;
     this.tierDollarValueCalculated = true;
   }
 
