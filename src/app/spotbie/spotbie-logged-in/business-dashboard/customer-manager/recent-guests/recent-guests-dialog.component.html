@@ -21,7 +21,7 @@
       </ng-container>
 
       <ng-container matColumnDef="total_spent">
-        <th mat-header-cell *matHeaderCellDef>Spent($ USD)</th>
+        <th mat-header-cell *matHeaderCellDef>Spent($)</th>
         <td mat-cell *matCellDef="let recentGuest">{{ recentGuest.user.total_spent_sum | numberFormat }}</td>
       </ng-container>
 
