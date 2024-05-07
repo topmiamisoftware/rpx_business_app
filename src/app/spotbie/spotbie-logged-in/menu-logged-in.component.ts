@@ -17,6 +17,7 @@ import {FoodTruckLocationDialogComponent} from "./food-truck-location/food-truck
 import {faTruck} from "@fortawesome/free-solid-svg-icons";
 import {map} from "rxjs/operators";
 import {Router} from "@angular/router";
+import {ShareAppComponentComponent} from "./share-app-component/share-app-component.component";
 
 @Component({
   selector: 'app-menu-logged-in',
@@ -111,6 +112,16 @@ export class MenuLoggedInComponent implements AfterViewInit {
 
   updateFoodTruck() {
     const dialogRef = this.dialog.open(FoodTruckLocationDialogComponent, {
+      height: '100vh',
+      width: '100%',
+      autoFocus: false,
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
+    });
+  }
+
+  shareApp(): void {
+    this.dialog.open(ShareAppComponentComponent, {
       height: '100vh',
       width: '100%',
       autoFocus: false,

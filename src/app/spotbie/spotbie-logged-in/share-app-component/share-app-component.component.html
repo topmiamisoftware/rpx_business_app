@@ -1,0 +1,15 @@
+<div class="spotbie-overlay-window p-3" style="padding-right: .2em !important;">
+  <h3 class="spotbie-text-gradient mt-4 mb-4">Earn Loyalty Points</h3>
+  <p class="mt-4 mb-4"
+    style="color: #fff"
+  >Start earning Loyalty Points with the SpotBie app. It's free, register here.</p>
+
+  <qrcode [qrdata]="'https://spotbie.com/home'"
+          [width]="300"
+          [cssClass]="'spotbie-full-qrCode mt-2 mb-4'"
+          [colorDark]="'#000'"
+          [colorLight]="'#64e56f'"
+          [errorCorrectionLevel]="'H'"></qrcode>
+
+  <div class="mt-4 mb-4 text-decoration-underline cursor-pointer" style="text-align: center; color: white;" (click)="close()">CLOSE</div>
+</div>
