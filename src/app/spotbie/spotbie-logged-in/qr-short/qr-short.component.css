@@ -1,0 +1,110 @@
+.spotbie-overlay-window{
+    background-color: #332f3e;
+    z-index: 97;
+}
+.sb-readImage{
+    position: absolute;
+    bottom: 10%;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 650px;
+    min-height: 650px;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    z-index: -1;
+}
+.fa-hamburger, .fa-check, .fa-coins{
+    background: unset !important;
+    color: white;
+    margin-left: 5px;
+}
+.sb-scanQrTitle{
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+.sb-qrTitleImage{
+    position: relative;
+    max-width: 50px;
+    margin-right: 10px;
+}
+.sb-helpInfo{
+  color:white;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+h5{
+    display: inline-block;
+    font-size: 1rem;
+}
+.sb-earnedPoints{
+    position: fixed;
+    display: none;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 7rem;
+}
+.fa-check{
+    color: white;
+}
+.sb-v-wrapper{
+  flex-direction: column;
+  text-align: center;
+}
+.fa-exclamation-triangle{
+    position: relative;
+    color: #ffc107;
+    font-size: 1rem;
+    bottom: 4px;
+    margin-right: 10px;
+}
+.spotbie-button{
+  background-color: #4caf50 !important;
+}
+@media (max-width: 768px){
+    .sb-readImage{
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: 300px;
+        min-height: 300px;
+    }
+}
+@media (max-width: 460px){
+    h5{
+        padding: 20px;
+    }
+    .sb-scanQrTitle{
+        margin-top: 15px !important;
+        padding-top: 20px !important;
+        margin-bottom: 0px !important;
+    }
+    .sb-qrTitleImage{
+        max-width: 35px;
+    }
+    .spotbie-input-info{
+        max-width: 96%;
+        width: 96%;
+        min-width: 96%;
+        font-size: .8rem;
+    }
+    .sb-input {
+        width: 90%;
+        min-width: 90%;
+    }
+    .sb-helpInfo{
+        width: 90%;
+        min-width: 90%;
+        max-width: 90%;
+    }
+    .sb-v-wrapper p{
+        max-width: 82%;
+        margin: 0 auto;
+    }
+}
+

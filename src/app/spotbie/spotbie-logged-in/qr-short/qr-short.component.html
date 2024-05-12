@@ -1,0 +1,83 @@
+<div>
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;" *ngIf="(rewardPrompted$ | async) === false">
+        <h5 class="spotbie-text-gradient text-center text-uppercase mb-3">
+            AWARD LOYALTY POINTS
+        </h5>
+
+        <form [formGroup]="businessLoyaltyPointsForm" *ngIf="businessLoyaltyPointsFormUp$ | async">
+            <div *ngIf="(businessLoyaltyPointsSubmitted$ | async) && f.totalSpent.errors else total_spent_normal"
+                  class="spotbie-input-info spotbie-error mb-2">
+                <div *ngIf="f.totalSpent.errors.required">
+                    You must enter a value!
+                </div>
+            </div>
+
+            <ng-template #total_spent_normal>
+                <label class="spotbie-input-info mb-2">
+                    Enter the bill total.
+                </label>
+            </ng-template>
+
+            <input class="sb-input text-center"
+                    formControlName="totalSpent"
+                    type="text"
+                    prefix="$"
+                    placeholder="$250"
+                    maxlength="7"
+                    thousandSeparator=","
+                    mask="separator.2" />
+        </form>
+
+        <div class='btn spotbie-button text-uppercase mt-4' (click)="startAwardProcess()">
+            AWARD
+        </div>
+    </div>
+
+    <div class='sb-v-wrapper' style="display: block; align-content: center;" *ngIf="(rewardPrompted$ | async) === true">
+        <h5 class="spotbie-text-gradient text-center">Let user scan for reward.</h5>
+
+        <qrcode [qrdata]="redeemable.uuid"
+                [width]="qrWidth"
+                [cssClass]="'spotbie-full-qrCode mt-2 mb-4'"
+                [colorDark]="'#000'"
+                [colorLight]="'#64e56f'"
+                [errorCorrectionLevel]="'H'"></qrcode>
+
+        <p class="spotbie-text-gradient text-center text-uppercase mt-3">scan once per bill</p>
+
+        <p class="spotbie-text-gradient text-center mt-3 text-uppercase">
+            Total Points<br/><span class='sb-text-light-green-gradient'>{{ (loyaltyPointReward$ | async) | number:'1.0':'en-US' }}</span>
+        </p>
+
+        <p class="spotbie-text-gradient text-center mt-3 text-uppercase">
+            Dollar Value<br/><span class='sb-text-light-green-gradient'>{{ (loyaltyPointRewardDollarValue$ | async) | currency : 'USD' }}</span>
+        </p>
+
+        <button class='btn spotbie-button text-uppercase mt-3 cursor-pointer' (click)="closeQr()">
+            FINISH <i class='fa fa-check'></i>
+        </button>
+        <div class='pb-5'></div>
+    </div>
+</div>
+
+<div class='spotbie-overlay-window' *ngIf="(rewardPrompt$ | async) === true">
+    <div class='sb-v-wrapper' style="display: grid; align-content: center;">
+      <div style="margin: 0 auto; max-width: 90%;">
+        <p class="sb-helpInfo text-center mt-4">
+          Are you sure you want to reward this user for a <span class='sb-text-light-green-gradient'>{{ totalSpent | currency : 'USD' }}</span> bill?
+        </p>
+
+        <p class="spotbie-text-gradient text-center mt-4 text-uppercase">
+          Dollar Value <span class='sb-text-light-green-gradient'>{{(loyaltyPointRewardDollarValue$ | async) | currency : 'USD' }}</span>
+        </p>
+
+        <button class='btn spotbie-button text-uppercase mt-5 mb-4' (click)="yes()">
+            YES <i class="fa fa-coins"></i>
+        </button>
+
+        <div class='spotbie-text-gradient cursor-pointer' (click)="no()">
+          <span>CANCEL</span>
+        </div>
+      </div>
+    </div>
+</div>
