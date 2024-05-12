@@ -3,19 +3,18 @@ import { HttpClient } from '@angular/common/http'
 import {catchError, tap} from 'rxjs/operators'
 import {BehaviorSubject, Observable, take} from 'rxjs'
 import { handleError } from '../../helpers/error-helper'
-import { LoyaltyPointBalance } from '../../models/loyalty-point-balance'
 import * as spotbieGlobals from '../../globals'
 import {LoyaltyTier} from '../../models/loyalty-point-tier';
 
 const LOYALTY_POINTS_API = spotbieGlobals.API+'loyalty-points'
 const LOYALTY_POINTS_TIER_API = spotbieGlobals.API+'lp-tiers';
 const REDEEMABLE_API = spotbieGlobals.API+'redeemable'
+const USER_API = spotbieGlobals.API+'user'
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoyaltyPointsService {
-  loyaltyPointBalance: LoyaltyPointBalance;
   existingTiers$ = new BehaviorSubject<LoyaltyTier[]>(null);
 
   constructor(private http: HttpClient) {
@@ -30,7 +29,7 @@ export class LoyaltyPointsService {
   }
 
 
-  public createRedeemable(createRedeemableObj: any): Observable<any>{
+  createRedeemable(createRedeemableObj: any): Observable<any>{
     const apiUrl = `${REDEEMABLE_API}/create`
 
     return this.http.post<any>(apiUrl, createRedeemableObj).pipe(
@@ -70,5 +69,9 @@ export class LoyaltyPointsService {
     return this.http
       .delete<any>(apiUrl)
       .pipe(catchError(handleError('deleteTier')));
+  }
+
+  lookUpCustomer(phoneNumber: string){
+    return this.http.get(`${USER_API}/get-user?phone_number=${phoneNumber}`);
   }
 }
