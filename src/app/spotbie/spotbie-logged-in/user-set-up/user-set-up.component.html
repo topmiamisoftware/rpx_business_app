@@ -1,0 +1,112 @@
+<div>
+  <!-- Look Up an account before awarding it anything -->
+  <div class='sb-v-wrapper' style="display: grid; align-content: center;" *ngIf="(accountLookUpFormUp$ | async) === true">
+    <h5 class="spotbie-text-gradient text-center text-uppercase mb-3">
+      CUSTOMER LOOK UP
+    </h5>
+
+    <form [formGroup]="accountLookUpForm" *ngIf="accountLookUpFormUp$ | async">
+      <div *ngIf="(accountLookUpFormSubmitted$ | async) && g.customerPhoneNumber.errors else customer_phone_number"
+           class="spotbie-input-info spotbie-error mb-2">
+        <div *ngIf="g.customerPhoneNumber.errors.required">
+          You must enter the customer phone number.
+        </div>
+      </div>
+
+      <ng-template #customer_phone_number>
+        <label class="spotbie-input-info mb-3" #phoneNumberLabel>
+          Enter the customer's phone number.
+        </label>
+      </ng-template>
+
+      <input class="sb-input text-center"
+             formControlName="customerPhoneNumber"
+             type='tel'
+             mask="(000) 000-0000"
+             autocomplete="tel"
+             (keyup)="lookEmUp()"
+             placeholder='(555) 555-5555' />
+    </form>
+
+    <ng-container *ngIf="(createUserButton$ | async) === true">
+      <div class='btn spotbie-button text-uppercase mt-4' (click)="createUser()">
+        CREATE USER
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- If there's no account then you can create one as the business owner -->
+  <div class='sb-v-wrapper' style="display: grid; align-content: center;" *ngIf="(accountSetUpFormUp$ | async) === true">
+    <h5 class="spotbie-text-gradient text-center text-uppercase mb-3">
+      CREATE ACCOUNT
+    </h5>
+
+    <form [formGroup]="accountSetUpForm" *ngIf="accountSetUpFormUp$ | async">
+      <div *ngIf="(accountSetUpFormSubmitted$ | async) && h.customerEmail.errors else user_email_normal"
+           class="spotbie-input-info spotbie-error mb-2">
+        <div *ngIf="h.customerEmail.errors.required">
+          Please enter customer's email.
+        </div>
+
+        <div *ngIf="h.customerEmail.errors.notUnique">
+          This email is already taken.
+        </div>
+      </div>
+
+      <ng-template #user_email_normal>
+        <label class="spotbie-input-info spotbie-text-gradient mb-2">
+          Enter customer's e-mail.
+        </label>
+      </ng-template>
+
+      <input class="sb-input"
+             formControlName="customerEmail"
+             type="text" value="email"
+             maxlength="135" />
+
+      <div *ngIf="(accountSetUpFormSubmitted$ | async) && h.customerFirstName.errors else user_first_name_normal"
+           class="spotbie-input-info spotbie-text-gradient spotbie-error mb-2">
+        <div *ngIf="h.customerFirstName.errors.required">
+          Please enter customer's first name.
+        </div>
+
+        <div *ngIf="h.customerFirstName.errors.maxlength">
+          First name cannot be longer than 72 characters.
+        </div>
+      </div>
+      <ng-template #user_first_name_normal>
+        <label class="spotbie-input-info spotbie-text-gradient mb-2">
+          Customer's first name.
+        </label>
+      </ng-template>
+      <input class="sb-input" formControlName="customerFirstName" type="text" value="name" maxlength="72" />
+    </form>
+  </div>
+
+  <!-- If an account was found then we can display the reward creator -->
+  <div class="sb-v-wrapper" style="display: grid; align-content: center;" *ngIf="(awardLpPoints$ | async) === true">
+    <ng-container *ngIf="(user$ | async) as user">
+      <h5 class="spotbie-text-gradient text-center text-uppercase">
+        SPOTBIE USER: {{ user.spotbie_user.first_name }}
+      </h5>
+      <p class="sb-text-light-green-gradient text-center text-uppercase small">
+        <span>LOYALTY POINTS: {{ (user.lp_in_business?.balance ?? 0) | number }}</span>
+        <br/>
+        <span>GLOBAL: {{ (user.lp_balance.balance ?? 0) | number }}</span>
+      </p>
+
+      <div class="mt-3 mb-5">
+        <app-reward-menu-short
+          [userLp]="user.lp_balance?.balance ?? 0"
+          [userLpInBusiness]="user.lp_in_business?.balance ?? 0"
+        ></app-reward-menu-short>
+      </div>
+
+      <div>
+        <app-qr-short></app-qr-short>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>
