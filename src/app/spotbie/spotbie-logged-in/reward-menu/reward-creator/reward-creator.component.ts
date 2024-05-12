@@ -15,8 +15,6 @@ import {AndroidSettings, IOSSettings, NativeSettings} from "capacitor-native-set
 import {BusinessLoyaltyPointsState} from "../../state/business.lp.state";
 import {LoyaltyPointBalance} from "../../../../models/loyalty-point-balance";
 import { Immutable } from '@angular-ru/cdk/typings';
-import { UserauthService } from '../../../../services/userauth.service';
-import { BusinessMembership } from '../../../../models/user';
 import { LoyaltyTier } from '../../../../models/loyalty-point-tier';
 import {Platform} from "@ionic/angular";
 import {filter, tap} from "rxjs/operators";
@@ -65,7 +63,6 @@ export class RewardCreatorComponent implements OnInit {
   rewardTier: LoyaltyTier;
   rewardTier$: Observable<LoyaltyTier>;
   dollarEntranceValue: number;
-  lpEntranceValue: number;
   existingTiers$ = this.loyaltyPointsService.existingTiers$;
 
   constructor(private formBuilder: UntypedFormBuilder,
@@ -73,7 +70,6 @@ export class RewardCreatorComponent implements OnInit {
               private http: HttpClient,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
               private loyaltyPointsService: LoyaltyPointsService,
-              private userAuthService: UserauthService,
               private platform: Platform
               ) {
                 combineLatest([
