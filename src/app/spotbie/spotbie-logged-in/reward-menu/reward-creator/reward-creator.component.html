@@ -173,6 +173,14 @@
                 <p class="spotbie-text-gradient">Close the menu and tap on "Manage Tiers" to create Loyalty Tiers.</p>
               </ng-container>
             </div>
+
+            <ng-container *ngIf="(rewardTier$ | async) === null">
+              <div class="mt-4">
+                <p class="small mb-2">Can be redeemed with points from across all stores.</p>
+                <ion-label style="padding-right: 2em;">IS GLOBAL?</ion-label>
+                <mat-slide-toggle formControlName="is_global" [style.color]="'#fff'"></mat-slide-toggle>
+              </div>
+            </ng-container>
         </form>
 
         <form *ngIf="rewardType === 0 || rewardType === 2">

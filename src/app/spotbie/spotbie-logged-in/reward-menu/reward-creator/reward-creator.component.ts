@@ -99,6 +99,7 @@ export class RewardCreatorComponent implements OnInit {
   get rewardDescription() {return this.rewardCreatorForm.get('rewardDescription').value }
   // get tier() {return this.rewardCreatorForm.get('tier').value }
   get rewardImage() {return this.rewardCreatorForm.get('rewardImage').value }
+  get isGlobal() {return this.rewardCreatorForm.get('is_global').value }
   get tier() {
     return this.rewardCreatorForm.get('tier').value;
   }
@@ -110,6 +111,7 @@ export class RewardCreatorComponent implements OnInit {
     const rewardNameValidators = [Validators.required, Validators.maxLength(50)];
     const rewardDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)];
     const rewardImageValidators = [Validators.required];
+    const isGlobalValidators = [Validators.required];
 
     this.rewardCreatorForm = this.formBuilder.group({
       rewardType: ['', rewardTypeValidators],
@@ -118,6 +120,7 @@ export class RewardCreatorComponent implements OnInit {
       rewardDescription: ['', rewardDescriptionValidators],
       rewardImage: ['', rewardImageValidators],
       tier: ['', null],
+      is_global: ['', isGlobalValidators],
     });
 
     if(this.reward$.getValue()){
@@ -128,6 +131,9 @@ export class RewardCreatorComponent implements OnInit {
       this.rewardCreatorForm.get('rewardDescription').setValue(r.description);
       this.rewardCreatorForm.get('rewardImage').setValue(r.images);
       this.rewardCreatorForm.get('tier').setValue(r.tier_id);
+      if (!r.tier_id) {
+        this.rewardCreatorForm.get('is_global').setValue(r.is_global);
+      }
       this.rewardUploadImage$.next(r.images);
       this.setRewardLink();
       this.setRewardTier();
@@ -169,7 +175,8 @@ export class RewardCreatorComponent implements OnInit {
     reward.images = this.rewardImage;
     reward.point_cost = this.rewardValue;
     reward.type = this.rewardType;
-    reward.tier_id = this.tier
+    reward.tier_id = this.tier;
+    reward.is_global = this.isGlobal;
 
     if (!this.reward$.getValue()) {
       this.rewardCreatorService.saveReward(reward).subscribe(resp => {
@@ -335,7 +342,7 @@ export class RewardCreatorComponent implements OnInit {
   }
 
   calculateTierDollarValue() {
-    this.dollarEntranceValue = this.rewardTier.lp_entrance;
+    this.dollarEntranceValue = this.rewardTier?.lp_entrance ?? 0;
   }
 
   setRewardTier() {
@@ -345,6 +352,9 @@ export class RewardCreatorComponent implements OnInit {
       map(tierList => tierList?.find(tier => tier.id === this?.tier)),
       filter(tier => !!tier),
       tap(tier => (this.rewardTier = tier)),
+      tap(tier => {
+          this.rewardCreatorForm.get('is_global').setValue(!tier);
+      }),
       tap(_ => this.calculateTierDollarValue())
     );
   }
