@@ -22,6 +22,10 @@
   <ng-container *ngIf="((displayBusinessSetUp$ | async) === false) &&
                        ((businessFetched$ | async) === true)">
     <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
+      <app-user-set-up></app-user-set-up>
+    </div>
+
+    <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
       <app-qr #qrApp></app-qr>
     </div>
 

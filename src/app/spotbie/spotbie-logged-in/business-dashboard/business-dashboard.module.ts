@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { AdManagerModule } from '../ad-manager-menu/ad-manager-menu.module';
 import {CustomerManagerModule} from "./customer-manager/customer-manager.module";
 import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
+import {UserSetUpModule} from "../user-set-up/user-set-up.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
     RewardMenuModule,
     RouterModule,
     QrModule,
+    UserSetUpModule,
     AdManagerModule,
     CustomerManagerModule,
   ],
