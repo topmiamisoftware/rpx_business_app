@@ -10,4 +10,5 @@ export class Reward {
     point_cost: number;
     link: string;
     tier_id: number;
+    is_global: boolean;
 }
