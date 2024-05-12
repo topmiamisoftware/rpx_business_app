@@ -12,6 +12,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
 import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -20,19 +21,20 @@ import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
     RewardCreatorComponent,
     TierCreatorComponent
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    QRCodeModule,
-    HelperModule,
-    SpotbiePipesModule,
-    IonicModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    NgxMaskDirective,
-    NgxMaskPipe,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        QRCodeModule,
+        HelperModule,
+        SpotbiePipesModule,
+        IonicModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        NgxMaskDirective,
+        NgxMaskPipe,
+        MatSlideToggleModule,
+    ],
   exports : [
     RewardMenuComponent
   ]

@@ -10,10 +10,7 @@ import {RewardCreatorComponent} from './reward-creator/reward-creator.component'
 import {RewardComponent} from './reward/reward.component';
 import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject} from "rxjs";
-import {UserauthService} from "../../../services/userauth.service";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
-import {BusinessMembership} from "../../../models/user";
-import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-reward-menu',
@@ -48,7 +45,6 @@ export class RewardMenuComponent implements OnInit {
   constructor( private businessMenuService: BusinessMenuServiceService,
               private loyaltyPointsState: BusinessLoyaltyPointsState,
               private router: Router,
-              private userService: UserauthService,
               route: ActivatedRoute){
       if(this.router.url.indexOf('business-menu') > -1){
         this.qrCodeLink = route.snapshot.params.qrCode
@@ -61,21 +57,17 @@ export class RewardMenuComponent implements OnInit {
 
     this.isLoggedIn$.next((await Preferences.get({key: 'spotbie_loggedIn'})).value);
 
-    if( this.userType$.getValue() !== this.eAllowedAccountTypes.Personal) {
-      this.getLoyaltyPointBalance();
-      this.fetchRewards();
-    } else {
-      this.fetchRewards(this.qrCodeLink);
-    }
+    this.getLoyaltyPointBalance();
+    this.fetchRewards();
   }
 
   getLoyaltyPointBalance(){
     this.loyaltyPointsBalance$.next(this.loyaltyPointsState.getState());
   }
 
-  fetchRewards(qrCodeLink: string = null){
+  fetchRewards(){
     const fetchRewardsReq = {
-      qrCodeLink: this.qrCodeLink
+      qrCodeLink: null
     }
 
     this.businessMenuService.fetchRewards(fetchRewardsReq).subscribe(resp => {
