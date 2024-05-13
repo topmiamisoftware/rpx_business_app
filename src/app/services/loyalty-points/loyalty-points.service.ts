@@ -5,11 +5,13 @@ import {BehaviorSubject, Observable, take} from 'rxjs'
 import { handleError } from '../../helpers/error-helper'
 import * as spotbieGlobals from '../../globals'
 import {LoyaltyTier} from '../../models/loyalty-point-tier';
+import {Reward} from "../../models/reward";
 
 const LOYALTY_POINTS_API = spotbieGlobals.API+'loyalty-points'
 const LOYALTY_POINTS_TIER_API = spotbieGlobals.API+'lp-tiers';
 const REDEEMABLE_API = spotbieGlobals.API+'redeemable'
 const USER_API = spotbieGlobals.API+'user'
+const REWARDS_API = spotbieGlobals.API+'reward'
 
 @Injectable({
   providedIn: 'root'
@@ -73,5 +75,12 @@ export class LoyaltyPointsService {
 
   lookUpCustomer(phoneNumber: string){
     return this.http.get(`${USER_API}/get-user?phone_number=${phoneNumber}`);
+  }
+
+  redeem(reward: Reward, user_id: number): Observable<any> {
+    return this.http.post(`${REWARDS_API}/claim`, {
+      redeemableHash: reward.uuid,
+      user_id,
+    })
   }
 }
