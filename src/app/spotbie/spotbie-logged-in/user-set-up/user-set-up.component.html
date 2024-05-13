@@ -85,9 +85,10 @@
 
   <!-- If an account was found then we can display the reward creator -->
   <div class="sb-v-wrapper" style="display: grid; align-content: center;" *ngIf="(awardLpPoints$ | async) === true">
+    <i class='fas fa-arrow-left' (click)="goBack()"></i>
     <ng-container *ngIf="(user$ | async) as user">
       <h5 class="spotbie-text-gradient text-center text-uppercase">
-        SPOTBIE USER: {{ user.spotbie_user.first_name }}
+        {{ user.spotbie_user.first_name }} {{ user.spotbie_user?.last_name }}
       </h5>
       <p class="sb-text-light-green-gradient text-center text-uppercase small">
         <span>LOYALTY POINTS: {{ (user.lp_in_business?.balance ?? 0) | number }}</span>
@@ -95,10 +96,11 @@
         <span>GLOBAL: {{ (user.lp_balance.balance ?? 0) | number }}</span>
       </p>
 
-      <div class="mt-3 mb-5">
+      <div class="mt-5 mb-5">
         <app-reward-menu-short
+          [user]="user$ | async"
           [userLp]="user.lp_balance?.balance ?? 0"
-          [userLpInBusiness]="user.lp_in_business?.balance ?? 0"
+          [userLpInBusiness]="user.lp_in_business ?? null"
         ></app-reward-menu-short>
       </div>
 

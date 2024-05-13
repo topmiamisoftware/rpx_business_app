@@ -1,23 +1,17 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Business } from '../../../models/business';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
-import { Redeemable } from '../../../models/redeemable';
-import * as spotbieGlobals from '../../../globals';
-import {BehaviorSubject, debounce, debounceTime, EMPTY, of} from "rxjs";
+import {BehaviorSubject, debounceTime, EMPTY} from "rxjs";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
-import {Platform} from "@ionic/angular";
 import {catchError, filter, tap} from "rxjs/operators";
 import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
 
-const QR_CODE_LOYALTY_POINTS_SCAN_BASE_URL = spotbieGlobals.API+'redeemable'
-
 export interface UserForBusiness {
   user: User;
   spotbie_user: SpotbieUser;
-  lp_in_business: {balance: number};
+  lp_in_business: {balance: number, balance_aggregate: number};
   lp_balance: {balance: number};
 }
 
@@ -130,5 +124,12 @@ export class UserSetUpComponent implements OnInit {
         }),
       )
       .subscribe();
+  }
+
+  goBack() {
+    this.accountLookUpFormUp$.next(true);
+    this.awardLpPoints$.next(false);
+    this.accountSetUpFormUp$.next(false);
+    this.accountLookUpForm.reset();
   }
 }

@@ -66,6 +66,12 @@ h5{
 .spotbie-button{
   background-color: #4caf50 !important;
 }
+.fa-arrow-left{
+  position: absolute;
+  color: white;
+  top: 20px;
+  left: 20px;
+}
 @media (max-width: 768px){
     .sb-readImage{
         width: 100%;
