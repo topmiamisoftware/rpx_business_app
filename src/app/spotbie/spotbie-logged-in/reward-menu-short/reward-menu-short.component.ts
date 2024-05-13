@@ -5,12 +5,15 @@ import {
 } from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
 import {RewardComponent} from './reward/reward.component';
 import {Preferences} from "@capacitor/preferences";
-import {BehaviorSubject, take} from "rxjs";
+import {BehaviorSubject, of, take} from "rxjs";
 import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
-import {tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 import {LoyaltyPointsService} from "../../../services/loyalty-points/loyalty-points.service";
+import {ToastController} from "@ionic/angular";
+import {UserForBusiness} from "../user-set-up/user-set-up.component";
+import {LoyaltyPointBalance} from "../../../models/loyalty-point-balance";
 
 @Component({
   selector: 'app-reward-menu-short',
@@ -22,25 +25,27 @@ export class RewardMenuShortComponent implements OnInit {
 
   @ViewChild('appRewardViewer') appRewardViewer: RewardComponent
 
-  @Input() userLpInBusiness: number;
+  @Input() userLpInBusiness: {balance: number, balance_aggregate: number};
   @Input() userLp: number;
   @Input() rewardAppFullScreen: boolean = false
-  @Input() set user(value: {user: User, spotbie_user: SpotbieUser}) {
+  @Input() set user(value: UserForBusiness) {
     this._user = value;
     this.user$.next(value);
   }
 
   rewards$ = new BehaviorSubject<Array<Reward>>([]);
-  availableRewards$ = new BehaviorSubject<Array<Reward>>([]);
+  availableRewards$ = new BehaviorSubject<Array<Reward>>(null);
   isLoggedIn$ = new BehaviorSubject<string>(null);
   user$ = new BehaviorSubject<{user: User, spotbie_user: SpotbieUser}>(null);
-  loyaltyPointsBalance$ = new BehaviorSubject<any>(null);
+  loyaltyPointsBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
   _user: {user: User, spotbie_user: SpotbieUser};
+  loading$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private businessMenuService: BusinessMenuServiceService,
     private loyaltyPointsState: BusinessLoyaltyPointsState,
     private loyaltyPointService: LoyaltyPointsService,
+    private toastService: ToastController
   ) {
     this.getLoyaltyPointBalance();
     this.loyaltyPointService.getExistingTiers().subscribe();
@@ -57,10 +62,28 @@ export class RewardMenuShortComponent implements OnInit {
   }
 
   rewardUser(reward: Reward) {
+    this.loading$.next(true);
 
+    this.loyaltyPointService.redeem(reward, this._user.spotbie_user.id)
+      .pipe(
+        catchError(async (err) => {
+          const toast = await this.toastService.create({
+            message: err.error?.message ?? err.message,
+            duration: 1500,
+            position: 'bottom',
+          });
+          await toast.present();
+          return of(err);
+        }),
+        tap((resp) => {
+          this.loading$.next(false);
+          console.log('redeemed', resp);
+        }),
+      ).subscribe();
   }
 
   fetchRewards() {
+    this.loading$.next(true);
     const fetchRewardsReq = {
       qrCodeLink: null
     }
@@ -81,13 +104,12 @@ export class RewardMenuShortComponent implements OnInit {
     }
 
     const tierList = this.loyaltyPointService.existingTiers$.getValue();
-    console.log('TIER LIST', tierList, 'REWARD', reward);
     if (!tierList) {
       return true;
     }
 
     const tier = tierList.find((t) => t.id === reward.tier_id);
-    if (tier.lp_entrance < this.userLpInBusiness) {
+    if (tier.lp_entrance < this.userLpInBusiness.balance_aggregate) {
       return true;
     }
 
@@ -95,12 +117,15 @@ export class RewardMenuShortComponent implements OnInit {
   }
 
   userHasEnoughLp(reward: Reward): boolean {
+    const balance = this.loyaltyPointsBalance$.getValue();
+    let point_cost = (reward.point_cost / balance.loyalty_point_dollar_percent_value) * 100;
+
     if (reward.is_global) {
-      if (reward.point_cost < this.userLp) {
+      if (point_cost < this.userLp) {
         return true;
       }
     } else {
-      if (reward.point_cost < this.userLpInBusiness) {
+      if (point_cost < this.userLpInBusiness.balance) {
         return true;
       }
     }
@@ -112,9 +137,9 @@ export class RewardMenuShortComponent implements OnInit {
     this.rewards$.pipe(
       take(1),
       tap((rewardList) => {
-        const availableRewards = rewardList.filter((r) => this.userIsInTier(r) && this.userHasEnoughLp(r));
-        console.log('TJE AVAILABLE REWARDS', availableRewards);
-        this.availableRewards$.next(availableRewards);
+        const availableRewards = rewardList?.filter((r) => this.userIsInTier(r) && this.userHasEnoughLp(r));
+        this.availableRewards$.next(availableRewards ?? []);
+        this.loading$.next(false);
       }),
     ).subscribe();
   }

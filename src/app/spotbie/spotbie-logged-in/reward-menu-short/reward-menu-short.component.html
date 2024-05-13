@@ -6,7 +6,7 @@
   </p>
 
   <div class='sb-menuItemWrapper'>
-    <ng-container *ngIf="(availableRewards$ | async).length === 0">
+    <ng-container *ngIf="(availableRewards$ | async)?.length === 0">
       <p class="sb-text-light-green-gradient small">
         No rewards available for your customer.
       </p>
@@ -15,7 +15,6 @@
          *ngFor="let reward of (availableRewards$ | async)"
          [ngStyle]="rewardTileStyling(reward)"
          (click)="rewardUser(reward)">
-
       <h6 *ngIf="reward.type === 0 || reward.type === 2">
           <span class="spotbie-text-gradient">
               {{ reward.name }}
@@ -34,3 +33,5 @@
     </div>
   </div>
 </div>
+
+<app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>
