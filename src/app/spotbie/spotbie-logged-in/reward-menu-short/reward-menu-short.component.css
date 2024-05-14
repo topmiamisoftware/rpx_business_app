@@ -103,7 +103,9 @@
   -webkit-text-fill-color: unset;
   color: white;
 }
-
+.spotbie-button{
+  background-color: #4caf50 !important;
+}
 @media (max-width: 1024px){
   .sb-menuItemWrapper{
     width: 96%;

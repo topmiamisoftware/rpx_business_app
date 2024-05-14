@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Reward} from '../../../models/reward';
 import {
   BusinessMenuServiceService
@@ -33,6 +33,8 @@ export class RewardMenuShortComponent implements OnInit {
     this.user$.next(value);
   }
 
+  @Output() userAwarded = new EventEmitter();
+
   rewards$ = new BehaviorSubject<Array<Reward>>([]);
   availableRewards$ = new BehaviorSubject<Array<Reward>>(null);
   isLoggedIn$ = new BehaviorSubject<string>(null);
@@ -40,6 +42,7 @@ export class RewardMenuShortComponent implements OnInit {
   loyaltyPointsBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
   _user: {user: User, spotbie_user: SpotbieUser};
   loading$ = new BehaviorSubject<boolean>(false);
+  userAwarded$ = new BehaviorSubject<Reward>(null);
 
   constructor(
     private businessMenuService: BusinessMenuServiceService,
@@ -64,6 +67,12 @@ export class RewardMenuShortComponent implements OnInit {
   rewardUser(reward: Reward) {
     this.loading$.next(true);
 
+    const c = confirm(`Are you sure you want to reward this user with "${reward.name}"?`);
+    if (!c) {
+      this.loading$.next(false);
+      return;
+    }
+
     this.loyaltyPointService.redeem(reward, this._user.spotbie_user.id)
       .pipe(
         catchError(async (err) => {
@@ -76,10 +85,19 @@ export class RewardMenuShortComponent implements OnInit {
           return of(err);
         }),
         tap((resp) => {
+          if (resp.success) {
+            this.userAwarded$.next(reward);
+            this.userAwarded.emit(null);
+          } else {
+            this.userAwarded$.next(null);
+          }
           this.loading$.next(false);
-          console.log('redeemed', resp);
         }),
       ).subscribe();
+  }
+
+  seeMenu() {
+    this.userAwarded$.next(null);
   }
 
   fetchRewards() {

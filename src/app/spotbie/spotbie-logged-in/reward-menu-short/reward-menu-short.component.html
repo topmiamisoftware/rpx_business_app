@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="(userAwarded$ | async) === null">
   <h4 id="sp-loyaltyMenuTitle" class="spotbie-text-gradient text-center text-uppercase mb-3">REWARD MENU</h4>
 
   <p class="spotbie-loyaltyMenuDescription spotbie-input-info text-center mb-3">
@@ -33,5 +33,19 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="(userAwarded$ | async) !== null">
+  <h4 class="spotbie-text-gradient text-center text-uppercase mb-3">
+    USER REWARDED!
+  </h4>
+
+  <p class="spotbie-loyaltyMenuDescription spotbie-input-info text-center mb-3">
+    {{ (user$ | async)?.user.spotbie_user.first_name }} was rewarded with
+  </p>
+
+  <div class='btn spotbie-button text-uppercase mt-4' (click)="seeMenu()">
+    SEE MENU
+  </div>
+</ng-container>
 
 <app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>
