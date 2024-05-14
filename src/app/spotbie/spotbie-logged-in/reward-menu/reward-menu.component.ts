@@ -20,16 +20,17 @@ import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
 })
 export class RewardMenuComponent implements OnInit {
 
-  @ViewChild('rewardCreator') rewardCreator: RewardCreatorComponent
-  @ViewChild('appRewardViewer') appRewardViewer: RewardComponent
+  @ViewChild('rewardCreator') rewardCreator: RewardCreatorComponent;
+  @ViewChild('appRewardViewer') appRewardViewer: RewardComponent;
 
-  @Input() rewardAppFullScreen: boolean = false
-  @Input() fullScreenMode: boolean = true
-  @Input() loyaltyPoints: string
-  @Input() qrCodeLink: string = null
+  @Input() rewardAppFullScreen: boolean = false;
+  @Input() fullScreenMode: boolean = true;
+  @Input() loyaltyPoints: string;
+  @Input() qrCodeLink: string = null;
 
-  @Output() closeWindowEvt = new EventEmitter()
-  @Output() notEnoughLpEvt = new EventEmitter()
+  @Output() closeWindowEvt = new EventEmitter();
+  @Output() notEnoughLpEvt = new EventEmitter();
+  @Output() rewardEdited = new EventEmitter();
 
   eAllowedAccountTypes = AllowedAccountTypes
   itemCreator$ = new BehaviorSubject<boolean>(false);
@@ -105,6 +106,7 @@ export class RewardMenuComponent implements OnInit {
   closeRewardCreatorAndRefetchRewardList(){
     this.closeRewardCreator();
     this.fetchRewards();
+    this.rewardEdited.emit(null);
   }
 
   rewardTileStyling(reward: Reward) {
