@@ -22,7 +22,7 @@
   <ng-container *ngIf="((displayBusinessSetUp$ | async) === false) &&
                        ((businessFetched$ | async) === true)">
     <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
-      <app-user-set-up></app-user-set-up>
+      <app-user-set-up #appUserSetUp></app-user-set-up>
     </div>
 
     <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
@@ -30,7 +30,12 @@
     </div>
 
     <div class="sb-dashboardWrapper" #rewardMenuAppAnchor>
-      <app-reward-menu [fullScreenMode]="false" (notEnoughLpEvt)="openLoyaltyPoints()" #rewardMenuApp></app-reward-menu>
+      <app-reward-menu
+        [fullScreenMode]="false"
+        (notEnoughLpEvt)="openLoyaltyPoints()"
+        (rewardEdited)="rewardEdited()"
+        #rewardMenuApp
+      ></app-reward-menu>
     </div>
 
     <div class="sb-dashboardWrapper" #adManagerAppAnchor>

@@ -4,6 +4,7 @@ import {QrComponent} from '../qr/qr.component';
 import {RewardMenuComponent} from '../reward-menu/reward-menu.component';
 import {BehaviorSubject} from "rxjs";
 import {BusinessMembership} from "../../../models/user";
+import {UserSetUpComponent} from "../user-set-up/user-set-up.component";
 
 @Component({
   selector: 'app-business-dashboard',
@@ -19,6 +20,7 @@ export class BusinessDashboardComponent implements OnInit {
   @ViewChild('qrApp') qrApp: QrComponent;
   @ViewChild('qrCodeAppAnchor') qrCodeAppAnchor: ElementRef;
   @ViewChild('rewardMenuAppAnchor') rewardMenuAppAnchor: ElementRef;
+  @ViewChild('appUserSetUp') appUserSetUp: UserSetUpComponent;
 
   displayBusinessSetUp$ = new BehaviorSubject<boolean>(false);
   businessFetched$ = new BehaviorSubject<boolean>(false);
@@ -67,6 +69,10 @@ export class BusinessDashboardComponent implements OnInit {
 
   openSettings(){
     this.openBusinessSettingsEvt.emit();
+  }
+
+  rewardEdited() {
+    this.appUserSetUp.goBack();
   }
 
   openLoyaltyPoints(){
