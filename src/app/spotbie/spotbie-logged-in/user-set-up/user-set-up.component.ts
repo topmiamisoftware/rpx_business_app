@@ -95,6 +95,10 @@ export class UserSetUpComponent implements OnInit {
       this.phoneNumberLabel.nativeElement.innerHTML = 'Enter the customer\'s phone number.';
     }
 
+    this.lookEmUpServiceCall();
+  }
+
+  lookEmUpServiceCall() {
     this.loyaltyPointsService.lookUpCustomer(this.customerPhoneNumber)
       .pipe(
         debounceTime(2000),
@@ -124,6 +128,10 @@ export class UserSetUpComponent implements OnInit {
         }),
       )
       .subscribe();
+  }
+
+  userAwarded() {
+    this.lookEmUpServiceCall();
   }
 
   goBack() {

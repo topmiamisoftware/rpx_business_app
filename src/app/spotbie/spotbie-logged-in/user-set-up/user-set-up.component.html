@@ -101,6 +101,7 @@
           [user]="user$ | async"
           [userLp]="user.lp_balance?.balance ?? 0"
           [userLpInBusiness]="user.lp_in_business ?? null"
+          (userAwarded)="userAwarded()"
         ></app-reward-menu-short>
       </div>
 
