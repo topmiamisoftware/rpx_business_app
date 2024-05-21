@@ -83,4 +83,12 @@ export class LoyaltyPointsService {
       user_id,
     })
   }
+
+  addLoyaltyPoints(businessLoyaltyPointsObj: any): Observable<any> {
+    const apiUrl = `${REDEEMABLE_API}/redeem`;
+
+    return this.http
+      .post<any>(apiUrl, businessLoyaltyPointsObj)
+      .pipe(catchError(handleError('saveLoyaltyPoint')));
+  }
 }
