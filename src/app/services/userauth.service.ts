@@ -38,7 +38,7 @@ export class UserauthService {
     });
   }
 
-  public verifyBusiness(businessInfo: any): Observable<any>{
+  verifyBusiness(businessInfo: any): Observable<any>{
     let apiUrl
 
     switch(businessInfo.accountType){
@@ -74,7 +74,7 @@ export class UserauthService {
       )
   }
 
-  public saveBusiness(businessInfo: any): Observable<any>{
+  saveBusiness(businessInfo: any): Observable<any>{
     let apiUrl
 
     switch(businessInfo.accountType){
@@ -206,6 +206,10 @@ export class UserauthService {
         throw err;
       })
     );
+  }
+
+  creatAccount(account: {email: string, phone_number: string, firstName: string}): Observable<any> {
+    return this.http.post(`${USER_API}/create-user`, account);
   }
 
   completeReset(
