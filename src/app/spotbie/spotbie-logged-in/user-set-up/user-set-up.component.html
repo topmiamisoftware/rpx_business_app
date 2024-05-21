@@ -128,12 +128,18 @@
         ></app-reward-menu-short>
       </div>
 
-      <div>
-        <app-qr-short
-          [user]="(user$ | async)"
-          (lpRedeemed)="userAwarded()"
-        ></app-qr-short>
-      </div>
+      <ng-container *ngIf="(showLpAward$ | async) === true else showTapForLp">
+        <div>
+          <app-qr-short
+            [user]="(user$ | async)"
+            (lpRedeemed)="userAwarded()"
+          ></app-qr-short>
+        </div>
+      </ng-container>
+
+      <ng-template #showTapForLp>
+        <h2 class="spotbie-text-gradient" style="opacity: 0.4" (click)="tapForLp($event)">TAP FOR LP</h2>
+      </ng-template>
     </ng-container>
   </div>
 </div>

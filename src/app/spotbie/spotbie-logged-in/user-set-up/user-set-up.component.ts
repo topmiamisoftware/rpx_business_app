@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
-import {BehaviorSubject, debounceTime, EMPTY, Observable, of} from "rxjs";
+import {BehaviorSubject, debounceTime, EMPTY, Observable, of, scan, Subscription, switchMap} from "rxjs";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
 import {catchError, filter, tap} from "rxjs/operators";
 import {User} from "../../../models/user";
@@ -41,14 +41,19 @@ export class UserSetUpComponent implements OnInit {
 
   loading$ = new BehaviorSubject<boolean>(false);
   user$ = new BehaviorSubject<UserForBusiness>(null);
+  showLpAward$ = new BehaviorSubject<boolean>(false);
   awardLpPoints$ = new BehaviorSubject<boolean>(false);
   signingUp$ = new BehaviorSubject<boolean>(false);
+
+  tapEvent$ = new BehaviorSubject(null);
+  tapEventSub$: Subscription;
 
   constructor(private userAuthService: UserauthService,
               private loyaltyPointsService: LoyaltyPointsService,
               private formBuilder: UntypedFormBuilder,
               private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
               private toastService: ToastController) {
+    this.setUpLpTapButton();
   }
 
   async ngOnInit() {
@@ -216,12 +221,31 @@ export class UserSetUpComponent implements OnInit {
     this.lookEmUpServiceCall();
   }
 
+  tapForLp($event) {
+    this.tapEvent$.next(0);
+  }
+
   goBack() {
+    this.showLpAward$.next(false);
+    this.setUpLpTapButton();
     this.accountLookUpFormUp$.next(true);
     this.awardLpPoints$.next(false);
     this.accountSetUpFormUp$.next(false);
     this.accountLookUpForm.reset();
     this.accountLookUpForm.setErrors(null);
+  }
+
+  setUpLpTapButton(){
+    this.tapEventSub$ = this.tapEvent$.pipe(
+      scan((count: number) => (count > 4) ? 0 : count + 1, 0),
+      switchMap((a) => {
+        if (a === 5) {
+          this.showLpAward$.next(true);
+          return of(0);
+        }
+        return of(a);
+      }),
+    ).subscribe();
   }
 
   removeWhiteSpace(key) {

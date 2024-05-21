@@ -40,7 +40,7 @@
   </h4>
 
   <p class="spotbie-loyaltyMenuDescription spotbie-input-info text-center mb-3">
-    {{ (user$ | async)?.user.spotbie_user.first_name }} was rewarded with
+    {{ (user$ | async)?.spotbie_user.first_name }} was rewarded with {{ (userAwarded$ | async)?.name }}.
   </p>
 
   <div class='btn spotbie-button text-uppercase mt-4' (click)="seeMenu()">
