@@ -2,11 +2,12 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
-import {BehaviorSubject, debounceTime, EMPTY} from "rxjs";
+import {BehaviorSubject, debounceTime, EMPTY, Observable, of} from "rxjs";
 import {BusinessLoyaltyPointsState} from "../state/business.lp.state";
 import {catchError, filter, tap} from "rxjs/operators";
 import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
+import {ToastController} from "@ionic/angular";
 
 export interface UserForBusiness {
   user: User;
@@ -25,7 +26,8 @@ export interface UserForBusiness {
 })
 export class UserSetUpComponent implements OnInit {
 
- @ViewChild('phoneNumberLabel') phoneNumberLabel;
+  @ViewChild('phoneNumberLabel') phoneNumberLabel;
+  @ViewChild('spotbieSignUpIssues') spotbieSignUpIssues;
 
   accountLookUpForm: UntypedFormGroup;
   accountLookUpFormUp$ = new BehaviorSubject<boolean>(false);
@@ -38,15 +40,15 @@ export class UserSetUpComponent implements OnInit {
   accountSetUpFormSubmitted$ = new BehaviorSubject<boolean>(false);
 
   loading$ = new BehaviorSubject<boolean>(false);
-
   user$ = new BehaviorSubject<UserForBusiness>(null);
-
   awardLpPoints$ = new BehaviorSubject<boolean>(false);
+  signingUp$ = new BehaviorSubject<boolean>(false);
 
   constructor(private userAuthService: UserauthService,
               private loyaltyPointsService: LoyaltyPointsService,
               private formBuilder: UntypedFormBuilder,
-              private businessLoyaltyPointsState: BusinessLoyaltyPointsState) {
+              private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
+              private toastService: ToastController) {
   }
 
   async ngOnInit() {
@@ -58,13 +60,34 @@ export class UserSetUpComponent implements OnInit {
   get h() { return this.accountSetUpForm.controls }
 
   initCustomerSetUp() {
-    const customerPhoneNumberValidators = [Validators.required];
+    const customerEmailValidators = [Validators.required, Validators.email];
+    const customerNameValidators = [Validators.required];
 
-    this.accountLookUpForm = this.formBuilder.group({
-      customerPhoneNumber: ['', customerPhoneNumberValidators]
+    this.accountSetUpForm = this.formBuilder.group({
+      customerEmail: ['', customerEmailValidators],
+      customerFirstName: ['', customerNameValidators],
     });
 
     this.accountSetUpFormUp$.next(true);
+  }
+
+  createAccount() {
+    this.accountSetUpFormSubmitted$.next(true);
+    this.accountSetUpForm.updateValueAndValidity();
+
+    if (this.accountSetUpForm.invalid) {
+      return;
+    }
+
+    this.userAuthService.creatAccount({
+      firstName: this.customerFirstName,
+      email: this.customerEmail,
+      phone_number: this.customerPhoneNumber
+    }).pipe(
+      catchError(this.signUpError()),
+    ).subscribe((resp) => {
+      this.setUpCallback(resp);
+    });
   }
 
   get customerPhoneNumber() { return this.accountLookUpForm.get('customerPhoneNumber').value }
@@ -86,6 +109,63 @@ export class UserSetUpComponent implements OnInit {
     this.initCustomerSetUp();
   }
 
+  private async setUpCallback(resp: any) {
+    const signUpInstructions = this.spotbieSignUpIssues.nativeElement;
+
+    if (resp?.message === 'success') {
+      signUpInstructions.innerHTML = "User account created successfully.";
+      this.lookEmUpServiceCall();
+
+      setTimeout(() => {
+        this.accountSetUpFormUp$.next(false);
+      }, 2300);
+    } else {
+
+      const toast = await this.toastService.create({
+        message: 'There was an error creating the account.',
+        duration: 1500,
+        position: 'bottom',
+      });
+      await toast.present();
+      return of(resp);
+    }
+
+    this.loading$.next(false);
+    this.signingUp$.next(false);
+  }
+
+  signUpError<T>(operation = 'operation', result?: T) {
+    this.signingUp$.next(false);
+    this.loading$.next(false);
+
+    return (error: any): Observable<T> => {
+      const signUpInstructions = this.spotbieSignUpIssues.nativeElement;
+      signUpInstructions.style.display = 'none';
+
+      const errorList = error.error.errors;
+
+      if (errorList?.email) {
+        const errors: {[k: string]: any} = {};
+        errorList.email.forEach(error => {
+          errors[error] = true;
+        });
+        this.accountSetUpForm.get('customerEmail').setErrors(errors);
+        document.getElementById('user_email').style.border = '1px solid red';
+      } else {
+        document.getElementById('user_email').style.border = 'unset';
+      }
+
+      this.signingUp$.next(false);
+
+      setTimeout(() => {
+        signUpInstructions.style.display = 'block';
+      }, 200);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
+
   lookEmUp() {
     this.user$.next(null);
 
@@ -103,8 +183,7 @@ export class UserSetUpComponent implements OnInit {
       .pipe(
         debounceTime(2000),
         catchError((err) => {
-          this.createUserButton$.next(true);
-          this.phoneNumberLabel.nativeElement.innerHTML = 'Phone number not found.';
+          this.phoneNumberLabel.nativeElement.innerHTML = err.message;
           return EMPTY;
         }),
         filter((res) => !!res),
@@ -124,6 +203,9 @@ export class UserSetUpComponent implements OnInit {
             });
             this.accountLookUpFormUp$.next(false);
             this.awardLpPoints$.next(true);
+          } else {
+            this.createUserButton$.next(true);
+            this.phoneNumberLabel.nativeElement.innerHTML = 'Phone number not found.';
           }
         }),
       )
@@ -139,5 +221,10 @@ export class UserSetUpComponent implements OnInit {
     this.awardLpPoints$.next(false);
     this.accountSetUpFormUp$.next(false);
     this.accountLookUpForm.reset();
+    this.accountLookUpForm.setErrors(null);
+  }
+
+  removeWhiteSpace(key) {
+    this.accountSetUpForm.get(key).setValue(this.accountSetUpForm.get(key).value.trim());
   }
 }
