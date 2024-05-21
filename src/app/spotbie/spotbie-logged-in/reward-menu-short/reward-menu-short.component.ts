@@ -127,7 +127,7 @@ export class RewardMenuShortComponent implements OnInit {
     }
 
     const tier = tierList.find((t) => t.id === reward.tier_id);
-    if (tier.lp_entrance < this.userLpInBusiness.balance_aggregate) {
+    if (tier.lp_entrance < this.userLpInBusiness?.balance_aggregate) {
       return true;
     }
 
@@ -143,7 +143,7 @@ export class RewardMenuShortComponent implements OnInit {
         return true;
       }
     } else {
-      if (point_cost < this.userLpInBusiness.balance) {
+      if (point_cost < this.userLpInBusiness?.balance) {
         return true;
       }
     }
