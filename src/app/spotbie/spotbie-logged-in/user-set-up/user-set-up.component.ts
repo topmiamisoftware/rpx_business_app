@@ -233,6 +233,7 @@ export class UserSetUpComponent implements OnInit {
     this.accountSetUpFormUp$.next(false);
     this.accountLookUpForm.reset();
     this.accountLookUpForm.setErrors(null);
+    this.createUserButton$.next(false);
   }
 
   setUpLpTapButton(){

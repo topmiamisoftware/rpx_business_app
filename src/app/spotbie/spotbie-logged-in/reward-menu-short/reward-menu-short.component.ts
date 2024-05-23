@@ -4,7 +4,6 @@ import {
   BusinessMenuServiceService
 } from '../../../services/spotbie-logged-in/business-menu/business-menu-service.service';
 import {RewardComponent} from './reward/reward.component';
-import {Preferences} from "@capacitor/preferences";
 import {BehaviorSubject, of, take} from "rxjs";
 import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
@@ -31,13 +30,13 @@ export class RewardMenuShortComponent implements OnInit {
   @Input() set user(value: UserForBusiness) {
     this._user = value;
     this.user$.next(value);
+    this.fetchRewards();
   }
 
   @Output() userAwarded = new EventEmitter();
 
   rewards$ = new BehaviorSubject<Array<Reward>>([]);
   availableRewards$ = new BehaviorSubject<Array<Reward>>(null);
-  isLoggedIn$ = new BehaviorSubject<string>(null);
   user$ = new BehaviorSubject<{user: User, spotbie_user: SpotbieUser}>(null);
   loyaltyPointsBalance$ = new BehaviorSubject<LoyaltyPointBalance>(null);
   _user: {user: User, spotbie_user: SpotbieUser};
@@ -59,9 +58,6 @@ export class RewardMenuShortComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.isLoggedIn$.next((await Preferences.get({key: 'spotbie_loggedIn'})).value);
-
-    this.fetchRewards();
   }
 
   rewardUser(reward: Reward) {
