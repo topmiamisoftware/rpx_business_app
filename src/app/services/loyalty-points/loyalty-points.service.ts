@@ -74,7 +74,7 @@ export class LoyaltyPointsService {
   }
 
   lookUpCustomer(phoneNumber: string){
-    return this.http.get(`${USER_API}/get-user?phone_number=${phoneNumber}`);
+    return this.http.get(`${USER_API}/get-user?phone_number=${encodeURIComponent(phoneNumber)}`);
   }
 
   redeem(reward: Reward, user_id: number): Observable<any> {
