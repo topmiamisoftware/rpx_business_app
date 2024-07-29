@@ -4,7 +4,6 @@ import {BehaviorSubject, interval, Observable, switchMap} from 'rxjs';
 import * as spotbieGlobals from '../globals';
 import {map, tap} from "rxjs/operators";
 import {environment} from "../../environments/environment.prod";
-import {ModalController} from "@ionic/angular";
 
 const UPDATE_API = spotbieGlobals.API + 'business-app';
 
@@ -14,11 +13,10 @@ const UPDATE_API = spotbieGlobals.API + 'business-app';
 export class UpdateAppService {
 
   appNeedsUpdate$: Observable<boolean>;
-  _downloaded$: BehaviorSubject<boolean | null | 'downloading'> = new BehaviorSubject<boolean | null | 'downloading'>(null);
+  _downloaded$: BehaviorSubject<boolean | 'downloading'> = new BehaviorSubject<boolean | 'downloading'>(false);
   _progress$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   constructor(
     private http: HttpClient,
-    private modalCtrl: ModalController
   ) {
     this.initUpdateCheck();
   }
@@ -32,30 +30,27 @@ export class UpdateAppService {
       .pipe(
         tap( event => {
           if (event.type === HttpEventType.DownloadProgress) {
-            this.downloader(Math.round(100 * event.loaded / 151176512));
-          } else if (event.type === HttpEventType.Response){
-            this.downloader(event.body);
+            this.updateProgress(Math.round(100 * event.loaded / 151176512));
+          } else if (event.type === HttpEventType.Response) {
+            this.eventTypeResponse(event.body);
           }
         }),
     );
   }
 
-  private downloader(progress: number): void {
-    if (progress === 100) {
-      // finished downloading?
-      this._downloaded$.next(true);
-    } else {
-      this._progress$.next(progress);
-      this._downloaded$.next('downloading');
+  private updateProgress(progress: number): void {
+    this._progress$.next(progress);
+    this._downloaded$.next('downloading');
+  }
+
+  private eventTypeResponse(res){
+    if (res.success) {
+      this._progress$.next(100);
     }
   }
 
   get progress$() {
     return this._progress$;
-  }
-
-  get downloaded$() {
-    return this._downloaded$;
   }
 
   checkApp(): Observable<any> {

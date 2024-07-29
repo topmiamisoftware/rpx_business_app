@@ -3,7 +3,6 @@ import {IonicModule, ModalController} from "@ionic/angular";
 import {UpdateAppService} from "../../services/update-app.service";
 import {BehaviorSubject} from "rxjs";
 import {CommonModule} from "@angular/common";
-import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-update-service-modal',
@@ -17,16 +16,13 @@ import { Browser } from '@capacitor/browser';
 export class UpdateServiceModalComponent  implements OnInit {
 
   name: string;
+  progress$: BehaviorSubject<number> = this.updateAppService.progress$;
 
-  downloaded$: BehaviorSubject<boolean | null | 'downloading'> = this.updateappService.downloaded$;
-  progress$: BehaviorSubject<number> = this.updateappService.progress$;
-
-  constructor(private modalCtrl: ModalController, private updateappService: UpdateAppService ) {}
+  constructor(private modalCtrl: ModalController, private updateAppService: UpdateAppService ) {}
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
-
 
   ngOnInit() {}
 }

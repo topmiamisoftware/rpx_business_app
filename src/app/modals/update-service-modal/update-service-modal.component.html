@@ -6,16 +6,17 @@
     <ion-title>App Update</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content class="ion-padding">
-  <ion-item *ngIf="(downloaded$ | async) === true">
+  <ion-item *ngIf="(progress$ | async) === 100">
     App Downloaded
   </ion-item>
 
-  <ion-item *ngIf="(downloaded$ | async) === false">
+  <ion-item *ngIf="(progress$ | async) !== 100">
     <ion-text> {{ (progress$ | async) }}% </ion-text>
   </ion-item>
 
-  <ng-container *ngIf="(downloaded$ | async) === true">
+  <ng-container *ngIf="(progress$ | async) === 100">
     <ion-content>
       <ion-item>
         1. Once the app finishes downloading, you'll be able to find the app in your _____ folder.
