@@ -1,15 +1,10 @@
-import {
-  Component,
-  ViewChild,
-  AfterViewInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {UserauthService} from '../../services/userauth.service';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {SettingsComponent} from './settings/settings.component';
 import {logOutCallback} from '../../helpers/logout-callback';
 import {BehaviorSubject, take} from 'rxjs';
-import {MenuController} from '@ionic/angular';
+import {MenuController, ModalController} from '@ionic/angular';
 import {BusinessLoyaltyPointsState} from "./state/business.lp.state";
 import {AllowedAccountTypes} from '../../helpers/enum/account-type.enum';
 import {MatDialog} from "@angular/material/dialog";
@@ -18,6 +13,11 @@ import {faTruck} from "@fortawesome/free-solid-svg-icons";
 import {map} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {ShareAppComponentComponent} from "./share-app-component/share-app-component.component";
+import {UpdateAppService} from "../../services/update-app.service";
+import {UpdateServiceModalComponent} from "../../modals/update-service-modal/update-service-modal.component";
+import {HttpEventType} from "@angular/common/http";
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import {Capacitor} from "@capacitor/core";
 
 @Component({
   selector: 'app-menu-logged-in',
@@ -41,6 +41,7 @@ export class MenuLoggedInComponent implements AfterViewInit {
   business = false;
   eventMenuOpen = false;
   user$ = this.userAuthService.userProfile$;
+  needToUpdate$ = this.appUpdateService.appNeedsUpdate$;
 
   constructor(
       private userAuthService: UserauthService,
@@ -49,6 +50,8 @@ export class MenuLoggedInComponent implements AfterViewInit {
       private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
       public dialog: MatDialog,
       private router: Router,
+      private appUpdateService: UpdateAppService,
+      private modalCtrl: ModalController,
   ) {
     this.isMobile = this.deviceService.isMobile();
     this.isDesktop = this.deviceService.isDesktop();
@@ -129,4 +132,44 @@ export class MenuLoggedInComponent implements AfterViewInit {
       exitAnimationDuration: '0ms',
     });
   }
+
+  async downloadApp() {
+    this.appUpdateService.downloadApp().subscribe(async (r) => {
+      if (r.type === HttpEventType.Response) {
+        // Desktop Behavior
+        if (!Capacitor.isNativePlatform()) {
+          const blob = r.body as Blob;
+          const url= window.URL.createObjectURL(blob);
+          window.open(url);
+        }
+
+        // iOS and Android Behavior
+        if (Capacitor.isNativePlatform()) {
+          const blob = r.body as Blob;
+          const base64Data = (await blobToBase64(blob)) as string;
+
+          await Filesystem.appendFile({
+            path: 'Sb-Business.apk',
+            data: base64Data,
+            directory: Directory.Documents,
+          });
+        }
+      }
+    });
+
+    /**
+     * Display a modal where you can show the download's progress.
+     */
+    await this.modalCtrl.create({
+      component: UpdateServiceModalComponent,
+    }).then(m => m.present());
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
 }
