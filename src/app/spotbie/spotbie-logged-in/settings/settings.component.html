@@ -99,9 +99,19 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="spotbie-input-info spotbie-text-gradient mb-2">
+                        <div *ngIf="submitted && f.spotbie_email.errors else phone_number_normal"
+                             class="spotbie-input-info spotbie-text-gradient spotbie-error mb-2">
+                          <div *ngIf="f.spotbie_phone_number.errors.notUnique">
+                            This phone number is already taken.
+                          </div>
+                        </div>
+
+                        <ng-template #phone_number_normal>
+                          <label class="spotbie-input-info spotbie-text-gradient mb-2">
                             Phone number.
-                        </label>
+                          </label>
+                        </ng-template>
+
                         <input class='sb-input'
                                 type='tel'
                                 mask="(000) 000-0000"
