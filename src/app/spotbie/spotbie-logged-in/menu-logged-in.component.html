@@ -25,6 +25,15 @@
         <ion-icon name="code-download-outline" slot="start"></ion-icon>
         SHARE APP
       </ion-item>
+
+      <ion-item class="ion-padding-bottom"
+                color="primary"
+                lines="full"
+                (click)="downloadApp()"
+                *ngIf="needToUpdate$ | async">
+        <ion-icon name="code-download-outline" slot="start"></ion-icon>
+        DOWNLOAD NEW APP
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>
