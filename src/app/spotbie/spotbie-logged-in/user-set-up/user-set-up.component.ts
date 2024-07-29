@@ -87,7 +87,7 @@ export class UserSetUpComponent implements OnInit {
     this.userAuthService.creatAccount({
       firstName: this.customerFirstName,
       email: this.customerEmail,
-      phone_number: this.customerPhoneNumber
+      phone_number: '+1'+this.customerPhoneNumber
     }).pipe(
       catchError(this.signUpError()),
     ).subscribe((resp) => {
@@ -184,7 +184,7 @@ export class UserSetUpComponent implements OnInit {
   }
 
   lookEmUpServiceCall() {
-    this.loyaltyPointsService.lookUpCustomer(this.customerPhoneNumber)
+    this.loyaltyPointsService.lookUpCustomer('+1'+this.customerPhoneNumber)
       .pipe(
         debounceTime(2000),
         catchError((err) => {
