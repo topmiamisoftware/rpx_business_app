@@ -20,7 +20,6 @@ export class UpdateServiceModalComponent  implements OnInit {
 
   downloaded$: BehaviorSubject<boolean | null | 'downloading'> = this.updateappService.downloaded$;
   progress$: BehaviorSubject<number> = this.updateappService.progress$;
-  instructions$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private modalCtrl: ModalController, private updateappService: UpdateAppService ) {}
 
@@ -28,9 +27,6 @@ export class UpdateServiceModalComponent  implements OnInit {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  async instructions() {
-    this.instructions$.next(true);
-  }
 
   ngOnInit() {}
 }

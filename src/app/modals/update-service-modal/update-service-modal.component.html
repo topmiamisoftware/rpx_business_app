@@ -9,14 +9,13 @@
 <ion-content class="ion-padding">
   <ion-item *ngIf="(downloaded$ | async) === true">
     App Downloaded
-    <ion-button (click)="instructions()">RE-INSTALL</ion-button>
   </ion-item>
 
-  <ion-item>
+  <ion-item *ngIf="(downloaded$ | async) === false">
     <ion-text> {{ (progress$ | async) }}% </ion-text>
   </ion-item>
 
-  <ng-container *ngIf="(instructions$ | async) === true">
+  <ng-container *ngIf="(downloaded$ | async) === true">
     <ion-content>
       <ion-item>
         1. Once the app finishes downloading, you'll be able to find the app in your _____ folder.
