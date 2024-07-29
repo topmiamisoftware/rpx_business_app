@@ -177,7 +177,6 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   private populateSettings(settingsResponse: any) {
     if (settingsResponse.success) {
-      console.log('SETTINGS RESPONSE', settingsResponse);
       this.user = settingsResponse.user;
       this.user.spotbie_user = settingsResponse.spotbie_user;
       this.user.uuid = settingsResponse.user.hash;
@@ -1014,18 +1013,26 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.user.email = this.email;
     this.user.spotbie_user.first_name = this.first_name;
     this.user.spotbie_user.last_name = this.last_name;
-    this.user.spotbie_user.phone_number = this.spotbie_phone_number;
+    this.user.spotbie_user.phone_number = '+1'+this.spotbie_phone_number;
     this.user.spotbie_user.user_type = this.chosenAccountType;
 
     this.userAuthService.saveSettings(this.user).subscribe({ next: (resp) => {
         this.saveSettingsCallback(resp);
       },  error: (error: any) => {
-        if (error.error.errors.email[0] === 'notUnique') {
+        let message = '';
+        if (error.error.errors.email && error.error.errors.email[0] === 'notUnique') {
           this.settingsForm.get('spotbie_email').setErrors({notUnique: true});
+          message = 'E-mail already in use.';
         }
+
+        if (error.error.errors.phone_number && error.error.errors.phone_number[0] === 'notUnique') {
+          this.settingsForm.get('spotbie_phone_number').setErrors({notUnique: true});
+          message = 'Phone already in use.';
+        }
+
         this.spotbieSettingsInfoText.nativeElement.innerHTML = `
             <span class='spotbie-text-gradient spotbie-error'>
-                There was an error saving.
+                ${message}
             </span>
         `;
         this.spotbieSettingsWindow.nativeElement.scrollTo(0, 0);
