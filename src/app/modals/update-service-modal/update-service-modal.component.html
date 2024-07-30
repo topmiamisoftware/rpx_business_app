@@ -7,29 +7,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-item *ngIf="(progress$ | async) === 100">
-    App Downloaded
+<ion-content class="ion-padding" (click)="openDownload()">
+  <ion-item>
+    <ion-text>Tap here to update your app.</ion-text>
   </ion-item>
-
-  <ion-item *ngIf="(progress$ | async) !== 100">
-    <ion-text> {{ (progress$ | async) }}% </ion-text>
-  </ion-item>
-
-  <ng-container *ngIf="(progress$ | async) === 100">
-    <ion-content>
-      <ion-item>
-        1. Once the app finishes downloading, you'll be able to find the app in your _____ folder.
-      </ion-item>
-      <ion-item>
-        2. Uninstall the current app by going to "Settings" > "Apps" > "SB-Business" > "Uninstall".
-      </ion-item>
-      <ion-item>
-        3. Navigate to the Downloads folder by opening your Files app in your Android Tablet.
-      </ion-item>
-      <ion-item>
-        4. Find the SB-Business.apk file, it will ask
-      </ion-item>
-    </ion-content>
-  </ng-container>
 </ion-content>

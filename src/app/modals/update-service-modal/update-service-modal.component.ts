@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {IonicModule, ModalController} from "@ionic/angular";
 import {UpdateAppService} from "../../services/update-app.service";
-import {BehaviorSubject} from "rxjs";
 import {CommonModule} from "@angular/common";
+import {Browser} from "@capacitor/browser";
 
 @Component({
   selector: 'app-update-service-modal',
@@ -16,12 +16,15 @@ import {CommonModule} from "@angular/common";
 export class UpdateServiceModalComponent  implements OnInit {
 
   name: string;
-  progress$: BehaviorSubject<number> = this.updateAppService.progress$;
 
   constructor(private modalCtrl: ModalController, private updateAppService: UpdateAppService ) {}
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
+  }
+
+  async openDownload() {
+    await Browser.open({ url: 'https://spotbie.com/business-app-download'});
   }
 
   ngOnInit() {}

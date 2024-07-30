@@ -4,6 +4,9 @@ import {BehaviorSubject, interval, Observable, switchMap} from 'rxjs';
 import * as spotbieGlobals from '../globals';
 import {map, tap} from "rxjs/operators";
 import {environment} from "../../environments/environment.prod";
+import {Capacitor} from "@capacitor/core";
+import {Directory, Filesystem} from "@capacitor/filesystem";
+import write_blob from "capacitor-blob-writer";
 
 const UPDATE_API = spotbieGlobals.API + 'business-app';
 
@@ -13,44 +16,11 @@ const UPDATE_API = spotbieGlobals.API + 'business-app';
 export class UpdateAppService {
 
   appNeedsUpdate$: Observable<boolean>;
-  _downloaded$: BehaviorSubject<boolean | 'downloading'> = new BehaviorSubject<boolean | 'downloading'>(false);
-  _progress$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
   constructor(
     private http: HttpClient,
   ) {
     this.initUpdateCheck();
-  }
-
-  downloadApp(): Observable<any> {
-    const updateApi = `${UPDATE_API}/download`;
-    return this.http.get(updateApi, {
-      reportProgress: true,
-      observe: 'events',
-    })
-      .pipe(
-        tap( event => {
-          if (event.type === HttpEventType.DownloadProgress) {
-            this.updateProgress(Math.round(100 * event.loaded / 151176512));
-          } else if (event.type === HttpEventType.Response) {
-            this.eventTypeResponse(event.body);
-          }
-        }),
-    );
-  }
-
-  private updateProgress(progress: number): void {
-    this._progress$.next(progress);
-    this._downloaded$.next('downloading');
-  }
-
-  private eventTypeResponse(res){
-    if (res.success) {
-      this._progress$.next(100);
-    }
-  }
-
-  get progress$() {
-    return this._progress$;
   }
 
   checkApp(): Observable<any> {
@@ -67,4 +37,16 @@ export class UpdateAppService {
       map((r: { needsUpdate: boolean }) => r.needsUpdate)
     );
   }
+}
+
+/**
+ * Function borrowed from StackOverflow answer
+ * @param blob
+ */
+function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
 }

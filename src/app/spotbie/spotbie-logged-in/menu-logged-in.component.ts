@@ -134,29 +134,6 @@ export class MenuLoggedInComponent implements AfterViewInit {
   }
 
   async downloadApp() {
-    this.appUpdateService.downloadApp().subscribe(async (r) => {
-      if (r.type === HttpEventType.Response) {
-        // Desktop Behavior
-        if (!Capacitor.isNativePlatform()) {
-          const blob = r.body as Blob;
-          const url= window.URL.createObjectURL(blob);
-          window.open(url);
-        }
-
-        // iOS and Android Behavior
-        if (Capacitor.isNativePlatform()) {
-          const blob = r.body as Blob;
-          const base64Data = (await blobToBase64(blob)) as string;
-
-          await Filesystem.appendFile({
-            path: 'Sb-Business.apk',
-            data: base64Data,
-            directory: Directory.Documents,
-          });
-        }
-      }
-    });
-
     /**
      * Display a modal where you can show the download's progress.
      */
@@ -164,12 +141,4 @@ export class MenuLoggedInComponent implements AfterViewInit {
       component: UpdateServiceModalComponent,
     }).then(m => m.present());
   }
-}
-
-function blobToBase64(blob) {
-  return new Promise((resolve, _) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
 }
