@@ -4,9 +4,6 @@ import {BehaviorSubject, interval, Observable, switchMap} from 'rxjs';
 import * as spotbieGlobals from '../globals';
 import {map, tap} from "rxjs/operators";
 import {environment} from "../../environments/environment.prod";
-import {Capacitor} from "@capacitor/core";
-import {Directory, Filesystem} from "@capacitor/filesystem";
-import write_blob from "capacitor-blob-writer";
 
 const UPDATE_API = spotbieGlobals.API + 'business-app';
 

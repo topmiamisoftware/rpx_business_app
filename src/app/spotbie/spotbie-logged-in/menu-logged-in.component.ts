@@ -14,10 +14,8 @@ import {map} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {ShareAppComponentComponent} from "./share-app-component/share-app-component.component";
 import {UpdateAppService} from "../../services/update-app.service";
-import {UpdateServiceModalComponent} from "../../modals/update-service-modal/update-service-modal.component";
-import {HttpEventType} from "@angular/common/http";
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import {Capacitor} from "@capacitor/core";
+import {Browser} from "@capacitor/browser";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-menu-logged-in',
@@ -42,6 +40,7 @@ export class MenuLoggedInComponent implements AfterViewInit {
   eventMenuOpen = false;
   user$ = this.userAuthService.userProfile$;
   needToUpdate$ = this.appUpdateService.appNeedsUpdate$;
+  appVersion = environment.installedVersion
 
   constructor(
       private userAuthService: UserauthService,
@@ -134,11 +133,6 @@ export class MenuLoggedInComponent implements AfterViewInit {
   }
 
   async downloadApp() {
-    /**
-     * Display a modal where you can show the download's progress.
-     */
-    await this.modalCtrl.create({
-      component: UpdateServiceModalComponent,
-    }).then(m => m.present());
+    await Browser.open({ url: 'https://api.spotbie.com/api/business-app/download'});
   }
 }
