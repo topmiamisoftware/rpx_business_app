@@ -16,6 +16,7 @@ import {Browser} from "@capacitor/browser";
 export class UpdateServiceModalComponent  implements OnInit {
 
   name: string;
+  downloadUrl: string = 'https://api.spotbie.com/api/business-app/download';
 
   constructor(private modalCtrl: ModalController, private updateAppService: UpdateAppService ) {}
 
@@ -24,7 +25,7 @@ export class UpdateServiceModalComponent  implements OnInit {
   }
 
   async openDownload() {
-    await Browser.open({ url: 'https://spotbie.com/business-app-download'});
+    await Browser.open({url: this.downloadUrl});
   }
 
   ngOnInit() {}
