@@ -14,8 +14,8 @@ import {map} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {ShareAppComponentComponent} from "./share-app-component/share-app-component.component";
 import {UpdateAppService} from "../../services/update-app.service";
-import {Browser} from "@capacitor/browser";
 import {environment} from "../../../environments/environment";
+import {UpdateServiceModalComponent} from "../../modals/update-service-modal/update-service-modal.component";
 
 @Component({
   selector: 'app-menu-logged-in',
@@ -133,6 +133,8 @@ export class MenuLoggedInComponent implements AfterViewInit {
   }
 
   async downloadApp() {
-    await Browser.open({ url: 'https://api.spotbie.com/api/business-app/download'});
+    this.modalCtrl.create({
+      component: UpdateServiceModalComponent,
+    }).then(m => m.present());
   }
 }
