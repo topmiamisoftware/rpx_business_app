@@ -7,8 +7,49 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" (click)="openDownload()">
-  <ion-item>
-    <ion-text>Tap here to update your app.</ion-text>
-  </ion-item>
+<ion-content class="ion-padding">
+    <ion-text>Let's get your app updated.</ion-text>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-text (click)="openDownload()">1. Download the app here.</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>2. Wait for the browser to open, and Tap on "Download".</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>3. Tap on "Download anyway".</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>4. Might have to Tap on "Download again".</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>5. Tap "Open" or navigate to your Downloads folder and open the Latest download of "SB-Business.apk".</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>6. Tap on UPDATE once prompted. </ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text>7. You can then enjoy the latest version of the SpotBie Business app!</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="openDownload()">Download App</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 </ion-content>
