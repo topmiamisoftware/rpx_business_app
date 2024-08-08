@@ -1020,12 +1020,12 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.saveSettingsCallback(resp);
       },  error: (error: any) => {
         let message = '';
-        if (error.error.errors.email && error.error.errors.email[0] === 'notUnique') {
+        if (error.error?.errors?.email && error.error?.errors?.email[0] === 'notUnique') {
           this.settingsForm.get('spotbie_email').setErrors({notUnique: true});
           message = 'E-mail already in use.';
         }
 
-        if (error.error.errors.phone_number && error.error.errors.phone_number[0] === 'notUnique') {
+        if (error.error?.errors?.phone_number && error.error?.errors?.phone_number[0] === 'notUnique') {
           this.settingsForm.get('spotbie_phone_number').setErrors({notUnique: true});
           message = 'Phone already in use.';
         }

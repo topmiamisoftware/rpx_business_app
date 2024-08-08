@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
@@ -52,6 +52,7 @@ export class UserSetUpComponent implements OnInit {
               private loyaltyPointsService: LoyaltyPointsService,
               private formBuilder: UntypedFormBuilder,
               private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
+              private changeDetector: ChangeDetectorRef,
               private toastService: ToastController) {
     this.setUpLpTapButton();
   }
@@ -79,10 +80,6 @@ export class UserSetUpComponent implements OnInit {
   createAccount() {
     this.accountSetUpFormSubmitted$.next(true);
     this.accountSetUpForm.updateValueAndValidity();
-
-    if (this.accountSetUpForm.invalid) {
-      return;
-    }
 
     this.userAuthService.creatAccount({
       firstName: this.customerFirstName,
@@ -154,8 +151,11 @@ export class UserSetUpComponent implements OnInit {
         errorList.email.forEach(error => {
           errors[error] = true;
         });
+
         this.accountSetUpForm.get('customerEmail').setErrors(errors);
         document.getElementById('user_email').style.border = '1px solid red';
+
+        this.changeDetector.detectChanges();
       } else {
         document.getElementById('user_email').style.border = 'unset';
       }

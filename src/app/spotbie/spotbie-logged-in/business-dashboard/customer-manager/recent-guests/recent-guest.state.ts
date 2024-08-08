@@ -6,6 +6,7 @@ import {State} from '@ngxs/store';
 import {createEntityCollections} from '@angular-ru/cdk/entity';
 import {Observable, tap} from 'rxjs';
 import {CustomerManagerService} from '../customer-manager.service';
+import {SortOrderType} from "@angular-ru/cdk/typings";
 
 @StateRepository()
 @State({
@@ -45,6 +46,7 @@ export class RecentGuestsEntitiesState extends NgxsDataEntityCollectionsReposito
           per_page: number;
           total: number;
         }) => {
+          console.log('recent guest data', response);
           this.upsertMany(response.data);
           this.patchState({
             ...this.ctx.getState(),
@@ -54,6 +56,10 @@ export class RecentGuestsEntitiesState extends NgxsDataEntityCollectionsReposito
               per_page: response.per_page,
               total: response.total,
             },
+          });
+          this.sort({
+            sortBy: 'id',
+            sortByOrder: SortOrderType.DESC
           });
         }
       )
