@@ -153,6 +153,7 @@ export class UserauthService {
   }
 
   saveSettings(user: User): Observable<any> {
+    console.log("THE USER", user);
     const saveSettingsApi = `${USER_API}/update`;
 
     let saveSettingsObj;
@@ -168,6 +169,7 @@ export class UserauthService {
         ghost_mode: user.spotbie_user.ghost_mode,
         privacy: user.spotbie_user.privacy,
         account_type: user.spotbie_user.user_type,
+        sms_opt_in: false
       };
     } else {
       saveSettingsObj = {
@@ -185,6 +187,7 @@ export class UserauthService {
         origin_title: user.business.name,
         origin_x: user.business.loc_x,
         origin_y: user.business.loc_y,
+        sms_opt_in: false,
       };
     }
 

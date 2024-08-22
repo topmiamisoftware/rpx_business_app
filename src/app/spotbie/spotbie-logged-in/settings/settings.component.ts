@@ -919,7 +919,8 @@ export class SettingsComponent implements OnInit, OnChanges {
           originDescription: ['', originDescriptionValidators],
           spotbieOrigin: ['', originValidators],
           isFoodTruck: [''],
-          originCategories: ['']
+          originCategories: [''],
+          spotbiePhoneNumber: ['', phoneValidators],
         });
 
         if (this.user.business) {

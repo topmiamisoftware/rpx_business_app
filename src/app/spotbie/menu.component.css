@@ -326,7 +326,7 @@ img.sb-qr:hover{
     position: relative;
     margin: 0 auto;
     text-align: center;
-    max-width: 90%;
+    max-width: 400px;
 }
 .sb-login-top-padding{
     padding-top: 120px;
