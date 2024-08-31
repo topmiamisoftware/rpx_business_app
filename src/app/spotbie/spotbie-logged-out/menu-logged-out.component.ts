@@ -55,7 +55,7 @@ export class MenuLoggedOutComponent {
       this.menuCtrl.close('main-menu');
       this.logInWindow$.next(true);
     } else {
-      window.open('https:/spotbie.com', '_self');
+      window.open('https://spotbie.com', '_self');
     }
   }
 }
