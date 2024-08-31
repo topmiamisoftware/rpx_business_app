@@ -10,6 +10,7 @@ import {BehaviorSubject} from 'rxjs';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {Capacitor} from "@capacitor/core";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-menu-logged-out',
@@ -55,7 +56,7 @@ export class MenuLoggedOutComponent {
       this.menuCtrl.close('main-menu');
       this.logInWindow$.next(true);
     } else {
-      window.open('https://spotbie.com', '_self');
+      window.open(environment.baseUrl, '_self');
     }
   }
 }
