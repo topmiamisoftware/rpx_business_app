@@ -275,45 +275,188 @@
                       "Events" account type is coming soon.
                   </div>
 
-                  <!-- User's membership is active -->
-                  <div class="mt-4 mb-4" style="font-size: .8rem;" *ngIf="userIsSubscribed else membershipExpired">
-                    <span class='sb-text-light-green-gradient' *ngIf="!user.ends_at">MEMBERSHIP IS ACTIVE</span>
+              <!-- User's membership is active -->
+              <div
+                class="mt-4 mb-4"
+                style="font-size: 0.8rem"
+                *ngIf="userIsSubscribed; else membershipExpired"
+              >
+          <span class="sb-text-light-green-gradient" *ngIf="!user.ends_at"
+          >MEMBERSHIP IS ACTIVE</span
+          >
 
-                    <div class='spotbie-text-gradient text-uppercase mt-2 mb-4' *ngIf="!user.ends_at" style="font-size: .8rem;">
-                      NEXT PAYMENT {{ user.next_payment | date:'mediumDate' }}
-                    </div>
-
-                    <span class='sb-text-light-green-gradient' *ngIf="user.ends_at">YOU CANCELLED YOUR MEMBERSHIP</span>
-                    <br/>
-                    <span class='sb-text-light-green-gradient' *ngIf="user.ends_at">
-                        Last Day {{ user.ends_at | date }}
-                    </span>
-
-                    <div class='mt-5 mb-5 cursor-pointer' (click)="closeAccountType()">
-                      <span class="spotbie-text-gradient">CLOSE</span>
-                    </div>
+                <div class="mt-4 mb-4 spotbie-price-box" style="font-size: 0.8rem">
+                  <div
+                    class="p2 text-start text-white"
+                    *ngIf="userSubscriptionPlan === _businessMembership.Starter"
+                  >
+              <span
+                style="font-size: 1.2rem"
+                class="sb-text-light-green-gradient"
+              >$249.99/monthly</span
+              >
+                    <ul>
+                      <li>Loyalty Program</li>
+                      <li>Local Exposure</li>
+                      <li>Upload Rewards</li>
+                      <li>Loyalty Tiers</li>
+                      <li>Footer Banner Ads</li>
+                      <li>Default Max Reward Rate</li>
+                    </ul>
                   </div>
 
-                  <!-- Membership is Expired Case -->
-                  <ng-template #membershipExpired>
-                    <ng-container *ngIf="user">
-                      <div *ngIf="!userIsSubscribed && chosenAccountType != 4 && user.business">
-                        <div class="pb-4">
-                          <i class="fa fa-exclamation-triangle"></i>
-                        </div>
+                  <div
+                    class="p2 text-start text-white"
+                    *ngIf="userSubscriptionPlan === _businessMembership.Intermediate"
+                  >
+              <span
+                style="font-size: 1.2rem"
+                class="sb-text-light-green-gradient"
+              >$349.99/monthly</span
+              >
+                    <ul>
+                      <li>+Starter Package</li>
+                      <li>+Header Banner Ads</li>
+                      <li>+0.02% Max Reward Rate</li>
+                      <li>+5,000 SMS & 5,000 e-mails</li>
+                      <li>+Feedback</li>
+                      <li>+Customer Insights</li>
+                    </ul>
+                  </div>
 
-                        <h5 class="spotbie-text-gradient">
-                          YOUR MEMBERSHIP IS EXPIRED
-                        </h5>
-                        <p class="spotbie-text-gradient" style="font-size: .8rem;">
-                          Please visit https://spotbie.com to renew. <br/>
-                          You can also call <br/>
-                          <span class="sb-text-light-green-gradient">+1 (786) 600-5946</span><br/>
-                          for an in-person agent.
-                        </p>
-                      </div>
-                    </ng-container>
-                  </ng-template>
+                  <div
+                    class="p2 text-start text-white"
+                    *ngIf="userSubscriptionPlan === _businessMembership.Ultimate"
+                  >
+              <span
+                style="font-size: 1.2rem"
+                class="sb-text-light-green-gradient"
+              >COMING SOON</span
+              >
+                    <ul>
+                      <li>+Starter Package</li>
+                      <li>+Nearby Featured Ads</li>
+                      <li>+0.03% Max Reward Rate</li>
+                      <li>+10,000 SMS & 20,000 e-mails</li>
+                      <li>+Advanced Targeting & Insights</li>
+                      <li>+Automated Push Notifications</li>
+                    </ul>
+                  </div>
+
+                  <div
+                    class="p2 text-start text-white"
+                    *ngIf="userSubscriptionPlan === _businessMembership.Legacy"
+                  >
+                    <span
+                      style="font-size: 1.2rem"
+                      class="sb-text-light-green-gradient"
+                    >$99.99/monthly</span>
+                    <ul>
+                      <li>LEGACY MEMBERSHIP</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div
+                  class="spotbie-text-gradient text-uppercase mt-2 mb-4"
+                  *ngIf="!user.ends_at"
+                  style="font-size: 0.8rem"
+                >
+                  NEXT PAYMENT {{ user.next_payment | date: 'mediumDate' }}
+                </div>
+
+                <span class="sb-text-light-green-gradient" *ngIf="user.ends_at"
+                >YOU CANCELLED YOUR MEMBERSHIP</span
+                >
+                <br />
+                <span class="sb-text-light-green-gradient" *ngIf="user.ends_at">
+            Last Day {{ user.ends_at | date }}
+              </span>
+
+              <span
+                class="sb-text-red-gradient text-uppercase cursor-pointer"
+                *ngIf="!user.ends_at"
+                (click)="cancelMembership()"
+                    >
+                CANCEL MEMBERSHIP
+              </span>
+              </div>
+
+              <!-- Membership is Expired Case -->
+              <ng-template #membershipExpired>
+                <div
+                  *ngIf="!userIsSubscribed && chosenAccountType != 4 && user?.business"
+                >
+                  <div class="pb-4">
+                    <i class="fa fa-exclamation-triangle"></i>
+                  </div>
+
+                  <h5 class="spotbie-text-gradient">YOUR MEMBERSHIP IS EXPIRED</h5>
+
+                  <h6 class="mt-4 text-white sb-text-light-green-gradient">
+                    PICK YOUR PLAN
+                  </h6>
+
+                  <div class="mt-4 spotbie-price-box" style="font-size: 0.8rem">
+                    <div
+                      class="p2 text-start text-white"
+                      (click)="activateFullMembership(1)"
+                    >
+                <span
+                  style="font-size: 1.2rem"
+                  class="sb-text-light-green-gradient"
+                >$249.99/monthly</span
+                >
+                      <ul>
+                        <li>Loyalty Program</li>
+                        <li>Local Exposure</li>
+                        <li>Upload Rewards</li>
+                        <li>Loyalty Tiers</li>
+                        <li>Footer Banner Ads</li>
+                        <li>Default Max Reward Rate</li>
+                      </ul>
+                      <button class="spotbie-button">BUY</button>
+                    </div>
+
+                    <div
+                      class="p2 text-start text-white"
+                      (click)="activateFullMembership(2)"
+                    >
+                <span
+                  style="font-size: 1.2rem"
+                  class="sb-text-light-green-gradient"
+                >$349.99/monthly</span
+                >
+                      <ul>
+                        <li>+Starter Package</li>
+                        <li>+Header Banner Ads</li>
+                        <li>+0.02% Max Reward Rate</li>
+                        <li>+5,000 SMS & 5,000 e-mails</li>
+                        <li>+Feedback</li>
+                        <li>+Customer Insights</li>
+                      </ul>
+                      <button class="spotbie-button">BUY</button>
+                    </div>
+
+                    <div class="p2 text-start text-white">
+                <span
+                  style="font-size: 1.2rem"
+                  class="sb-text-light-green-gradient"
+                >COMING SOON</span
+                >
+                      <ul>
+                        <li>+Starter Package</li>
+                        <li>+Nearby Featured Ads</li>
+                        <li>+0.03% Max Reward Rate</li>
+                        <li>+10,000 SMS & 20,000 e-mails</li>
+                        <li>+Advanced Targeting & Insights</li>
+                        <li>+Automated Push Notifications</li>
+                      </ul>
+                      <!--               <button class="spotbie-button">BUY</button>-->
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
             </div>
         </div>
     </div>

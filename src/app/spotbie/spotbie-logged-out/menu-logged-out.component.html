@@ -29,6 +29,12 @@
   </ion-header>
 
   <ion-content class="has-header text-center" color="light">
+    <app-sign-up
+      *ngIf="signUpWindow$ | async"
+      (closeWindow)="closeSignUp($event)"
+      (logInEvent)="logIn()"
+    ></app-sign-up>
+
     <app-log-in *ngIf="logInWindow$ | async" #appLogin></app-log-in>
   </ion-content>
 </div>

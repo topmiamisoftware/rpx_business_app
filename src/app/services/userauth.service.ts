@@ -65,7 +65,7 @@ export class UserauthService {
       postal_code: businessInfo.postal_code,
       state: businessInfo.state,
       accountType: businessInfo.accountType,
-      is_food_truck: businessInfo.is_food_truck,
+      is_food_truck: Boolean(businessInfo.is_food_truck),
     }
 
     return this.http.post<any>(apiUrl, businessInfoObj)

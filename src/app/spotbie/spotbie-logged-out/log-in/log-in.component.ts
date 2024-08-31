@@ -176,6 +176,14 @@ export class LogInComponent implements OnInit {
   }
 
   /**
+   * Opens the sign up component.
+   */
+  signUp() {
+    this.host.signUpWindow$.next(true);
+    this.host.logInWindow$.next(false);
+  }
+
+  /**
    * Initiate the user login.
    */
   initLogIn(): void {

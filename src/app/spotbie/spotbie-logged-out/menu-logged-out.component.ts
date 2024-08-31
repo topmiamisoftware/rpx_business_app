@@ -9,6 +9,7 @@ import {LogInComponent} from './log-in/log-in.component';
 import {BehaviorSubject} from 'rxjs';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
+import {Capacitor} from "@capacitor/core";
 
 @Component({
   selector: 'app-menu-logged-out',
@@ -22,6 +23,7 @@ export class MenuLoggedOutComponent {
   @ViewChild('appLogin') appLogin: LogInComponent;
 
   logInWindow$ = new BehaviorSubject<boolean>(true);
+  signUpWindow$ = new BehaviorSubject<boolean>(false);
   onForgotPassword$ = new BehaviorSubject<boolean>(false);
 
   constructor(private menuCtrl: MenuController, private router: Router) {
@@ -39,12 +41,21 @@ export class MenuLoggedOutComponent {
     this.menuCtrl.close('main-menu');
   }
 
-  home() {
-    this.menuCtrl.close('main-menu');
-    this.logInWindow$.next(true);
+  closeSignUp(event$) {
+    this.signUpWindow$.next(false);
+  }
 
-    if (this.onForgotPassword$.getValue()) {
-      this.router.navigate(['/home']);
+  logIn() {
+    this.signUpWindow$.next(false);
+    this.logInWindow$.next(!this.logInWindow$.getValue());
+  }
+
+  home() {
+    if (Capacitor.isNativePlatform()) {
+      this.menuCtrl.close('main-menu');
+      this.logInWindow$.next(true);
+    } else {
+      window.open('https:/spotbie.com', '_self');
     }
   }
 }

@@ -50,7 +50,7 @@
       <ion-buttons slot="start">
         <ion-menu-button auto-hide="false"></ion-menu-button>
       </ion-buttons>
-      <ng-container *ngIf="(user$ | async)?.business.is_food_truck && (userType$ | async) === eAllowedAccountTypes.PlaceToEat">
+      <ng-container *ngIf="(user$ | async)?.business?.is_food_truck && (userType$ | async) === eAllowedAccountTypes.PlaceToEat">
         <ion-buttons slot="end" (click)="updateFoodTruck()">
           <ion-button>
             <span style="cursor: pointer">

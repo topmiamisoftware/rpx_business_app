@@ -8,9 +8,10 @@ import {LogInComponent} from './log-in/log-in.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HelperModule} from '../../helpers/helper.module';
 import {IonicModule} from '@ionic/angular';
+import {SignUpComponent} from "./sign-up/sign-up.component";
 
 @NgModule({
-  declarations: [MenuLoggedOutComponent, LogInComponent],
+  declarations: [MenuLoggedOutComponent, LogInComponent, SignUpComponent],
   imports: [
     CommonModule,
     FormsModule,

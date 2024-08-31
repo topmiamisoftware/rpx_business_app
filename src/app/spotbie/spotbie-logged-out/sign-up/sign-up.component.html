@@ -1,0 +1,179 @@
+<div class="log-in-wrapper">
+  <p
+    class="sb-signUpGeneralInstructions text-uppercase text-center"
+    id="sign_up_general_instructions"
+    #spotbieSignUpIssues
+  >
+    <span class="spotbie-text-gradient">Grow your business.</span>
+  </p>
+
+  <form [formGroup]="signUpFormx">
+    <div
+      *ngIf="submitted$ | async"
+      class="spotbie-invalid-feedback spotbie-text-gradient spotbie-error text-uppercase"
+    >
+      <div
+        *ngIf="
+          f.spotbieUsername.errors?.required ||
+          f.spotbieUsername.errors?.emptyUsername
+        "
+      >
+        Username required.
+      </div>
+
+      <div *ngIf="f.spotbieUsername.errors?.wrongLength">
+        Username must be 1 to 35 characters long.
+      </div>
+
+      <div *ngIf="f.spotbieUsername.errors?.illegalChars">
+        Only contain letters, numbers, and underscores.
+      </div>
+
+      <div *ngIf="f.spotbieUsername.errors?.notUnique">
+        Username is already in use.
+      </div>
+    </div>
+
+    <table class="sb-inputWithIconWrapper">
+      <tr>
+        <td class="sb-iconInInputWrapper">
+          <i class="fa fa-user"></i>
+        </td>
+        <td>
+          <input
+            class="sb-input"
+            username
+            type="text"
+            id="spotbie_username"
+            formControlName="spotbieUsername"
+            placeholder="USERNAME"
+            autocomplete="username"
+          />
+        </td>
+      </tr>
+    </table>
+
+    <div
+      *ngIf="submitted$ | async"
+      class="spotbie-invalid-feedback spotbie-text-gradient spotbie-error text-uppercase"
+    >
+      <div *ngIf="f.spotbieEmail.errors?.required">
+        Please enter your email.
+      </div>
+
+      <div *ngIf="f.spotbieEmail.errors?.email">Invalid email.</div>
+
+      <div *ngIf="f.spotbieEmail.errors?.notUnique">
+        Email is already in use.
+      </div>
+
+      <div *ngIf="f.spotbieEmail.errors?.emailTaken">
+        Email is already in use.
+      </div>
+    </div>
+
+    <div *ngIf="f.spotbieEmail.errors">
+      <div
+        class="spotbie-invalid-feedback text-uppercase spotbie-text-gradient spotbie-error mb-2"
+        *ngIf="f.spotbieEmail.errors.wrongAccountType"
+      >
+        <span> Log-in using SB Business app. </span>
+      </div>
+
+      <div
+        class="spotbie-invalid-feedback text-uppercase spotbie-text-gradient spotbie-error mb-2"
+        *ngIf="f.spotbieEmail.errors.spotbieAccount"
+      >
+        You signed up with an email address.
+      </div>
+    </div>
+
+    <table class="sb-inputWithIconWrapper">
+      <td class="sb-iconInInputWrapper">
+        <i class="fa fa-envelope"></i>
+      </td>
+      <td>
+        <input
+          class="sb-input"
+          (keyup)="removeWhiteSpace('spotbieEmail')"
+          type="text"
+          id="user_email"
+          formControlName="spotbieEmail"
+          placeholder="EMAIL"
+          autocomplete="email"
+        />
+      </td>
+    </table>
+
+    <div
+      *ngIf="submitted$ | async"
+      class="spotbie-invalid-feedback spotbie-text-gradient spotbie-error text-uppercase"
+    >
+      <div *ngIf="f.spotbiePassword.errors?.required">
+        Please provide a password.
+      </div>
+
+      <div *ngIf="f.spotbiePassword.errors?.wrongLength">
+        Password must be 1 to 15 characters long.
+      </div>
+
+      <div *ngIf="f.spotbiePassword.errors?.oneNumber">
+        Password must contain at least one number (0-9)!
+      </div>
+
+      <div *ngIf="f.spotbiePassword.errors?.oneLowerCase">
+        Password must contain at least one lowercase letter (a-z)!
+      </div>
+
+      <div *ngIf="f.spotbiePassword.errors?.oneUpperCase">
+        Password must contain at least one uppercase letter (A-Z)!
+      </div>
+    </div>
+
+    <table class="sb-inputWithIconWrapper">
+      <td class="sb-iconInInputWrapper">
+        <i class="fa fa-lock"></i>
+      </td>
+      <td>
+        <input
+          class="sb-input"
+          [type]="(passwordShow$ | async) === false ? 'password' : 'text'"
+          formControlName="spotbiePassword"
+          id="user_pass"
+          autocomplete="new-password"
+          placeholder="PASSWORD"
+        />
+        <fa-icon
+          class="fa-eye"
+          [icon]="faEye"
+          (click)="togglePassword()"
+          *ngIf="(passwordShow$ | async) === false"
+        ></fa-icon>
+        <fa-icon
+          class="fa-eye"
+          [icon]="faEyeSlash"
+          (click)="togglePassword()"
+          *ngIf="passwordShow$ | async"
+        ></fa-icon>
+      </td>
+    </table>
+  </form>
+
+  <p class="ion-padding spotbie-login-terms spotbie-text-link text-uppercase">
+    By Signing Up, you are agreeing to
+    <span (click)="openTerms()">OUR TERMS & PRIVACY POLICY.</span>
+  </p>
+
+  <button class="btn spotbie-button" (click)="initSignUp()">
+    SIGN UP
+  </button>
+
+  <div
+    class="spotbie-rel-div spotbie-padding spotbie-text-link"
+    (click)="logIn()"
+  >
+    LOGIN NOW
+  </div>
+
+  <div class="sb-logo mt-3 mb-5"></div>
+</div>

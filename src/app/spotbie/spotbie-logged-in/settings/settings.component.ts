@@ -35,6 +35,7 @@ import {filter, tap} from "rxjs/operators";
 import {AlertDialogComponent} from "../../../helpers/alert/alert.component";
 import {MatDialog} from "@angular/material/dialog";
 import {faTruck} from "@fortawesome/free-solid-svg-icons";
+import {SpotbiePaymentsService} from "../../../services/spotbie-payments/spotbie-payments.service";
 
 const PLACE_TO_EAT_API = spotbieGlobals.API + 'place-to-eat';
 const PLACE_TO_EAT_MEDIA_MAX_UPLOAD_SIZE = 25e+6;
@@ -96,6 +97,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   selected: number;
   userIsSubscribed: boolean = false;
   userSubscriptionPlan: BusinessMembership;
+  _businessMembership = BusinessMembership;
   submitted: boolean = false;
   placeFormSubmitted: boolean = false;
   geoCoder: any;
@@ -132,7 +134,8 @@ export class SettingsComponent implements OnInit, OnChanges {
               private locationService: LocationService,
               private injector: Injector,
               private changeDetectionRef: ChangeDetectorRef,
-              public dialog: MatDialog
+              public dialog: MatDialog,
+              private paymentService: SpotbiePaymentsService,
   ) {
 
     combineLatest([this.lat$, this.lng$])
@@ -290,7 +293,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       loc_x: this.lat$.getValue(),
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
-      is_food_truck: this.isFoodTruck,
+      is_food_truck: Boolean(this.isFoodTruck),
     };
 
     this.userAuthService.saveBusiness(businessInfo).subscribe();
@@ -351,6 +354,18 @@ export class SettingsComponent implements OnInit, OnChanges {
       (resp) => {
         this.claimThisBusinessCB(resp);
       });
+  }
+
+  cancelMembership() {
+    const r = confirm(`
+            Are you sure you want to delete your subscription? All your IN-HOUSE Promotions will also be deleted.
+        `);
+
+    if (r) {
+      this.paymentService
+        .cancelBusinessMembership()
+        .subscribe(resp => window.location.reload());
+    }
   }
 
   private claimThisBusinessCB(resp: any) {
@@ -689,6 +704,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.geoCoder = new google.maps.Geocoder();
 
     await this.geoCoder.geocode({location: {lat: latitude, lng: longitude}}, (results: GeocoderResult, status) => {
+      console.log("Geocodr number", results);
       if (status === 'OK') {
         if (results[0]) {
           this.zoom = 18
@@ -699,7 +715,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           this.country = this.getAddressCompoenent(results[0], 'country');
           this.postalCode = this.getAddressCompoenent(results[0], 'postal_code');
 
-          if (!this.user.business.address) {
+          if (!this.user.business?.address) {
             this.businessSettingsForm.get('originAddress').setValue(this.address);
           }
 
@@ -839,7 +855,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         break
     }
 
-    this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory)
+    this.settingsForm.get('spotbie_acc_type').setValue(this.accountTypeCategory);
 
     switch (this.chosenAccountType) {
       case AllowedAccountTypes.Personal:
@@ -1183,5 +1199,28 @@ export class SettingsComponent implements OnInit, OnChanges {
       streetViewControl: false,
       mapId: environment.mapId,
     };
+  }
+
+  activateFullMembership(ca: number) {
+    switch (ca) {
+      case 2:
+        window.open(
+          `${environment.baseUrl}make-payment/business-membership-1/${this.user.uuid}`,
+          '_blank'
+        );
+        break;
+      case 3:
+        window.open(
+          `${environment.baseUrl}make-payment/business-membership-2/${this.user.uuid}`,
+          '_blank'
+        );
+        break;
+      case 1:
+        window.open(
+          `${environment.baseUrl}make-payment/business-membership/${this.user.uuid}`,
+          '_blank'
+        );
+        break;
+    }
   }
 }
