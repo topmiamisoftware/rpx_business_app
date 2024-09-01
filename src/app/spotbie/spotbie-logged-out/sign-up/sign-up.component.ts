@@ -136,7 +136,7 @@ export class SignUpComponent implements OnInit {
   populateErrors(r) {
     const errorList = r.errors;
 
-    if (errorList.username) {
+    if (errorList?.username) {
       const errors: {[k: string]: any} = {};
       errorList.username.forEach(err => {
         errors[err] = true;
@@ -149,7 +149,7 @@ export class SignUpComponent implements OnInit {
       document.getElementById('spotbie_username').style.border = 'unset';
     }
 
-    if (errorList.email) {
+    if (errorList?.email) {
       const errors: {[k: string]: any} = {};
       errorList.email.forEach(err => {
         errors[err] = true;
@@ -161,7 +161,7 @@ export class SignUpComponent implements OnInit {
       document.getElementById('user_email').style.border = 'unset';
     }
 
-    if (errorList.password) {
+    if (errorList?.password) {
       const errors: {[k: string]: any} = {};
       errorList.password.forEach(err => {
         errors[err] = true;
