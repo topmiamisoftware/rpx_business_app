@@ -2,9 +2,10 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-// const ngrok = "https://4249-2601-586-cd00-7900-942a-3054-dfb4-a324.ngrok-free.app/";
-const ngrok = "https://api.spotbie.com/";
-const baseUrl = "https://spotbie.com/";
+const ngrok = "https://4249-2601-586-cd00-7900-942a-3054-dfb4-a324.ngrok-free.app/";
+// const ngrok = "https://api-demo.spotbie.com/";
+// const baseUrl = "https://business-demo.spotbie.com/";
+const baseUrl = "http://localhost:55233/";
 
 export const environment = {
   production: true,
@@ -18,7 +19,7 @@ export const environment = {
   publishableStripeKey:
     "pk_test_51JrUwnGFcsifY4UhCCJp023Q1dWwv5AabBTsMDwiJ7RycEVLyP1EBpwbXRsfn07qpw5lovv9CGfvfhQ82Zt3Be8U00aH3hD9pj",
   apiEndpoint: `${ngrok}api/`,
-  fakeLocation: false,
+  fakeLocation: true,
   myLocX: 25.786286,
   myLocY: -80.186562,
   installedVersion: '3'
