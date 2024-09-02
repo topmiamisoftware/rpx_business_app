@@ -2,28 +2,28 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-const ngrok = "https://4249-2601-586-cd00-7900-942a-3054-dfb4-a324.ngrok-free.app/";
-// const ngrok = "https://api-demo.spotbie.com/";
+// const ngrok = "https://4249-2601-586-cd00-7900-942a-3054-dfb4-a324.ngrok-free.app/";
+const ngrok = "https://api-demo.spotbie.com/";
 // const ngrok = "https://api.spotbie.com/";
 
-const baseUrl = "http://localhost:55233/";
-// const baseUrl = "https://business-demo.spotbie.com/";
+// const baseUrl = "http://localhost:55233/";
+const baseUrl = "https://business-demo.spotbie.com/";
 // const baseUrl = "https://spotbie.com/";
 
 export const environment = {
-  production: true,
-  staging: false,
+  production: false,
+  staging: true,
   baseUrl,
   googleMapsApiKey: "",
   googlePlacesApiAkey: "",
-  mapId: "",
+  mapId: "mapId",
   qrCodeLoyaltyPointsScanBaseUrl: baseUrl + "loyalty-points",
   qrCodeRewardScanBaseUrl: baseUrl + "reward",
   publishableStripeKey: "",
   apiEndpoint: `${ngrok}api/`,
   fakeLocation: true,
-  myLocX: null,
-  myLocY: null,
+  myLocX: 25.786286,
+  myLocY: -80.186562,
   installedVersion: ''
 };
 /*
