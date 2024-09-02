@@ -1,0 +1,114 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<div class="spotbie-overlay-window" *ngIf="!membershipPaidFor">
+  <div class="sb-makePaymentWrapper" [ngStyle]="getPaymentFormStyles()">
+    <div class="sb-logo mt-3 mb-3"></div>
+
+    <h3 class="spotbie-text-gradient text-uppercase mb-4">
+      {{ paymentTitle }}
+    </h3>
+
+    <p class="spotbie-text-gradient">
+      {{ paymentDescription }}
+    </p>
+
+    <div *ngIf="invalidError" style="color: red">
+      {{ invalidError.message }}
+    </div>
+
+    <stripe-card
+      #stripeCard
+      (catch)="onStripeError($event)"
+      [(complete)]="cardDetailsFilledOut"
+      [(invalid)]="invalidError"
+      (cardMounted)="onCardCaptureReady()"
+    >
+    </stripe-card>
+
+    <div *ngIf="paymentType == 'business-membership'" class="mb-4">
+      <p class="spotbie-text-gradient text-uppercase mt-4">
+        STARTER $249.99/month
+      </p>
+
+      <p class="sb-text-light-green-gradient mt-4">Loyalty Program</p>
+      <p class="sb-text-light-green-gradient mt-1">Local Exposure</p>
+      <p class="sb-text-light-green-gradient mt-1">Upload Rewards</p>
+      <p class="sb-text-light-green-gradient mt-1">Loyalty Tiers</p>
+      <p class="sb-text-light-green-gradient mt-1">Default Max Reward Rate</p>
+      <p class="sb-text-light-green-gradient mt-1">Footer Banner Ads</p>
+    </div>
+
+    <div *ngIf="paymentType == 'business-membership-1'" class="mb-4">
+      <p class="spotbie-text-gradient text-uppercase mt-4">
+        INTERMEDIATE $349.99/month
+      </p>
+
+      <p class="sb-text-light-green-gradient mt-4">+Starter Package</p>
+      <p class="sb-text-light-green-gradient mt-1">
+        +Header Banner Ads
+      </p>
+      <p class="sb-text-light-green-gradient mt-1">+5,000 SMS & 5,000 e-mail</p>
+      <p class="sb-text-light-green-gradient mt-1">+0.02% Max Reward Rate</p>
+      <p class="sb-text-light-green-gradient mt-1">+Feedback</p>
+      <p class="sb-text-light-green-gradient mt-1">+Customer Insights</p>
+    </div>
+
+    <div *ngIf="paymentType == 'business-membership-2'" class="mb-4">
+      <p class="spotbie-text-gradient text-uppercase mt-4">
+        ULTIMATE $399.99/month
+      </p>
+
+      <p class="sb-text-light-green-gradient mt-4">+Starter Package</p>
+      <p class="sb-text-light-green-gradient mt-1">
+        +Header, Footer, Nearby Featured Ads
+      </p>
+      <p class="sb-text-light-green-gradient mt-1">+0.03% Max Reward Rate</p>
+      <p class="sb-text-light-green-gradient mt-1">+10,000 SMS & 20,000 e-mails</p>
+      <p class="sb-text-light-green-gradient mt-1">+Advanced Targeting & Insights</p>
+      <p class="sb-text-light-green-gradient mt-1">+Automated Push Notifications</p>
+    </div>
+
+    <p class="spotbie-login-terms spotbie-text-link">
+      By clicking "Pay Now", you are agreeing to<br /><a
+        [routerLink]="['/terms']"
+        >OUR TERMS & PRIVACY POLICY.</a
+      >
+    </p>
+
+    <button
+      class="spotbie-button text-uppercase"
+      type="button"
+      (click)="stripeSendPayment()"
+    >
+      SUBSCRIBE
+    </button>
+  </div>
+</div>
+
+<div
+  class="spotbie-overlay-window d-flex align-items-center justify-content-center"
+  *ngIf="membershipPaidFor"
+>
+  <div class="sb-logo mt-3 mb-3"></div>
+
+  <div class="sb-makePaymentWrapper" style="box-shadow: unset">
+    <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">
+      PAYMENT SUCCESSFUL
+    </h4>
+
+    <div class="sb-verificationCheck mt-4 mb-4">
+      <i class="fa fa-users sb-text-light-green-gradient"></i>
+    </div>
+
+    <h4 class="spotbie-text-gradient spotbie-r-success-title text-uppercase">
+      YOUR MEMBERSHIP IS LIVE
+    </h4>
+  </div>
+
+  <div
+    class="spotbie-text-gradient text-uppercase mt-4 cursor-pointer"
+    [routerLink]="['/business']"
+  >
+    RETURN TO HOME PAGE
+  </div>
+</div>

@@ -1,0 +1,51 @@
+.spotbie-overlay-window {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: url('../../assets/images/home_imgs/jpg/spotbie-login-background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.d-flex {
+  display: flex !important;
+  flex-direction: column;
+}
+.sb-adImage {
+  max-width: 100%;
+}
+stripe-card {
+  position: relative;
+  display: none;
+  display: block;
+  margin: 0 auto;
+  min-height: 20px;
+  padding-top: 10px;
+  min-width: 400px;
+  max-width: 400px;
+  background: white;
+  padding-bottom: 10px;
+  padding-left: 1%;
+}
+.sb-makePaymentWrapper {
+  position: relative;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 50px;
+  background-color: rgb(51 47 62 / 55%);
+  box-shadow: 7px 7px 20px;
+}
+p {
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .sb-makePaymentWrapper {
+    max-width: 96%;
+  }
+  h2 {
+    font-size: 1.2rem;
+  }
+  stripe-card {
+    min-width: 99%;
+    max-width: 99%;
+  }
+}

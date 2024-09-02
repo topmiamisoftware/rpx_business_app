@@ -28,6 +28,13 @@ const routes: Routes = [
     path: 'loyalty-points/:qrCode/:totalSpent/:loyaltyPointReward',
     component: LoyaltyPointsComponent,
   },
+  {
+    path: 'make-payment',
+    loadChildren: () =>
+      import('./make-payment/make-payment.module').then(
+        m => m.MakePaymentModule
+      ),
+  },
   {path: '', redirectTo: '/home', pathMatch: 'full'},
 ];
 
