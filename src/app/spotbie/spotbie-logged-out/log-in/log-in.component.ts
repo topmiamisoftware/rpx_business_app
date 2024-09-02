@@ -14,6 +14,7 @@ import {BehaviorSubject} from 'rxjs';
 import {LoadingController} from '@ionic/angular';
 import {filter} from 'rxjs/operators';
 import {Preferences} from '@capacitor/preferences';
+import {environment} from "../../../../environments/environment.prod";
 
 @Component({
   selector: ' app-log-in',
@@ -165,7 +166,7 @@ export class LogInComponent implements OnInit {
             .setErrors({spotbie_account: true});
         } else if (loginStatus === 'wrong_account_type') {
           this.spotbieSignUpIssues.nativeElement.innerHTML =
-            "<span class='spotbie-text-gradient spotbie-error'>LOG-IN WITH THE CLIENT APP.</span>";
+            "<div class='spotbie-text-gradientr' (click)=\'wrongPage()\'>You're in the wrong page. Click Here.</div>";
           this.logInForm
             .get('spotbieUsername')
             .setErrors({wrong_account_type: true});
@@ -173,6 +174,13 @@ export class LogInComponent implements OnInit {
       }
     }
     this.loading$.next(false);
+  }
+
+  /**
+   * Navigate the usr to the correct login page for the ir account type
+   */
+  wrongPage() {
+    this.router.navigate([`${environment.baseUrl}/business`]);
   }
 
   /**
