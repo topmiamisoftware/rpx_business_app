@@ -383,6 +383,7 @@ export class SettingsComponent implements OnInit, OnChanges {
 
       setTimeout(() => {
         this.closeWindow();
+        window.location.reload();
       }, 1500);
     }
 
