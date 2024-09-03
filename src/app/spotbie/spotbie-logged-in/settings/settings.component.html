@@ -515,7 +515,7 @@
             <tr *ngIf="locationFound">
                 <td>
                     <input class="sb-input spotbie-search-map-input sb-origin-address-input"
-                            (keydown)="searchMapsKeyDown($event)"
+                            (keyup)="searchMapsKeyDown($event)"
                             autocorrect="off"
                             autocapitalize="off"
                             spellcheck="off"
@@ -663,10 +663,10 @@
               </tr>
             </ng-container>
             <tr>
-                <button class='btn spotbie-button text-uppercase'
+                <div class='btn spotbie-button p-2 mt-2 text-uppercase'
                      (click)="startBusinessVerification()"
                      *ngIf="locationFound"
-                >Verify</button>
+                >Verify</div>
             </tr>
             <tr>
                 <div class='spotbie-text-gradient text-center text-uppercase mt-4 mb-5'

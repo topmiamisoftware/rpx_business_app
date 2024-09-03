@@ -392,6 +392,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   searchMapsKeyDown(evt) {
+    this.myMarker.setMap(null);
     if (evt.key === 'Enter') {
       this.searchMaps();
     }
@@ -433,6 +434,9 @@ export class SettingsComponent implements OnInit, OnChanges {
     // this.loading$.next(true);
     this.place = place;
     this.locationFound = false;
+
+    this.changeDetectionRef.detectChanges();
+
     this.getPlaceDetails();
   }
 
@@ -569,28 +573,23 @@ export class SettingsComponent implements OnInit, OnChanges {
       if (hasPermissions) {
         let businessPosition: { coords: { latitude: number; longitude: number } } = await Geolocation.getCurrentPosition();
 
-        if (environment.fakeLocation && !this.user.business) {
-          this.lat$.next(environment.myLocX);
-          this.lng$.next(environment.myLocY);
+        if(this.user.business){
+          this.lat$.next(this.user.business.loc_x);
+          this.lng$.next(this.user.business.loc_y);
+          businessPosition = {
+            coords: {latitude: this.user.business.loc_x, longitude: this.user.business.loc_y}
+          };
+          await this.setMap(businessPosition).then(() => {
+            this.map$.next(true);
+            this.getAddress(this.lat$.getValue(), this.lng$.getValue());
+          });
         } else {
-          if(this.user.business){
-            this.lat$.next(this.user.business.loc_x);
-            this.lng$.next(this.user.business.loc_y);
-            businessPosition = {
-              coords: {latitude: this.user.business.loc_x, longitude: this.user.business.loc_y}
-            };
-            await this.setMap(businessPosition).then(() => {
-              this.map$.next(true);
-              this.getAddress(this.lat$.getValue(), this.lng$.getValue());
-            });
-          } else {
-            this.lat$.next(businessPosition.coords.latitude);
-            this.lng$.next(businessPosition.coords.longitude);
-            await this.setMap(businessPosition).then(() => {
-              this.map$.next(true);
-              this.getAddress(this.lat$.getValue(), this.lng$.getValue());
-            });
-          }
+          this.lat$.next(businessPosition.coords.latitude);
+          this.lng$.next(businessPosition.coords.longitude);
+          await this.setMap(businessPosition).then(() => {
+            this.map$.next(true);
+            this.getAddress(this.lat$.getValue(), this.lng$.getValue());
+          });
         }
       } else {
         this.showMapError();
@@ -599,20 +598,16 @@ export class SettingsComponent implements OnInit, OnChanges {
     } else {
       navigator.geolocation.getCurrentPosition((position) => {
         let businessPosition: any = position;
-        if (environment.fakeLocation && !this.user.business) {
-          this.lat$.next(environment.myLocX);
-          this.lng$.next(environment.myLocY);
+
+        if(this.user.business){
+          this.lat$.next(this.user.business.loc_x);
+          this.lng$.next(this.user.business.loc_y);
+          businessPosition = {
+            coords: {latitude: this.user.business.loc_x, longitude: this.user.business.loc_y}
+          };
         } else {
-          if(this.user.business){
-            this.lat$.next(this.user.business.loc_x);
-            this.lng$.next(this.user.business.loc_y);
-            businessPosition = {
-              coords: {latitude: this.user.business.loc_x, longitude: this.user.business.loc_y}
-            };
-          } else {
-            this.lat$.next(position.coords.latitude);
-            this.lng$.next(position.coords.longitude);
-          }
+          this.lat$.next(position.coords.latitude);
+          this.lng$.next(position.coords.longitude);
         }
 
         this.zoom = 18;
@@ -704,7 +699,6 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.geoCoder = new google.maps.Geocoder();
 
     await this.geoCoder.geocode({location: {lat: latitude, lng: longitude}}, (results: GeocoderResult, status) => {
-      console.log("Geocodr number", results);
       if (status === 'OK') {
         if (results[0]) {
           this.zoom = 18
@@ -734,13 +728,8 @@ export class SettingsComponent implements OnInit, OnChanges {
   showPosition(position: any, override: boolean = false) {
     this.locationFound = true
 
-    if (environment.fakeLocation && !override) {
-      this.lat$.next(environment.myLocX);
-      this.lng$.next(environment.myLocY);
-    } else {
-      this.lat$.next(position.coords.latitude);
-      this.lng$.next(position.coords.longitude);
-    }
+    this.lat$.next(position.coords.latitude);
+    this.lng$.next(position.coords.longitude);
 
     this.changeDetectionRef.detectChanges();
   }
