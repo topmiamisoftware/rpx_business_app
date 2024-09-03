@@ -165,20 +165,20 @@ agm-map{
 .sb-input{
     min-width: 500px;
     text-align: left;
-    min-width: 500px;
-    text-align: left;
     border: unset;
 }
-textarea{
+ion-list {
+  max-width: 750px !important;
+}
+ion-textarea{
     height: 300px;
-    min-height: 300px;
-    max-height : 300px;
-    width: 100%;
-    min-width: 100%;
+    min-height: 300px !important;
+    max-height : 300px !important;
+    max-width: 750px !important;
     resize: none;
     background-color: white;
     color: black;
-    border-radius: 0px;
+    border-radius: 0;
 }
 .spotbie-field-blocker{
     position: absolute;
