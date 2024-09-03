@@ -468,18 +468,22 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.businessSettingsForm.get('spotbieOrigin').setValue(this.lat$.getValue() + ',' + this.lng$.getValue());
         this.businessSettingsForm.get('originAddress').setValue(place.formatted_address);
 
-        this.locationFound = true;
-        this.claimBusiness = true;
+        console.log("the place", place.geometry.location);
 
-        if (place.photos) {
-          this.originPhoto = place.photos[0].getUrl();
-        } else {
-          this.originPhoto = '../../assets/images/home_imgs/find-places-to-eat.svg';
-        }
+        this.getAddress(place.geometry.location.lat(), place.geometry.location.lng()).then(() => {
+          this.locationFound = true;
+          this.claimBusiness = true;
 
-        this.loading$.next(false);
+          if (place.photos) {
+            this.originPhoto = place.photos[0].getUrl();
+          } else {
+            this.originPhoto = '../../assets/images/home_imgs/find-places-to-eat.svg';
+          }
 
-        this.changeDetectionRef.detectChanges();
+          this.loading$.next(false);
+
+          this.changeDetectionRef.detectChanges();
+        });
       });
     });
     this.addressResults = [];
