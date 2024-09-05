@@ -180,6 +180,7 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   private populateSettings(settingsResponse: any) {
     if (settingsResponse.success) {
+
       this.user = settingsResponse.user;
       this.user.spotbie_user = settingsResponse.spotbie_user;
       this.user.uuid = settingsResponse.user.hash;
@@ -401,17 +402,21 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   async searchMaps() {
     const inputAddress = this.addressSearch.nativeElement;
-    const location = new google.maps.LatLng(this.lat$.getValue(), this.lng$.getValue());
 
     const {AutocompleteService} = await google.maps.importLibrary("places");
+
+    const radius = 8000;
+    const circle = new google.maps.Circle({
+      center: { lat: this.lat$.getValue(), lng: this.lng$.getValue() },
+      radius: radius
+    });
 
     let service = new AutocompleteService();
     service.getQueryPredictions({
       input: inputAddress.value,
       componentRestrictions: {country: 'us'},
-      radius: MAX_DISTANCE,
-      location,
-      types: ['establishment']
+      locationRestriction:  circle.getBounds(),
+      locationBias: circle,
     }, (predictions, status) => {
       if (status !== google.maps.places.PlacesServiceStatus.OK) {
         return

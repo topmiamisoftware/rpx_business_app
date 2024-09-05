@@ -266,14 +266,19 @@ export class FoodTruckLocationDialogComponent implements OnInit, AfterViewInit {
     const {AutocompleteService} = await google.maps.importLibrary("places");
     let service = new AutocompleteService();
 
-    const location = new google.maps.LatLng(this.lat$.getValue(), this.lng$.getValue());
+    const radius = 8000;
+    const circle = new google.maps.Circle({
+      center: { lat: this.lat$.getValue(), lng: this.lng$.getValue() },
+      radius: radius
+    });
 
     service.getQueryPredictions(
       {
         input: inputAddress.value,
         componentRestrictions: {country: 'us'},
         radius: MAX_DISTANCE,
-        location,
+        locationRestriction:  circle.getBounds(),
+        locationBias: circle,
         types: ['establishment'],
       },
       (predictions, status) => {

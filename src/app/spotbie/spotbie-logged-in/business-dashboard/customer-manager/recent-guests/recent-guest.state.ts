@@ -58,7 +58,7 @@ export class RecentGuestsEntitiesState extends NgxsDataEntityCollectionsReposito
             },
           });
           this.sort({
-            sortBy: 'id',
+            sortBy: 'updated_at',
             sortByOrder: SortOrderType.DESC
           });
         }
