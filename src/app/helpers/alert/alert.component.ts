@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -24,15 +24,15 @@ import {Browser} from "@capacitor/browser";
   ],
 })
 export class AlertDialogComponent {
+
   constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {alertTitle: string; alertText: string, link: string, linkText: string}
   ) {}
 
-  async openExternalTerms() {
-    console.log('OPEN EXTERNAL TEMS');
-    await Browser.open({ url: 'https://spotbie.com/terms' });
+  async openExternalLink() {
+    await Browser.open({ url: this.data.link });
   }
 
   continueWithAction() {

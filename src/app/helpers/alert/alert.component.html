@@ -7,7 +7,7 @@
      [style.background-color]="'#332f3e'"
 >
     <p [innerHTML]="data.alertText"></p>
-    <p *ngIf="data.link" (click)="openExternalTerms()"><span class='text-decoration-underline'>View {{ data.linkText }}</span></p>
+    <p *ngIf="data.link" (click)="openExternalLink()"><span class='text-decoration-underline'>View {{ data.linkText }}</span></p>
 </div>
 <div mat-dialog-actions
      [style.color]="'white'"

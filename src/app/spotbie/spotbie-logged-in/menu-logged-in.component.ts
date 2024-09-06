@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
 import {UserauthService} from '../../services/userauth.service';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {SettingsComponent} from './settings/settings.component';
@@ -7,7 +7,7 @@ import {BehaviorSubject, take} from 'rxjs';
 import {MenuController, ModalController} from '@ionic/angular';
 import {BusinessLoyaltyPointsState} from "./state/business.lp.state";
 import {AllowedAccountTypes} from '../../helpers/enum/account-type.enum';
-import {MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {FoodTruckLocationDialogComponent} from "./food-truck-location/food-truck-location-dialog.component";
 import {faTruck} from "@fortawesome/free-solid-svg-icons";
 import {map} from "rxjs/operators";
@@ -16,6 +16,7 @@ import {ShareAppComponentComponent} from "./share-app-component/share-app-compon
 import {UpdateAppService} from "../../services/update-app.service";
 import {environment} from "../../../environments/environment";
 import {UpdateServiceModalComponent} from "../../modals/update-service-modal/update-service-modal.component";
+import {AlertDialogComponent} from "../../helpers/alert/alert.component";
 
 @Component({
   selector: 'app-menu-logged-in',
@@ -136,5 +137,16 @@ export class MenuLoggedInComponent implements AfterViewInit {
     this.modalCtrl.create({
       component: UpdateServiceModalComponent,
     }).then(m => m.present());
+  }
+
+  howToUpdate() {
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        alertTitle: "How To Update",
+        alertText: 'Follow these steps to update your app.',
+        link: `${environment.baseUrl}business-app-download`,
+        linkText: `${environment.baseUrl}business-app-download`,
+      },
+    });
   }
 }
