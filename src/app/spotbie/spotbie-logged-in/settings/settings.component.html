@@ -1,7 +1,7 @@
 <app-loading-screen *ngIf="loading$ | async"></app-loading-screen>
 
 <div class='spotbie-overlay-window pt-2 pb-5' #spotbieSettingsWindow>
-    <div class='spotbie-block sb-topSettingsPadding'>
+    <div class='sb-topSettingsPadding'>
         <div #spotbieSettingsInfoText class="spotbie-text-gradient mt-4 mb-4"></div>
         <form [formGroup]="settingsForm" *ngIf="settingsFormInitiated">
             <table class='spotbie-settings-table'>
@@ -153,7 +153,7 @@
         </form>
     </div>
 
-    <div class='spotbie-block mb-0' *ngIf="settingsFormInitiated">
+    <div class='mb-0' *ngIf="settingsFormInitiated">
         <form [formGroup]="passwordForm">
             <table class='spotbie-settings-table' id="spotbie-password-table">
                     <!-- Change Password Block -->

@@ -107,7 +107,7 @@ export class RewardCreatorComponent implements OnInit {
     const rewardNameValidators = [Validators.required, Validators.maxLength(50)];
     const rewardDescriptionValidators = [Validators.required, Validators.maxLength(250), Validators.minLength(50)];
     const rewardImageValidators = [Validators.required];
-    const isGlobalValidators = [Validators.required];
+    const isGlobalValidators = [];
 
     this.rewardCreatorForm = this.formBuilder.group({
       rewardType: ['', rewardTypeValidators],
@@ -133,6 +133,8 @@ export class RewardCreatorComponent implements OnInit {
       this.rewardUploadImage$.next(r.images);
       this.setRewardLink();
       this.setRewardTier();
+    } else {
+      this.rewardCreatorForm.get('is_global').setValue(false);
     }
 
     this.rewardCreatorFormUp$.next(true);
@@ -172,6 +174,7 @@ export class RewardCreatorComponent implements OnInit {
     reward.point_cost = this.rewardValue;
     reward.type = this.rewardType;
     reward.tier_id = this.tier;
+    console.log("is GLOBAL", this.isGlobal);
     reward.is_global = this.isGlobal;
 
     if (!this.reward$.getValue()) {
