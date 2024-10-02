@@ -365,27 +365,34 @@
                   NEXT PAYMENT {{ user.next_payment | date: 'mediumDate' }}
                 </div>
 
-                <span class="sb-text-light-green-gradient" *ngIf="user.ends_at"
-                >YOU CANCELLED YOUR MEMBERSHIP</span
-                >
+                <span class="sb-text-light-green-gradient" *ngIf="user.ends_at">
+                  YOU CANCELLED YOUR MEMBERSHIP
+                </span>
                 <br />
                 <span class="sb-text-light-green-gradient" *ngIf="user.ends_at">
-            Last Day {{ user.ends_at | date }}
-              </span>
+                  Last Day {{ user.ends_at | date }}
+                </span>
 
-              <span
-                class="sb-text-red-gradient text-uppercase cursor-pointer"
-                *ngIf="!user.ends_at"
-                (click)="cancelMembership()"
-                    >
-                CANCEL MEMBERSHIP
-              </span>
+                <span
+                  class="sb-text-red-gradient text-uppercase cursor-pointer"
+                  *ngIf="!user.ends_at"
+                  (click)="cancelMembership()"
+                      >
+                  CANCEL MEMBERSHIP
+                </span>
+              </div>
+
+              <div
+                class="spotbie-text-gradient text-uppercase mt-2 mb-4"
+                (click)="closeThis()"
+                >
+                CLOSE
               </div>
 
               <!-- Membership is Expired Case -->
               <ng-template #membershipExpired>
                 <div
-                  *ngIf="!userIsSubscribed && chosenAccountType != 4 && user?.business"
+                  *ngIf="!userIsSubscribed && user?.business"
                 >
                   <div class="pb-4">
                     <i class="fa fa-exclamation-triangle"></i>

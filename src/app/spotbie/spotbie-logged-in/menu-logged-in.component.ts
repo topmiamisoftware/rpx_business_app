@@ -89,10 +89,6 @@ export class MenuLoggedInComponent implements AfterViewInit {
     }
 
     this.settingsWindow$.next(true);
-
-    setTimeout(() => {
-      this.spotbieSettings.changeAccType();
-    }, 500);
   }
 
   closeSettings() {

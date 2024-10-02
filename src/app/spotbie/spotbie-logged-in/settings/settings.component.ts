@@ -189,6 +189,8 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.user.next_payment = settingsResponse.next_payment;
       this.userSubscriptionPlan = settingsResponse.userSubscriptionPlan;
 
+      this.checkAccMembership();
+
       if (this.user.spotbie_user.user_type === AllowedAccountTypes.Unset && !this.settingsFormInitiated) {
         this.loadAccountTypes = true;
       }
@@ -252,6 +254,12 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.loading$.next(false);
 
     this.changeDetectionRef.detectChanges();
+  }
+
+  checkAccMembership() {
+    if (!this.userIsSubscribed) {
+      this.loadAccountTypes = true;
+    }
   }
 
   add(event): void {
@@ -824,8 +832,12 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   changeAccType() {
-    this.loadAccountTypes = true
+    this.loadAccountTypes = true;
     this.changeDetectionRef.detectChanges();
+  }
+
+  closeThis() {
+    this.loadAccountTypes = false;
   }
 
   selectAccountType(accountType: string) {
@@ -1201,6 +1213,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   activateFullMembership(ca: number) {
+    console.log('Usr ID', this.user.uuid);
     switch (ca) {
       case 2:
         window.open(
