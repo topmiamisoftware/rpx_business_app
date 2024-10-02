@@ -95,7 +95,7 @@
             <ng-template #adMediaUploadInfoTemplate>
               <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-4 mb-2 cursor-pointer"
                    (click)="startAdMediaUploader('desktop')" #adMediaUploadInfo>
-                {{ adMediaMessage }} ({{ adTypeList[selected].dimensions }})
+                {{ adMediaMessage }} ({{ adTypeList[selected]?.dimensions }})
               </div>
             </ng-template>
 
@@ -142,7 +142,7 @@
               <ng-template #adMediaMobileUploadInfoTemplate>
                 <div class="spotbie-input-info text-uppercase spotbie-text-gradient text-center mt-5 mb-2 cursor-pointer"
                      (click)="startAdMediaUploader('mobile')" #adMediaUploadInfo>
-                  {{ adMediaMessage }} - MOBILE - ({{ adTypeList[selected].dimensionsMobile }})
+                  {{ adMediaMessage }} - MOBILE - ({{ adTypeList[selected]?.dimensionsMobile }})
                 </div>
               </ng-template>
             </ng-container>
