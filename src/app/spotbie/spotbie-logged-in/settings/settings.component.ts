@@ -55,11 +55,11 @@ export class SettingsComponent implements OnInit, OnChanges {
   @ViewChild('spotbie_password_change_info_text') spotbiePasswordInfoText: ElementRef
   @ViewChild('current_password_info') spotbieCurrentPasswordInfoText: ElementRef
   @ViewChild('addressSearch') addressSearch
-  @ViewChild('userAccountTypeNormalScroll') userAccountTypeNormalScroll
-
+  @ViewChild('userAccountTypeNormalScroll') userAccountTypeNormalScroll;
   @ViewChild('spotbieSettingsWindow') spotbieSettingsWindow;
-  // @ViewChild('placeToEatMediaUploadInfo') placeToEatMediaUploadInfo;
-  // @ViewChild('placeToEatMediaInput') placeToEatMediaInput;
+
+  @ViewChild('placeToEatMediaInput') placeToEatMediaInput: ElementRef;
+  @ViewChild('placeToEatMediaUploadInfo') placeToEatMediaUploadInfo: ElementRef;
 
   @Output() closeWindowEvt = new EventEmitter();
 
@@ -244,8 +244,6 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.user.business.photo = settingsResponse.business.photo;
         this.user.business.categories = settingsResponse.business.categories;
         this.user.business.is_food_truck = settingsResponse.business.is_food_truck;
-
-        this.originPhoto = this.user.business.photo;
       }
     } else {
       console.log('Settings Error: ', settingsResponse);
@@ -298,7 +296,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       line2: this.line2,
       postal_code: this.postalCode,
       state: this.state,
-      photo: this.originPhoto,
+      photo: this.spotbiePhoto,
       loc_x: this.lat$.getValue(),
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
@@ -351,7 +349,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       line2: this.line2,
       postal_code: this.postalCode,
       state: this.state,
-      photo: this.originPhoto,
+      photo: this.spotbiePhoto,
       loc_x: this.lat$.getValue(),
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
@@ -518,7 +516,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   startRewardMediaUploader(): void {
-    // this.placeToEatMediaInput.nativeElement.click()
+    this.placeToEatMediaInput.nativeElement.click()
   }
 
   uploadMedia(files): void {
@@ -548,10 +546,10 @@ export class SettingsComponent implements OnInit, OnChanges {
         return;
       }
 
-      formData.append('background_picture', fileToUpload, fileToUpload.name);
+      formData.append('image', fileToUpload, fileToUpload.name);
     }
 
-    const endPoint = `${PLACE_TO_EAT_API}/upload-photo`;
+    const endPoint = `${spotbieGlobals.API}business/upload-photo`;
 
     this.http.post(endPoint, formData, {reportProgress: true, observe: 'events'}).subscribe(event => {
       if (event.type === HttpEventType.UploadProgress) {
@@ -565,10 +563,12 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   private placeToEatMediaUploadFinished(httpResponse: any): void {
-    if (httpResponse.success)
-      this.originPhoto = httpResponse.background_picture
-    else
-      console.log('placeToEatMediaUploadFinished', httpResponse)
+    if (httpResponse.success) {
+      this.user.business.photo = httpResponse.image;
+      this.businessSettingsForm.get('spotbiePhoto').setValue(this.user.business.photo);
+    } else {
+      console.log('placeToEatMediaUploadFinished', httpResponse);
+    }
 
     this.loading$.next(false);
   }
@@ -911,7 +911,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       userType = parseInt(userType, 10);
 
     if (userType !== AllowedAccountTypes.Personal) {
-      settingsFormInputObj.spotbie_acc_type = ['', accountTypeValidators]
+      settingsFormInputObj.spotbie_acc_type = ['', accountTypeValidators];
     }
 
     switch (action) {
@@ -938,6 +938,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         const originTitleValidators = [Validators.required, Validators.maxLength(25)];
         const originAddressValidators = [Validators.required];
         const originValidators = [Validators.required];
+        const spotbieBusinessTypeValidators = [Validators.required];
         const originDescriptionValidators = [Validators.required, Validators.maxLength(350), Validators.minLength(100)];
 
         this.businessSettingsForm = this.formBuilder.group({
@@ -948,6 +949,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           isFoodTruck: [''],
           originCategories: [''],
           spotbiePhoneNumber: ['', phoneValidators],
+          spotbiePhoto: ['', spotbieBusinessTypeValidators]
         });
 
         if (this.user.business) {
@@ -959,6 +961,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           this.businessSettingsForm
             .get('isFoodTruck')
             .setValue(!!this.user.business.is_food_truck);
+          this.businessSettingsForm.get('spotbiePhoto').setValue(this.user.business.photo);
           this.activeBusinessCategories = this.user.business.categories.toString();
         } else {
           this.businessSettingsForm.get('originAddress').setValue('SEARCH FOR LOCATION');
@@ -1014,6 +1017,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   get originAddress() { return this.businessSettingsForm.get('originAddress').value }
   get spotbieOrigin() { return this.businessSettingsForm.get('spotbieOrigin').value }
   get originTitle() { return this.businessSettingsForm.get('originTitle').value }
+  get spotbiePhoto() {return this.businessSettingsForm.get('spotbiePhoto').value}
   get originDescription() { return this.businessSettingsForm.get('originDescription').value }
   get originCategories() { return this.businessSettingsForm.get('originCategories').value}
   get isFoodTruck() { return this.businessSettingsForm.get('isFoodTruck').value ?? false; }

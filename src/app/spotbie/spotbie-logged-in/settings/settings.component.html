@@ -422,7 +422,7 @@
                       <li>Footer Banner Ads</li>
                       <li>Default Max Reward Rate</li>
                     </ul>
-                    <button class="spotbie-button p-2">BUY</button>
+                    <button class="spotbie-button p-2">THIS ONE</button>
                     </div>
 
                     <div
@@ -442,7 +442,7 @@
                         <li>+Feedback</li>
                         <li>+Customer Insights</li>
                       </ul>
-                      <button class="spotbie-button p-2">BUY</button>
+                      <button class="spotbie-button p-2">THIS ONE</button>
                     </div>
 
                     <div class="p2 text-start text-white">
@@ -548,7 +548,21 @@
                 {{ originTitle }}
             </div>
 
-            <img class='sb-business-img' [ngClass]="getBusinessImgStyle()" *ngIf='locationFound' src="{{originPhoto}}" />
+            <span #placeToEatMediaUploadInfo></span>
+
+            <input type="hidden" formControlName="spotbiePhoto" value="" />
+
+            <input type="file"
+                   [accept]="'image/*'"
+                   [multiple]="false"
+                   #placeToEatMediaInput
+                   (change)="uploadMedia(placeToEatMediaInput.files)"
+                   style="display: none;"
+            />
+
+            <div (click)="startRewardMediaUploader()">
+              <img class='sb-business-img' [ngClass]="getBusinessImgStyle()" *ngIf='locationFound' src="{{spotbiePhoto}}" />
+            </div>
 
             <div class='spotbie-input-info spotbie-text-gradient spotbie-place-address text-uppercase text-center mt-4 mb-3'
                  *ngIf='locationFound && place !== undefined'>
