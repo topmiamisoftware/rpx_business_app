@@ -564,7 +564,13 @@ export class SettingsComponent implements OnInit, OnChanges {
 
   private placeToEatMediaUploadFinished(httpResponse: any): void {
     if (httpResponse.success) {
-      this.user.business.photo = httpResponse.image;
+      if (this.user.business) {
+        this.user.business.photo = httpResponse.image;
+      } else {
+        this.user.business = new Business();
+        this.user.business.photo = httpResponse.image;
+      }
+
       this.businessSettingsForm.get('spotbiePhoto').setValue(this.user.business.photo);
     } else {
       console.log('placeToEatMediaUploadFinished', httpResponse);

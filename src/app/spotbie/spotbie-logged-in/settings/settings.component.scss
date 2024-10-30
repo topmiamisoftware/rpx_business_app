@@ -392,6 +392,20 @@ ion-select::part(icon) {
 .food-truck{
   margin-right: .5em;
 }
+.media-uploader{
+  position: relative;
+  display: flex;
+  margin: 0 auto;
+  min-width: 90%;
+  max-width: 90%;
+  text-align: center;
+  border: 2px solid #cfc8c8;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
 /**WIDTH MEDIA QUERIES */
 @media (max-width: 1300px) {
 

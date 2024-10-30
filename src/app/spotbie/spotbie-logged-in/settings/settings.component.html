@@ -560,7 +560,8 @@
                    style="display: none;"
             />
 
-            <div (click)="startRewardMediaUploader()">
+            <div (click)="startRewardMediaUploader()" class="media-uploader">
+              <div>TAP TO UPLOAD</div>
               <img class='sb-business-img' [ngClass]="getBusinessImgStyle()" *ngIf='locationFound' src="{{spotbiePhoto}}" />
             </div>
 
