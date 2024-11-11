@@ -1,0 +1,144 @@
+<ion-menu menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Loyalty Points</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding" color="primary">
+    <ion-list>
+      <ion-item class="ion-padding-top ion-padding-bottom" color="primary" lines="full" (click)="home()">
+        <ion-icon name="home" slot="start"></ion-icon>
+        HOME
+      </ion-item>
+
+      <ion-item class="ion-padding-top ion-padding-bottom" color="primary" lines="full" (click)="promoteIt()">
+        <ion-icon name="home" slot="start"></ion-icon>
+        PROMOTER
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar id="ionToolbarLoggedOut" class="safe--area" color="tertiary">
+      <ion-buttons slot="start">
+        <ion-menu-button auto-hide="false"></ion-menu-button>
+      </ion-buttons>
+
+      <ion-buttons slot="end">
+        <img class="spotbie-header-mini-logo" (click)="home()" src="../../../../assets/images/spotbie_logo_header.svg" />
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="has-header text-center" color="light">
+    <div class="sb-dashboardWrapper">
+      <app-user-set-up
+        [forBusiness]="(selectedBusiness$ | async)"
+        [resetAfterCreation]="true"
+        [day]="day$()"
+        [timeRange1]="timeRange1$()"
+        [timeRange2]="timeRange2$()"
+        [timeRange3]="timeRange3$()"
+      ></app-user-set-up>
+
+      <div class="spotbie-text-gradient pt-5 pb-4">
+        <ion-icon name="notifications"></ion-icon>
+        <div>
+          TIME OF VISIT
+        </div>
+      </div>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <input class="sb-input" (change)="setTime(1, $event)" placeholder="3" label="From Time" type="number" max="12" min="1">
+            <span class="spotbie-text-gradient">FROM HH</span>
+          </ion-col>
+          <ion-col>
+            <input class="sb-input" (change)="setTime(2, $event)" placeholder="5" label="To Time" type="number" max="12" min="1">
+            <span class="spotbie-text-gradient">TO HH</span>
+          </ion-col>
+          <ion-col>
+            <ion-select id="timeRange" (ionChange)="setTime(3, $event)" [value]="'AM'">
+              <ion-select-option>AM</ion-select-option>
+              <ion-select-option>PM</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col>
+            <ion-select id="dayOfWeek" [value]="1" (ionChange)="setTime(4, $event)">
+              <ion-select-option [value]="8">Today</ion-select-option>
+              <ion-select-option [value]="1">Monday</ion-select-option>
+              <ion-select-option [value]="2">Tuesday</ion-select-option>
+              <ion-select-option [value]="3">Wednesday</ion-select-option>
+              <ion-select-option [value]="4">Thursday</ion-select-option>
+              <ion-select-option [value]="5">Friday</ion-select-option>
+              <ion-select-option [value]="6">Saturday</ion-select-option>
+              <ion-select-option [value]="7">Sunday</ion-select-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div class="sb-dashboardWrapper">
+      <ng-container *ngIf="(businessList$ | async) as businessList">
+        <div class="business-container">
+          <div class="spotbie-text-gradient mb-4">VISIT <br/>{{ (selectedBusiness$ | async)?.name }}<br/>AND EARN
+            <span class="sb-text-light-green-gradient">+100LP</span>
+          </div>
+          <div class="business-wrapper"
+               *ngFor="let business of businessList"
+               (click)="openBusinessMenu(business)"
+               [ngStyle]="{'background': 'url(' + business.photo + ')' }"
+          >
+            <div class="business-title">{{ business.name }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="spotbie-overlay-window" *ngIf="(showBusiness$ | async)">
+      <ng-container *ngIf="(selectedBusiness$ | async) as selectedBusiness">
+        <img class="business-photo" [src]="selectedBusiness.photo" />
+
+        <div class="business-name spotbie-text-gradient">
+          {{ selectedBusiness.name }}
+        </div>
+
+        <div class="business-name spotbie-text-gradient">
+          {{ selectedBusiness.address }}
+        </div>
+
+        <div class="reward-container">
+          <div class="reward-wrapper"
+               *ngFor="let reward of selectedBusiness.rewards"
+               [ngStyle]="{'background': 'url(' + reward.images + ')' }"
+          >
+            <div class="reward-title">
+              {{ reward.name }}
+            </div>
+          </div>
+        </div>
+
+        <ion-grid style="max-width: 550px;">
+          <ion-row>
+            <ion-col>
+              <div class="spotbie-button pt-2 pb-2" (click)="selectBusiness()">
+                SELECT
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="spotbie-button spotbie-error-button pt-2 pb-2" style="background-color: red;" (click)="closeRewardMenu()">
+                CLOSE
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ng-container>
+    </div>
+  </ion-content>
+</div>

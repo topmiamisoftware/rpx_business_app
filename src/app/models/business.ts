@@ -1,5 +1,6 @@
 import { LoyaltyPointBalance } from "./loyalty-point-balance"
 import {SpotbieUser} from "./spotbieuser";
+import {Reward} from "./reward";
 
 export class Business {
   id: number;
@@ -25,4 +26,5 @@ export class Business {
   spotbie_user: SpotbieUser;
   loyalty_point_balance: LoyaltyPointBalance;
   is_food_truck: boolean;
+  rewards: Reward[];
 }

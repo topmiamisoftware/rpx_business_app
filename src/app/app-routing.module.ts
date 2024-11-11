@@ -29,6 +29,12 @@ const routes: Routes = [
     component: LoyaltyPointsComponent,
   },
   {
+    path: 'promoter',
+    loadChildren: () =>
+      import('./spotbie/spotbie-logged-in/promoter/promoter.module').then(m => m.PromoterModule),
+    canActivate: [LoginGuardServiceService],
+  },
+  {
     path: 'make-payment',
     loadChildren: () =>
       import('./make-payment/make-payment.module').then(

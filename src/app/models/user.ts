@@ -13,7 +13,7 @@ export class User {
   updated_at: string;
   spotbie_user: SpotbieUser;
   business: Business;
-  loyalty_point_balance: any;
+  loyalty_point_balance: LoyaltyPointBalance;
   next_payment: string;
   userSubscriptionPlan: BusinessMembership;
 }

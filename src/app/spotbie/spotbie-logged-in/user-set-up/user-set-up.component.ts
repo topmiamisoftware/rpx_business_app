@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, signal, ViewChild} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoyaltyPointsService } from '../../../services/loyalty-points/loyalty-points.service';
 import { UserauthService } from '../../../services/userauth.service';
@@ -8,6 +8,7 @@ import {catchError, filter, tap} from "rxjs/operators";
 import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
 import {ToastController} from "@ionic/angular";
+import {Business} from "../../../models/business";
 
 export interface UserForBusiness {
   user: User;
@@ -29,6 +30,50 @@ export class UserSetUpComponent implements OnInit {
   @ViewChild('phoneNumberLabel') phoneNumberLabel;
   @ViewChild('spotbieSignUpIssues') spotbieSignUpIssues;
 
+  @Input() set resetAfterCreation(val: boolean) {
+    if(!!val) {
+      this.resetAfterCreation$.next(val);
+    }
+  }
+
+  @Input() set forBusiness(business: Business) {
+    if (business) {
+      this.forBusiness$.next(business);
+      this.changeDetector.detectChanges();
+    }
+  }
+
+  @Input() set day(value: string) {
+    if (value) {
+      this.day$.set(value);
+    }
+  }
+
+  @Input() set timeRange1(value: string) {
+    if (value) {
+      this.timeRange1$.set(value);
+    }
+  }
+
+  @Input() set timeRange2(value: string) {
+    if (value) {
+      this.timeRange2$.set(value);
+    }
+  }
+
+  @Input() set timeRange3(value: string) {
+    if (value) {
+      this.timeRange3$.set(value);
+    }
+  }
+
+  day$ = signal<string>(null);
+  timeRange1$ = signal<string>(null);
+  timeRange2$ = signal<string>(null);
+  timeRange3$ = signal<string>(null);
+
+  resetAfterCreation$ = new BehaviorSubject<boolean>(false);
+  forBusiness$ = new BehaviorSubject<Business>(null);
   accountLookUpForm: UntypedFormGroup;
   accountLookUpFormUp$ = new BehaviorSubject<boolean>(false);
   accountLookUpFormSubmitted$ = new BehaviorSubject<boolean>(false);
@@ -81,10 +126,29 @@ export class UserSetUpComponent implements OnInit {
     this.accountSetUpFormSubmitted$.next(true);
     this.accountSetUpForm.updateValueAndValidity();
 
+    let promotion;
+    if (this.timeRange1$()) {
+
+      if(!this.forBusiness$.getValue()?.id?.toString()) {
+        alert("You must choose a business from below.");
+        return;
+      }
+
+      promotion = {
+        timeRangeOne: this.timeRange1$().toString(),
+        timeRangeTwo: this.timeRange2$().toString(),
+        timeRangeThree: this.timeRange3$().toString(),
+        day: this.day$().toString(),
+        businessId: this.forBusiness$.getValue().id.toString()
+      }
+    }
+
+    let phN = (this.customerPhoneNumber) ? '+1'+this.customerPhoneNumber : null;
     this.userAuthService.creatAccount({
       firstName: this.customerFirstName,
       email: this.customerEmail,
-      phone_number: '+1'+this.customerPhoneNumber
+      phone_number: phN,
+      promotion,
     }).pipe(
       catchError(this.signUpError()),
     ).subscribe((resp) => {
@@ -119,10 +183,12 @@ export class UserSetUpComponent implements OnInit {
       this.lookEmUpServiceCall();
 
       setTimeout(() => {
+        if(this.resetAfterCreation$.getValue() === true) {
+          this.goBack();
+        }
         this.accountSetUpFormUp$.next(false);
       }, 2300);
     } else {
-
       const toast = await this.toastService.create({
         message: 'There was an error creating the account.',
         duration: 1500,
@@ -240,13 +306,30 @@ export class UserSetUpComponent implements OnInit {
     this.tapEventSub$ = this.tapEvent$.pipe(
       scan((count: number) => (count > 4) ? 0 : count + 1, 0),
       switchMap((a) => {
-        if (a === 5) {
-          this.showLpAward$.next(true);
+        if (a === 2) {
+          // Just send the promoter LP if there's a business selected
+          if (this.forBusiness$.getValue()) {
+            this.promoterLP();
+          } else {
+            this.showLpAward$.next(true);
+          }
           return of(0);
         }
         return of(a);
       }),
     ).subscribe();
+  }
+
+  promoterLP() {
+    const redeemableCreateObj = {
+      timeRangeOne: this.timeRange1$().toString(),
+      timeRangeTwo: this.timeRange2$().toString(),
+      timeRangeThree: this.timeRange3$().toString(),
+      day: this.day$().toString(),
+      businessId: this.forBusiness$.getValue().id.toString(),
+    };
+
+    this.loyaltyPointsService.promoterLp(redeemableCreateObj).subscribe();
   }
 
   removeWhiteSpace(key) {

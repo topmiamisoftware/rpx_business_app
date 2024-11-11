@@ -22,6 +22,14 @@ export class LoyaltyPointsService {
   constructor(private http: HttpClient) {
   }
 
+  promoterLp(createRedeemableObj) {
+    const apiUrl = `${REDEEMABLE_API}/promoter-lp`
+
+    return this.http.post<any>(apiUrl, createRedeemableObj).pipe(
+      catchError(handleError('createRedeemable'))
+    );
+  }
+
   getLoyaltyPointBalance(): Observable<any> {
     const apiUrl = `${LOYALTY_POINTS_API}/show`;
 

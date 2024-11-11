@@ -129,6 +129,10 @@ export class MenuLoggedInComponent implements AfterViewInit {
     });
   }
 
+  promoteIt() {
+    this.router.navigate(['/promoter']);
+  }
+
   async downloadApp() {
     this.modalCtrl.create({
       component: UpdateServiceModalComponent,

@@ -1,4 +1,4 @@
-const baseUrl = 'https://spotbie.com/';
+const baseUrl = 'https://business.spotbie.com/';
 const apiEndpoint = 'https://api.spotbie.com/api/';
 
 export const environment = {
@@ -20,7 +20,10 @@ export const environment = {
   myLocY: -80.186562,
   publishableStripeKey: null,
   dsn: null, // Sentry client key,
-  installedVersion: '7',
+  installedVersion: '8',
+  promoter: {
+    deviceId: 'franco_petitfour'
+  }
 };
 
 setEnvironmentVariables(environment.production);
@@ -47,6 +50,6 @@ function setEnvironmentVariables(isProduction: boolean) {
       'pk_live_51JrUwnGFcsifY4UhqQVtkwnats9SfiUseYMsCBpoa7361hvxq4uWNZcxL2nZnhhrqtX5vLs9EUFACK3VR60svKyc00BSbooqh8';
     environment.dsn =
       'https://c6d5bdc07a204911a0af930dbc444c5e@o4504285868523520.ingest.sentry.io/4504285940809728';
-    environment.installedVersion = '5';
+    environment.installedVersion = '8';
   }
 }

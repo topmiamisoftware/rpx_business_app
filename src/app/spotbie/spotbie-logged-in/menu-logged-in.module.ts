@@ -10,10 +10,14 @@ import {SettingsModule} from './settings/settings.module';
 import {IonicModule} from '@ionic/angular';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {BusinessDashboardModule} from "./business-dashboard/business-dashboard.module";
+import {PromoterComponent} from "./promoter/promoter.component";
+import {PromoterModule} from "./promoter/promoter.module";
 //import { EventMenuModule } from './event-menu/event-menu.module';
 
 @NgModule({
-  declarations: [MenuLoggedInComponent],
+  declarations: [
+    MenuLoggedInComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,

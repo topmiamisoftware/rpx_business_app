@@ -188,6 +188,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.user.ends_at = settingsResponse.ends_at;
       this.user.next_payment = settingsResponse.next_payment;
       this.userSubscriptionPlan = settingsResponse.userSubscriptionPlan;
+      this.user.loyalty_point_balance = settingsResponse.loyalty_point_balance;
 
       this.checkAccMembership();
 
@@ -301,6 +302,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
       is_food_truck: Boolean(this.isFoodTruck),
+      lp_rate: this.lpRate
     };
 
     this.userAuthService.saveBusiness(businessInfo).subscribe();
@@ -354,7 +356,8 @@ export class SettingsComponent implements OnInit, OnChanges {
       loc_y: this.lng$.getValue(),
       categories: this.activeBusinessCategories.toString(),
       passkey: this.passKey,
-      is_food_truck: this.isFoodTruck
+      is_food_truck: this.isFoodTruck,
+      lp_rate: this.lpRate
     };
 
     this.userAuthService.verifyBusiness(businessInfo).subscribe(
@@ -945,6 +948,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         const originAddressValidators = [Validators.required];
         const originValidators = [Validators.required];
         const spotbieBusinessTypeValidators = [Validators.required];
+        const lpRateValidators = [Validators.required];
         const originDescriptionValidators = [Validators.required, Validators.maxLength(350), Validators.minLength(100)];
 
         this.businessSettingsForm = this.formBuilder.group({
@@ -955,6 +959,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           isFoodTruck: [''],
           originCategories: [''],
           spotbiePhoneNumber: ['', phoneValidators],
+          lpRate: ['', lpRateValidators],
           spotbiePhoto: ['', spotbieBusinessTypeValidators]
         });
 
@@ -968,6 +973,8 @@ export class SettingsComponent implements OnInit, OnChanges {
             .get('isFoodTruck')
             .setValue(!!this.user.business.is_food_truck);
           this.businessSettingsForm.get('spotbiePhoto').setValue(this.user.business.photo);
+          this.businessSettingsForm.get('lpRate').setValue(this.user.loyalty_point_balance.loyalty_point_dollar_percent_value);
+
           this.activeBusinessCategories = this.user.business.categories.toString();
         } else {
           this.businessSettingsForm.get('originAddress').setValue('SEARCH FOR LOCATION');
@@ -1027,6 +1034,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   get originDescription() { return this.businessSettingsForm.get('originDescription').value }
   get originCategories() { return this.businessSettingsForm.get('originCategories').value}
   get isFoodTruck() { return this.businessSettingsForm.get('isFoodTruck').value ?? false; }
+  get lpRate() { return this.businessSettingsForm.get('lpRate').value }
   get i() { return this.businessSettingsForm.controls }
 
   saveSettings() {
@@ -1051,7 +1059,8 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.user.email = this.email;
     this.user.spotbie_user.first_name = this.first_name;
     this.user.spotbie_user.last_name = this.last_name;
-    this.user.spotbie_user.phone_number = '+1'+this.spotbie_phone_number;
+    let phN = (this.spotbie_phone_number) ? '+1'+this.spotbie_phone_number : null;
+    this.user.spotbie_user.phone_number = phN;
     this.user.spotbie_user.user_type = this.chosenAccountType;
 
     this.userAuthService.saveSettings(this.user).subscribe({ next: (resp) => {

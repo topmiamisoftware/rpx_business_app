@@ -676,12 +676,39 @@
                     <div class='spotbie-text-gradient mt-2 mb-2'>{{ originDescription.length }} / 350</div>
                 </td>
             </tr>
+
+            <tr>
+              <td>
+                <div *ngIf="placeFormSubmitted && i.lpRate.errors else lp_rate_normal"
+                     class="spotbie-input-info mb-3 spotbie-text-gradient text-center spotbie-error">
+                  <div *ngIf="i.lpRate.errors.required">
+                    You must enter a reward rate.
+                  </div>
+                </div>
+
+                <ng-template #lp_rate_normal>
+                  <label class="spotbie-input-info spotbie-text-gradient text-center mb-2">
+                    SET YOUR REWARD RATE %
+                  </label>
+                </ng-template>
+
+                <input class='sb-input text-center'
+                       formControlName="lpRate"
+                       mask="separator.2"
+                       suffix="%"
+                       placeholder='2.5%'
+                />
+              </td>
+            </tr>
+
             <ng-container *ngIf="accountTypeCategory === 'PLACE TO EAT'">
               <tr>
                 <td style="color: white;">
-                  <fa-icon class="food-truck" [icon]="faFoodTruckIcon"></fa-icon>
-                  <mat-slide-toggle ngModel name="isFoodTruck" [style.color]="'#fff'"></mat-slide-toggle>
-                  Food Truck?
+                  <div class="mt-3 mb-3">
+                    <fa-icon class="food-truck" [icon]="faFoodTruckIcon"></fa-icon>
+                    <mat-slide-toggle ngModel name="isFoodTruck" [style.color]="'#fff'"></mat-slide-toggle>
+                    Food Truck?
+                  </div>
                 </td>
               </tr>
             </ng-container>

@@ -9,7 +9,8 @@ import {IonicModule} from "@ionic/angular";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {SpotbiePipesModule} from "../../../spotbie-pipes/spotbie-pipes.module";
-import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
+import { NgxMaskPipe} from "ngx-mask";
+import {NgxMaskDirective} from "ngx-mask";
 
 @NgModule({
   declarations: [

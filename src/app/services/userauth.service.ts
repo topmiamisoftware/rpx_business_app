@@ -7,6 +7,7 @@ import {User} from '../models/user';
 
 import * as spotbieGlobals from '../globals';
 import {AllowedAccountTypes} from "../helpers/enum/account-type.enum";
+import {Business} from "../models/business";
 
 const USER_API = spotbieGlobals.API + 'user';
 const BUSINESS_API = spotbieGlobals.API + 'business'
@@ -66,6 +67,7 @@ export class UserauthService {
       state: businessInfo.state,
       accountType: businessInfo.accountType,
       is_food_truck: Boolean(businessInfo.is_food_truck),
+      lp_rate: businessInfo.lp_rate,
     }
 
     return this.http.post<any>(apiUrl, businessInfoObj)
@@ -153,14 +155,12 @@ export class UserauthService {
   }
 
   saveSettings(user: User): Observable<any> {
-    console.log("THE USER", user);
     const saveSettingsApi = `${USER_API}/update`;
 
     let saveSettingsObj;
 
     if (!user.business) {
       saveSettingsObj = {
-        _method: 'PUT',
         username: user.username,
         email: user.email,
         first_name: user.spotbie_user.first_name,
@@ -173,7 +173,6 @@ export class UserauthService {
       };
     } else {
       saveSettingsObj = {
-        _method: 'PUT',
         username: user.username,
         email: user.email,
         first_name: user.spotbie_user.first_name,
@@ -191,7 +190,7 @@ export class UserauthService {
       };
     }
 
-    return this.http.post<any>(saveSettingsApi, saveSettingsObj).pipe(
+    return this.http.put<any>(saveSettingsApi, saveSettingsObj).pipe(
       catchError(err => {
         throw err;
       })
@@ -211,7 +210,7 @@ export class UserauthService {
     );
   }
 
-  creatAccount(account: {email: string, phone_number: string, firstName: string}): Observable<any> {
+  creatAccount(account: AccountCreation): Observable<any> {
     return this.http.post(`${USER_API}/create-user`, account);
   }
 
@@ -286,4 +285,17 @@ export class UserauthService {
       .put<any>(apiUrl, businessInfoObj)
       .pipe(catchError(handleError('saveLocation')));
   }
+}
+
+export interface AccountCreation {
+  email: string,
+  phone_number: string,
+  firstName: string,
+  promotion: {
+    timeRangeOne: string,
+    timeRangeTwo: string,
+    timeRangeThree: string,
+    day: string,
+    businessId: string,
+  },
 }
