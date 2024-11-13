@@ -41,6 +41,22 @@ export class CustomerManagerService {
       .pipe(catchError(handleError('sendSms')));
   }
 
+  sendPromotion(message: string): Observable<any> {
+    const api = `${CUSTOMER_MANAGER_API}/send-promotion`;
+
+    return this.http
+      .post<any>(api, {message})
+      .pipe(catchError(handleError('sendPromotion')));
+  }
+
+  getCurrentPromotion() {
+    const api = `${CUSTOMER_MANAGER_API}/get-promotion`;
+
+    return this.http
+      .get<any>(api)
+      .pipe(catchError(handleError('getCurrentPromotion')));
+  }
+
   getEmailGroupList(): Observable<any> {
     const api = `${CUSTOMER_MANAGER_API}/email-group-list`;
 

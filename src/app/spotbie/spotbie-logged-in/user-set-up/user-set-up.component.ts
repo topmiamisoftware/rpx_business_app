@@ -9,6 +9,7 @@ import {User} from "../../../models/user";
 import {SpotbieUser} from "../../../models/spotbieuser";
 import {ToastController} from "@ionic/angular";
 import {Business} from "../../../models/business";
+import {environment} from "../../../../environments/environment.prod";
 
 export interface UserForBusiness {
   user: User;
@@ -99,7 +100,6 @@ export class UserSetUpComponent implements OnInit {
               private businessLoyaltyPointsState: BusinessLoyaltyPointsState,
               private changeDetector: ChangeDetectorRef,
               private toastService: ToastController) {
-    this.setUpLpTapButton();
   }
 
   async ngOnInit() {
@@ -287,13 +287,8 @@ export class UserSetUpComponent implements OnInit {
     this.lookEmUpServiceCall();
   }
 
-  tapForLp($event) {
-    this.tapEvent$.next(0);
-  }
-
   goBack() {
     this.showLpAward$.next(false);
-    this.setUpLpTapButton();
     this.accountLookUpFormUp$.next(true);
     this.awardLpPoints$.next(false);
     this.accountSetUpFormUp$.next(false);
@@ -302,22 +297,13 @@ export class UserSetUpComponent implements OnInit {
     this.createUserButton$.next(false);
   }
 
-  setUpLpTapButton(){
-    this.tapEventSub$ = this.tapEvent$.pipe(
-      scan((count: number) => (count > 4) ? 0 : count + 1, 0),
-      switchMap((a) => {
-        if (a === 2) {
-          // Just send the promoter LP if there's a business selected
-          if (this.forBusiness$.getValue()) {
-            this.promoterLP();
-          } else {
-            this.showLpAward$.next(true);
-          }
-          return of(0);
-        }
-        return of(a);
-      }),
-    ).subscribe();
+  tapForLp(){
+    // Just send the promoter LP if there's a business selected
+    if (this.forBusiness$.getValue()) {
+      this.promoterLP();
+    } else {
+      this.showLpAward$.next(true);
+    }
   }
 
   promoterLP() {
@@ -327,9 +313,13 @@ export class UserSetUpComponent implements OnInit {
       timeRangeThree: this.timeRange3$().toString(),
       day: this.day$().toString(),
       businessId: this.forBusiness$.getValue().id.toString(),
+      userId: this.user$.getValue().spotbie_user.id.toString(),
+      deviceId: environment.promoter.deviceId
     };
 
-    this.loyaltyPointsService.promoterLp(redeemableCreateObj).subscribe();
+    this.loyaltyPointsService.promoterLp(redeemableCreateObj).subscribe((c) => {
+      alert('User has been awarded bonus loyalty points.');
+    });
   }
 
   removeWhiteSpace(key) {

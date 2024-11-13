@@ -8,6 +8,7 @@ import {SmsHistoryDialogComponent} from './sms-history/sms-history-dialog.compon
 import {FeedbackComponent} from "./feedback/feedback.component";
 import {EmailDialogComponent} from "./email/email.component";
 import {EmailHistoryDialogComponent} from "./email-history/email-history-dialog.component";
+import {PromotionComponent} from "./promotion/promotion.component";
 
 @Component({
   selector: 'app-customer-manager',
@@ -85,6 +86,43 @@ export class CustomerManagerComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  sendPromotion(text) {
+    this.customerManagementService
+      .sendPromotion(text)
+      .pipe(
+        tap(resp => {
+          if (resp.success) {
+            this.messageSent$.next(true);
+            setTimeout(() => {
+              this.messageSent$.next(false);
+            }, 5000);
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  openNearbyPromotion() {
+    const existingPromotion = this.customerManagementService.getCurrentPromotion().subscribe((resp) => {
+      const dialogRef= this.dialog.open(PromotionComponent, {
+        width: '90%',
+        enterAnimationDuration: '0ms',
+        exitAnimationDuration: '0ms',
+        data: {
+          promotionText: resp.message
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (!result) {
+          return;
+        }
+
+        this.sendPromotion(result.text);
+      });
+    });
   }
 
   openEmail() {
