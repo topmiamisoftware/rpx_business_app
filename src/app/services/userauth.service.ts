@@ -197,10 +197,11 @@ export class UserauthService {
     );
   }
 
-  setPassResetPin(emailOrPhone: string): Observable<any> {
+  setPassResetPin(emailOrPhone: string, using_phone_number: boolean): Observable<any> {
     const resetPasswordApi = `${USER_API}/send-pass-email`;
     const setPassResetObj = {
       email: emailOrPhone,
+      using_phone_number,
     };
 
     return this.http.post<any>(resetPasswordApi, setPassResetObj).pipe(

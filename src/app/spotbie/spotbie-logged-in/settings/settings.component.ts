@@ -124,6 +124,7 @@ export class SettingsComponent implements OnInit, OnChanges {
   state: string = null;
   map$ = new BehaviorSubject<boolean>(true);
   displayLocationEnablingInstructions$ = new BehaviorSubject<boolean>(false);
+  calculatedBasedOnPercentage$ = new BehaviorSubject<number>(null);
 
   @ViewChild('businessInput') businessInput: ElementRef<HTMLInputElement>
 
@@ -1014,6 +1015,10 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.changeDetectionRef.detectChanges();
   }
 
+  calculateRewardDollarValue() {
+    this.calculatedBasedOnPercentage$.next((this.lpRate/100) * 100);
+  }
+
   get username() { return this.settingsForm.get('spotbie_username').value }
   get first_name() { return this.settingsForm.get('spotbie_first_name').value }
   get last_name() { return this.settingsForm.get('spotbie_last_name').value }
@@ -1031,10 +1036,10 @@ export class SettingsComponent implements OnInit, OnChanges {
   get spotbieOrigin() { return this.businessSettingsForm.get('spotbieOrigin').value }
   get originTitle() { return this.businessSettingsForm.get('originTitle').value }
   get spotbiePhoto() {return this.businessSettingsForm.get('spotbiePhoto').value}
-  get originDescription() { return this.businessSettingsForm.get('originDescription').value }
+  get originDescription() { return this.businessSettingsForm.get('originDescription').value; }
   get originCategories() { return this.businessSettingsForm.get('originCategories').value}
   get isFoodTruck() { return this.businessSettingsForm.get('isFoodTruck').value ?? false; }
-  get lpRate() { return this.businessSettingsForm.get('lpRate').value }
+  get lpRate() { return this.businessSettingsForm.get('lpRate').value; }
   get i() { return this.businessSettingsForm.controls }
 
   saveSettings() {

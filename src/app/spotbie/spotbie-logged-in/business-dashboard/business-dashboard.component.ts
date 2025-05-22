@@ -17,7 +17,6 @@ export class BusinessDashboardComponent implements OnInit {
   @Output() openBusinessSettingsEvt = new EventEmitter();
 
   @ViewChild('rewardMenuApp') rewardMenuApp: RewardMenuComponent;
-  @ViewChild('qrApp') qrApp: QrComponent;
   @ViewChild('qrCodeAppAnchor') qrCodeAppAnchor: ElementRef;
   @ViewChild('rewardMenuAppAnchor') rewardMenuAppAnchor: ElementRef;
   @ViewChild('appUserSetUp') appUserSetUp: UserSetUpComponent;

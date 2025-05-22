@@ -191,7 +191,7 @@ export class EventCreatorComponent implements OnInit {
                     {
                       reportProgress: true,
                       observe: 'events',
-                      withCredentials: true, headers: {
+                      headers: {
                         'Authorization' : `Bearer ${token.value}`
                       }
                     }

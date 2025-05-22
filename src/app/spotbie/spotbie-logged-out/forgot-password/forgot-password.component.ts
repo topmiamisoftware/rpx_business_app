@@ -2,9 +2,13 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {UntypedFormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
 import {UserauthService} from '../../../services/userauth.service';
 import {BehaviorSubject} from 'rxjs';
+import {tap} from "rxjs/operators";
 
 const DEF_INC_PASS_OR_EM_MSG = 'Enter your e-mail address.';
 const DEF_PIN_PASS_OR_EM_MSG = 'Check your e-mail for a reset link.';
+
+const DEF_INC_PASS_OR_PH_MSG = 'Enter your phone number.';
+const DEF_PIN_PASS_OR_PH_MSG = 'Check your phone for a reset link.';
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,6 +28,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   pinReadyMsg$ = new BehaviorSubject<string>(DEF_PIN_PASS_OR_EM_MSG);
   emailOrPhError$ = new BehaviorSubject<string>(DEF_INC_PASS_OR_EM_MSG);
+  usePhoneNumber$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -47,6 +52,27 @@ export class ForgotPasswordComponent implements OnInit {
     this.stepOne$.next(true);
   }
 
+  usePhoneNumber() {
+    this.usePhoneNumber$.next(!this.usePhoneNumber$.getValue());
+
+    if (this.usePhoneNumber$.getValue() === true) {
+      this.emailOrPhError$.next(DEF_INC_PASS_OR_PH_MSG);
+      this.pinReadyMsg$.next(DEF_PIN_PASS_OR_PH_MSG);
+    } else {
+      this.emailOrPhError$.next(DEF_INC_PASS_OR_EM_MSG);
+      this.pinReadyMsg$.next(DEF_PIN_PASS_OR_EM_MSG);
+    }
+
+    const spotbieEmailOrPhValidators = [
+      Validators.required,
+      Validators.maxLength(130),
+    ];
+
+    this.passwordResetForm = this.formBuilder.group({
+      spotbieEmailOrPh: ['', spotbieEmailOrPhValidators],
+    });
+  }
+
   setPassResetPin(): void {
     this.loading$.next(true);
     this.passResetSubmitted$.next(true);
@@ -57,7 +83,7 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     this.userAuthService
-      .setPassResetPin(this.spotbieEmailOrPh)
+      .setPassResetPin(this.spotbieEmailOrPh, this.usePhoneNumber$.getValue())
       .subscribe(resp => {
         this.startPassResetCb(resp);
       });
@@ -91,7 +117,8 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     this.getLinkMessage.nativeElement.style.display = 'none';
-    this.getLinkMessage.nativeElement.className = 'spotbie-error spotbie-contact-me-info';
+    this.getLinkMessage.nativeElement.className =
+      'spotbie-text-gradient spotbie-error spotbie-contact-me-info';
     this.getLinkMessage.nativeElement.style.display = 'block';
 
     this.loading$.next(false);

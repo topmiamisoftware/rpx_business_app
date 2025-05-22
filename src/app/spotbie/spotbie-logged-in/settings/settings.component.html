@@ -694,6 +694,7 @@
 
                 <input class='sb-input text-center'
                        formControlName="lpRate"
+                       (keyup)="calculateRewardDollarValue()"
                        mask="separator.2"
                        suffix="%"
                        placeholder='2.5%'

@@ -21,15 +21,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
         if (token && token !== 'null') {
           modifiedReq = req.clone({
-            withCredentials: true,
             setHeaders: {
               Authorization: `Bearer ${token}`,
             },
           });
         } else {
-          modifiedReq = req.clone({
-            withCredentials: true,
-          });
+          modifiedReq = req.clone();
         }
 
         return next.handle(modifiedReq);

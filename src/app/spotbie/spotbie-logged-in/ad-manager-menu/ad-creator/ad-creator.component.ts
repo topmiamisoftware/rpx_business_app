@@ -275,7 +275,7 @@ export class AdCreatorComponent implements OnInit, OnChanges {
         {
           reportProgress: true,
           observe: 'events',
-          withCredentials: true, headers: {
+          headers: {
             'Authorization' : `Bearer ${token}`
           }}).subscribe(event => {
             if (event.type === HttpEventType.UploadProgress) {
